@@ -142,4 +142,6 @@ rc.2 工具集在 Windows、Node 24.11.1 上 **15/15** 通过，包含独立进�
 
 重复认领、中断恢复和过期结论的离线三代理对照属于未来研究；认领强制执行、失败学习不是 v0.1 功能，模拟也不等于真实 LLM 评测。
 
+由 [AAlpha7](https://github.com/AAlpha7) 维护。欢迎在 X 关注 [Lance · @xhuang26](https://x.com/xhuang26?s=11)。
+
 [MIT](LICENSE)，Copyright © 2026 AAlpha7。代码、文档和原创图解采用同一许可证；[来源与依赖](RIGHTS-AND-DEPENDENCIES.md)。没有配置托管 CI、模型订阅或部署服务。

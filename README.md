@@ -156,4 +156,6 @@ Future exploration may study duplicate claims, interrupted work and stale conclu
 
 ## License
 
+Maintained by [AAlpha7](https://github.com/AAlpha7). Follow [Lance · @xhuang26](https://x.com/xhuang26?s=11) on X.
+
 [MIT](LICENSE) · Copyright © 2026 [AAlpha7](https://github.com/AAlpha7). Code, docs and original diagrams share the license. [Attribution and dependency boundaries](RIGHTS-AND-DEPENDENCIES.md). No hosted CI, model subscription or deployment is configured; Node.js and Git are separately installed prerequisites. `private: true` prevents accidental npm publication.
