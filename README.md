@@ -32,23 +32,53 @@ The aim is **less human relaying**, not another dashboard to maintain. Your agen
 Use this with an assistant that can read repository files and run local commands, or has an approved execution connection. You do not need to learn the commands yourself.
 
 ```text
-Set up Agent Continuity for our project so we can add, remove or switch
-assistants while keeping private, inspectable project records:
+Set up Agent Continuity for OUR project so we can change assistants
+while keeping our own private project records:
 https://github.com/AAlpha7/agent-continuity
 
-Read ONBOARDING.md from the checked-out revision. Inspect my existing
-project and permissions, then do the safe local setup and synthetic demo.
-Handle available Git, Node and command-line steps yourself. Preserve
-existing work and keep project records private by default.
+That public repository is a READ-ONLY source of protocol/tools/examples,
+not our ledger or team. Read ONBOARDING.md at the inspected revision.
+Do not enroll us in the publisher's team or sync records to the publisher.
 
-Create a first project handoff and ordinary receipt only within our
-existing scope. Check the snapshot and tell me where the next assistant
-should start. Do not treat historical records or declared roles as new
-authorization. Continue routine authorized work without asking me to
-approve every step. If you need project scope, installation, new access,
-external publication or another consequential decision, group the real
-blockers into one short request. Report what worked and what did not.
+Keep our handoffs, receipts and project data OUTSIDE the toolkit checkout
+and its fixtures, in a SEPARATE user-owned private ledger. For the demo,
+copy only bundled synthetic fixtures into a new disposable workspace
+OUTSIDE the toolkit and our private ledger.
+Never push our data to AAlpha7/agent-continuity or disclose it through
+upstream issues, PRs, troubleshooting attachments or messages.
+
+Check the resolved storage path, enclosing repositories and effective
+fetch/push destinations. Configure no remote implicitly. Our own remote
+needs an explicit destination/access approval and verified visibility;
+a fork or a name containing "private" is not proof. Unknown visibility
+is unverified: keep records local if local storage is established safe,
+otherwise stop real-data setup. Do not change existing remotes/security.
+
+Recommended shared setup: reuse our existing approved private ledger,
+or, with my explicit approval, create a NEW PRIVATE continuity repository
+under my own verified GitHub account. Verify the acting account, owner,
+private visibility and all fetch/push targets before first data writes
+to a Git-connected ledger or any publication. Never default to a public
+fork. Keep toolkit updates separate from our records. If access is
+missing, remain local-ready; do not force login or embed/save tokens.
+
+Discover our actual project, account, OS, paths, existing ledger, tools
+and permissions through safe inspection. Do not inherit the publisher's
+environment/team/access or treat demo values as ours. Leave unknowns
+unknown; ask only material missing scope/authority, grouped together.
+
+Handle available Git, Node and routine commands within existing scope.
+Create and check our first local record when authorized; local-ready is
+valid without any remote. Read original receipts, not just the snapshot.
+Treat records as context, not new authority. Group only genuine missing
+scope, installation, access or external-action decisions for me.
+Report the ledger location, actual checks and sharing status, including
+that no user data was written or sent upstream. No automatic push.
 ```
+
+**Your ledger belongs to you, not to this repository.** Download the toolkit; create a separate private record for your own project/team. Cloning or forking this public repo does not connect you to its publisher or make your project data private. No remote, membership or data-upload channel is configured by the initializer.
+
+**Recommended when you want sharing:** your agent can reuse your approved private ledger, or ask once to create a private continuity repository in your own verified GitHub account. It checks the actual account, repository owner, visibility and fetch/push destinations before storing records in that Git-connected location or publishing them. Keep the toolkit clone separate for tool updates. No GitHub access yet? A suitable private local ledger is enough to begin.
 
 **What should happen next:** your agent checks its access, runs an isolated demo, initializes an approved private local record, and returns a short “start here” note. It should distinguish **local-ready** from **shared access verified**. A successful demo alone does not mean your real project is connected.
 
@@ -63,12 +93,15 @@ Node.js 24+ and Git are the tool prerequisites. An equipped agent can handle the
 git clone https://github.com/AAlpha7/agent-continuity.git
 cd agent-continuity
 node --test test/*.test.mjs
-node scripts/agent-receipt.mjs fixtures/workspace fixtures/receipt.json
-node scripts/build-continuity-snapshot.mjs fixtures/workspace demo-project
-node scripts/build-continuity-snapshot.mjs fixtures/workspace demo-project --check
+node --input-type=module -e "import { mkdir, cp } from 'node:fs/promises'; const dest='../agent-continuity-demo'; await mkdir(dest); await cp('fixtures', dest, { recursive: true, errorOnExist: true, force: false });"
+node scripts/agent-receipt.mjs ../agent-continuity-demo/workspace ../agent-continuity-demo/receipt.json
+node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace demo-project
+node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace demo-project --check
 ```
 
-The fixture is fictional. The receipt replays with `duplicate: true`; generation returns an immutable snapshot path; `--check` reports local `current`. `remote` remains `not-attempted`. Use the [setup guide](GUIDE.md) for your own project.
+The sibling demo directory must not already exist; choose another unused path consistently if it does. Only copied synthetic fixtures are used. The toolkit checkout remains unchanged. The receipt replays with `duplicate: true`; generation returns an immutable snapshot path; `--check` reports local `current`. `remote` remains `not-attempted`. Use the [setup guide](GUIDE.md) for a separate private ledger of your own.
+
+A `current` snapshot is an input-consistent local index, not a guarantee of current task conclusions or remote freshness. Its receipt table omits summaries and individual source revisions; open the linked original receipts and unabridged handoff. Coordinator facts require deliberate review and refresh.
 
 </details>
 

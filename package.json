@@ -1,5 +1,6 @@
 {
   "name": "agent-continuity",
+  "description": "Your agents change. Your work continues. User-owned project memory for collaboration across AI tools, sessions and machines.",
   "version": "0.1.0-rc.2",
   "private": true,
   "type": "module",

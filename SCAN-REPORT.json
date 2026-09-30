@@ -3,7 +3,7 @@
   "status": "pass",
   "files_scanned": 32,
   "findings": [],
-  "relative_links_checked": 37,
+  "relative_links_checked": 39,
   "checks": [
     "private identifier/path and credential patterns",
     "internal context",

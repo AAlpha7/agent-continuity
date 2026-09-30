@@ -71,8 +71,8 @@
     },
     {
       "path": "GUIDE.md",
-      "bytes": 4291,
-      "sha256": "4684ec761aaf4a1e8541edbf4809a0807ace2e946f5b52e65041bf89f3d965b5"
+      "bytes": 6606,
+      "sha256": "0eb29bb962f3ad18677dba0b19bb6d27a6f45bfeff2590a73fa97cd971c70ac3"
     },
     {
       "path": "lib/ledger-write.mjs",
@@ -91,13 +91,13 @@
     },
     {
       "path": "ONBOARDING.md",
-      "bytes": 9704,
-      "sha256": "49c88f1f75752f31c9b8ba9cd1a6196dc9e3649f67123cf72bce511a57f7289c"
+      "bytes": 20316,
+      "sha256": "367425e030b772c98413b3eec6f5e8eacf1cc7a6a6c93dbf6077f607b4be6e15"
     },
     {
       "path": "package.json",
-      "bytes": 267,
-      "sha256": "c106424e296464776546a10e64cbc2efc09e700c400af521260bbd020bdf61c6"
+      "bytes": 412,
+      "sha256": "73531bf78a6bd650c28c50b5932b20c623f5ae22a256019306ff0af3af855b0c"
     },
     {
       "path": "PROTOCOL.md",
@@ -111,13 +111,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 10904,
-      "sha256": "c9d4bd79eba23cb0f2be086616df0f503096bb592b9fcbc539da5315669fdee4"
+      "bytes": 13993,
+      "sha256": "b36d4a7d57fc24665b5c6ed2c25a8c9e422d7d1b7d8ce18ce931d963a0dbf575"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 8596,
-      "sha256": "feba10eba1106d547c7d753b2cf58c9a956c126188e0d35961a106653e417b1c"
+      "bytes": 11676,
+      "sha256": "9369075aa87c353bc79379fe5a3960f97715c22e2e647f3cb2fdf39c688ea497"
     },
     {
       "path": "RECEIPT-SCHEMA.md",
@@ -132,7 +132,7 @@
     {
       "path": "SCAN-REPORT.json",
       "bytes": 615,
-      "sha256": "c7a5d7b9c38dd435d3ba351082af0e5942e78d8f73925eb428c18a618fc2cdac"
+      "sha256": "dc5d6ea41a56a4ace812604b3059b241cc33c86f5a3679496caba8b404e3f97a"
     },
     {
       "path": "scripts/agent-receipt.mjs",
