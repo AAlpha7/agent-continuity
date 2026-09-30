@@ -111,13 +111,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 14110,
-      "sha256": "63dc585e0539670acd07e5dd60a2450c084c96524e6da85583f722abafac0e9e"
+      "bytes": 14603,
+      "sha256": "b3fd2864b4d96895ac01968ea4b2997407b7b4ab3b9f7cb77d1e8a998870f44f"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 11800,
-      "sha256": "700a975f47ae5876d3795b76de0bf3c96b90bb58e1325dcaa90a1274f1cb99cb"
+      "bytes": 12270,
+      "sha256": "f7313450e07f93b74ffba6ba920c64b5fc3d79f84d3a1b18f762c87ee6c35587"
     },
     {
       "path": "RECEIPT-SCHEMA.md",

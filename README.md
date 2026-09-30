@@ -2,11 +2,15 @@
 
 ## Your agents change. Your work continues.
 
-**Choose the AI that fits the task. Keep the project memory in files you control.**
+**AI keeps improving. Your work should not restart with every switch.**
 
-Use one assistant today, add a different reviewer tomorrow, or move the work to another machine. Your decisions, reported progress and open work should remain accessible beyond any one conversation.
+One provider's assistant fits today's coding task; tomorrow, another provider's new model catches your eye. You might combine several agents with different strengths, or move between a laptop, a server and other work environments.
 
-Agent Continuity is a vendor-neutral protocol and small local toolkit for **user-owned, inspectable project memory**. It preserves coordination records so authorized participants have something concrete to read when the team changes. Your code and other artifacts stay in their own project storage; references do not back them up automatically.
+But they often do not know what the others have done. You repeat the background, move records and check progress. Use several together, and you become their messenger. When an old session ends, decisions and unfinished work can stay stranded in that conversation.
+
+**Agent Continuity keeps the project record in files you control.** Switch assistants, add a reviewer or stop using an old agent: the next authorized reader can inspect saved reports, decisions, reasons, artifact references and open work. You can choose your AI without rebuilding the background from memory, provided those records have been saved and remain accessible.
+
+The vendor-neutral protocol and local tools preserve coordination records. Code and other artifacts stay in their own project storage; references do not back them up automatically.
 
 [Give this to your AI](#give-this-to-your-ai) · [See an agent switch](#one-project-a-changing-team) · [What actually ships](#what-actually-ships) · [简体中文](README.zh-CN.md)
 
