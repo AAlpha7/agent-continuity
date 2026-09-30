@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="820" viewBox="0 0 680 820" role="img" aria-labelledby="title desc">
+<title id="title">Change assistants without making the human rebuild the context</title>
+<desc id="desc">Separate chats require the person to retell decisions, chase source versions and reconcile claims. Retained project records let the next authorized reader inspect the handoff, check the local view and follow evidence. A capable agent handles permitted technical steps; missing scope, new access and consequential decisions still require human authority.</desc>
+<rect width="680" height="820" rx="24" fill="#f1f5fb"/>
+<g font-family="system-ui, Segoe UI, sans-serif">
+<text x="36" y="48" fill="#48627d" font-size="17" font-weight="700" letter-spacing="1.4">LESS HUMAN RELAYING · CLEARER CONTINUITY</text>
+<text x="36" y="102" fill="#142e49" font-size="37" font-weight="750">Keep the project in the loop.</text>
+<rect x="32" y="138" width="616" height="246" rx="18" fill="#fff5ef" stroke="#e9cabc"/>
+<text x="56" y="181" fill="#965031" font-size="25" font-weight="700">WHEN CONTEXT STAYS IN SEPARATE CHATS</text>
+<text x="56" y="229" fill="#5d4034" font-size="26">“Tell the new AI what we decided.”</text>
+<text x="56" y="271" fill="#5d4034" font-size="26">“Find the version they reviewed.”</text>
+<text x="56" y="313" fill="#5d4034" font-size="26">“Work out what is still unfinished.”</text>
+<text x="56" y="354" fill="#86624f" font-size="22">The person reconnects the conversations.</text>
+<rect x="32" y="410" width="616" height="246" rx="18" fill="#153e3c"/>
+<text x="56" y="453" fill="#9ff0d1" font-size="25" font-weight="700">WITH A RETAINED PROJECT RECORD</text>
+<text x="56" y="501" fill="#f0fff8" font-size="26">Read decisions and open work.</text>
+<text x="56" y="543" fill="#f0fff8" font-size="26">Check the snapshot against local inputs.</text>
+<text x="56" y="585" fill="#f0fff8" font-size="26">Inspect separate reports and evidence.</text>
+<text x="56" y="626" fill="#b7dfd0" font-size="22">The next authorized reader has a starting point.</text>
+<text x="36" y="705" fill="#142e49" font-size="24" font-weight="700">Let the agent handle permitted setup steps.</text>
+<text x="36" y="744" fill="#48627d" font-size="23">Bring people the decisions that need them:</text>
+<text x="36" y="779" fill="#48627d" font-size="23">scope · new access · consequential actions</text>
+</g></svg>

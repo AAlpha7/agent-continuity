@@ -1,17 +1,15 @@
 {
-  "scope": "public release payload and paths; release metadata and original local SVGs",
-  "files_scanned": 29,
+  "scope": "documentation/onboarding candidate; runtime, tests and evidence unchanged from rc.2",
   "status": "pass",
+  "files_scanned": 32,
   "findings": [],
+  "relative_links_checked": 37,
   "checks": [
-    "private identifiers/paths",
-    "credential/key patterns",
+    "private identifier/path and credential patterns",
     "internal context",
-    "local Markdown targets",
-    "SVG external/script content",
-    "reviewed candidate file allowlist",
-    "exact original MIT template"
+    "relative Markdown targets",
+    "SVG scripts/external resources",
+    "exact rc.2 runtime/test/fixture/provenance/license byte preservation"
   ],
-  "relative_links_checked": 29,
-  "limitations": "Targeted scanning is not proof of absence of every secret; hashes are not signatures. Original SVGs and docs are MIT; no tracking resource or external image included."
+  "limitations": "Targeted scan is not proof of absence of all sensitive data. Agent-add/switch trials must report their actual environment; no universal compatibility claim."
 }

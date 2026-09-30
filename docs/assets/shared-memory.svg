@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="880" viewBox="0 0 680 880" role="img" aria-labelledby="title desc">
+<title id="title">Your agents change. Your project record stays yours.</title>
+<desc id="desc">A user-owned project record holds decisions, reported progress, open work and evidence references. Over time an initial assistant works, a reviewer joins, and a replacement assistant or another machine reads an approved copy. Access, synchronization and backups are explicit responsibilities; this is not an automatic backup or orchestration service.</desc>
+<rect width="680" height="880" rx="24" fill="#0c1b2e"/>
+<g font-family="system-ui, Segoe UI, sans-serif">
+<text x="36" y="48" fill="#8be8c7" font-size="17" font-weight="700" letter-spacing="1.4">YOUR PROJECT · BEYOND ANY ONE ASSISTANT</text>
+<text x="36" y="103" fill="#f6f9ff" font-size="39" font-weight="750">Your agents change.</text>
+<text x="36" y="152" fill="#f6f9ff" font-size="39" font-weight="750">Your work continues.</text>
+<rect x="32" y="184" width="616" height="166" rx="18" fill="#c7f5e4"/>
+<text x="58" y="226" fill="#20594b" font-size="20" font-weight="700" letter-spacing="1">THE RECORD YOU CONTROL</text>
+<text x="58" y="270" fill="#102f2a" font-size="32" font-weight="750">One project. Inspectable context.</text>
+<text x="58" y="309" fill="#20594b" font-size="23">Decisions · progress · open work · references</text>
+<path d="M66 392v365" stroke="#4e7c8c" stroke-width="3" fill="none"/>
+<g fill="#21354d"><rect x="108" y="380" width="540" height="116" rx="14"/><rect x="108" y="514" width="540" height="116" rx="14"/><rect x="108" y="648" width="540" height="116" rx="14"/></g>
+<g fill="#8be8c7"><circle cx="66" cy="415" r="23"/><circle cx="66" cy="549" r="23"/><circle cx="66" cy="683" r="23"/></g>
+<g fill="#102f2a" font-size="21" font-weight="700" text-anchor="middle"><text x="66" y="423">1</text><text x="66" y="557">2</text><text x="66" y="691">3</text></g>
+<g fill="#a9c3dc" font-size="17" font-weight="700" letter-spacing="1"><text x="132" y="411">START</text><text x="132" y="545">EXPAND THE TEAM</text><text x="132" y="679">CHANGE THE SETUP</text></g>
+<g fill="#f6f9ff" font-size="25" font-weight="650"><text x="132" y="446">An assistant records its work.</text><text x="132" y="580">A reviewer adds a separate report.</text><text x="132" y="714">A new reader picks up open work.</text></g>
+<g fill="#c4d5e8" font-size="21"><text x="132" y="478">Keep the source and original inputs.</text><text x="132" y="612">Keep both accounts, including disagreement.</text><text x="132" y="746">Use an approved, synchronized copy.</text></g>
+<text x="36" y="814" fill="#f6d89c" font-size="23" font-weight="650">Different agents. Files under your control.</text>
+<text x="36" y="847" fill="#b6c9df" font-size="20">Access, sync and backups still need to be arranged.</text>
+</g></svg>

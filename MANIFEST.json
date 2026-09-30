@@ -1,6 +1,7 @@
 {
   "version": "0.1.0-rc.2",
-  "classification": "MIT public release candidate; not stable GA",
+  "classification": "MIT documentation and agent-onboarding candidate; rc.2 runtime unchanged",
+  "runtime_base_commit": "fe641e0dee78d6dbadd357f18097fd52e5ff7853",
   "algorithm": "sha256",
   "files": [
     {
@@ -14,9 +15,19 @@
       "sha256": "9d938f39bad7f0a8adc7737bcba168af6504f4888e5b309f1cf797b368913987"
     },
     {
+      "path": "docs/assets/continuity-before-after.svg",
+      "bytes": 2440,
+      "sha256": "46ca33698e732b61990860031b1f6d44f6e99ef839e011c3ff3521480de10356"
+    },
+    {
       "path": "docs/assets/handoff.svg",
       "bytes": 2435,
       "sha256": "5c8c7c2197fedb93deefb2ed147bbbef01ec1a329d9402db1a97e84304eb6f02"
+    },
+    {
+      "path": "docs/assets/shared-memory.svg",
+      "bytes": 2887,
+      "sha256": "020782efa46979c490204529e567e31832409101ea8792bc2a76f6e053643824"
     },
     {
       "path": "examples/init-project.mjs",
@@ -79,6 +90,11 @@
       "sha256": "3b4610d5492d945cc02cc0f54633af833718600717e6cd6a7e6da4ac275f0ca4"
     },
     {
+      "path": "ONBOARDING.md",
+      "bytes": 9704,
+      "sha256": "49c88f1f75752f31c9b8ba9cd1a6196dc9e3649f67123cf72bce511a57f7289c"
+    },
+    {
       "path": "package.json",
       "bytes": 267,
       "sha256": "c106424e296464776546a10e64cbc2efc09e700c400af521260bbd020bdf61c6"
@@ -95,13 +111,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 6554,
-      "sha256": "6e88c3d70a091fd689a329657a56c4b08491b0dccb3a4d318e951805b75db837"
+      "bytes": 10904,
+      "sha256": "c9d4bd79eba23cb0f2be086616df0f503096bb592b9fcbc539da5315669fdee4"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 2373,
-      "sha256": "929a7dec8463bc5daec1c11a7b5af205c7dd9e378099058c21fe2d20e7f719c4"
+      "bytes": 8596,
+      "sha256": "feba10eba1106d547c7d753b2cf58c9a956c126188e0d35961a106653e417b1c"
     },
     {
       "path": "RECEIPT-SCHEMA.md",
@@ -115,8 +131,8 @@
     },
     {
       "path": "SCAN-REPORT.json",
-      "bytes": 619,
-      "sha256": "25738944f047a775ed83bf0f0aa4ddc21c0d7ef576a4baf25db59e0db7ae096e"
+      "bytes": 615,
+      "sha256": "c7a5d7b9c38dd435d3ba351082af0e5942e78d8f73925eb428c18a618fc2cdac"
     },
     {
       "path": "scripts/agent-receipt.mjs",
