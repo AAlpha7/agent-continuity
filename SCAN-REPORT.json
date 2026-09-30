@@ -1,0 +1,17 @@
+{
+  "scope": "public release payload and paths; release metadata and original local SVGs",
+  "files_scanned": 29,
+  "status": "pass",
+  "findings": [],
+  "checks": [
+    "private identifiers/paths",
+    "credential/key patterns",
+    "internal context",
+    "local Markdown targets",
+    "SVG external/script content",
+    "reviewed candidate file allowlist",
+    "exact original MIT template"
+  ],
+  "relative_links_checked": 29,
+  "limitations": "Targeted scanning is not proof of absence of every secret; hashes are not signatures. Original SVGs and docs are MIT; no tracking resource or external image included."
+}

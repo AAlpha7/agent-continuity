@@ -1,0 +1,7 @@
+# Ordinary source/docs use LF even with core.autocrlf=true.
+* text=auto eol=lf
+# Evidence is opaque: never normalize original or canonical evidence bytes.
+**/history/** -text
+**/receipts/** -text
+**/snapshots/** -text
+**/CURRENT_STATE.md -text

@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "kind": "agent-receipt",
+  "id": "synthetic-receipt-0001",
+  "project": "demo-project",
+  "actor_declared": "agent-a",
+  "task_id": "synthetic-task-1",
+  "status": "received",
+  "at": "2000-01-01T00:00:00.000Z",
+  "source_revision": "1111111111111111111111111111111111111111",
+  "summary": "Synthetic acknowledgment; no permission requested or granted.",
+  "evidence": [],
+  "authorization": "ordinary-record-not-approval"
+}

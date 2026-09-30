@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "history": "history/original.md",
+  "history_sha256": "619972bf08ee8761a2fe439c3acc451a5ab86c25020334c62d04a3187cc1fc99",
+  "source_revision": "1111111111111111111111111111111111111111",
+  "facts": [
+    "Synthetic project for offline review; no members admitted."
+  ]
+}

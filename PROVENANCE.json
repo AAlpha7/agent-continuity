@@ -1,0 +1,123 @@
+{
+  "schema": 2,
+  "source_revision": "bdb6a2b2cfa35780aad1c1fe29f79d18e580c0a2",
+  "source_bytes": "Raw git show COMMIT:PATH stdout; SHA-256 over blob contents, not Git object framing",
+  "rights_status": "MIT; Copyright (c) 2026 AAlpha7; see LICENSE",
+  "files": [
+    {
+      "source_path": "services/boards-api/lib/safe-files.mjs",
+      "git_blob_oid": "d5c609654238667cd8acd2293e2eb27b014bce48",
+      "git_blob_sha256": "da9c9004ea5342bb95e3732a5c42953538502be7d7b02ed64de85bcb77a014f0",
+      "workspace_sha256": "b1cac3f79d287d639a6c0c89959036a1c10e3f02218bb8df1c62ddd52fb29eb7",
+      "workspace_hash_role": "Optional checkout-byte observation only; not the commit blob or authoritative export input",
+      "exported_path": "lib/safe-files.mjs",
+      "exported_sha256": "da9c9004ea5342bb95e3732a5c42953538502be7d7b02ed64de85bcb77a014f0",
+      "transformations": [
+        {
+          "operation": "replace_all",
+          "from": "\r\n",
+          "to": "\n",
+          "reason": "Normalize source code line endings only; never applied to fixture evidence"
+        }
+      ]
+    },
+    {
+      "source_path": "services/boards-api/lib/ledger-write.mjs",
+      "git_blob_oid": "71a54853d58f9249d1b9b1eee377d801e0c444fa",
+      "git_blob_sha256": "03bddde1f5e3239e1a7335d99b89fd91f19d5421bf98eff2a6468e80ebfd8531",
+      "workspace_sha256": "a205308ea43a981252cb5a51a4bce7314673fd5f0100b5c083068b951a23dc4b",
+      "workspace_hash_role": "Optional checkout-byte observation only; not the commit blob or authoritative export input",
+      "exported_path": "lib/ledger-write.mjs",
+      "exported_sha256": "03bddde1f5e3239e1a7335d99b89fd91f19d5421bf98eff2a6468e80ebfd8531",
+      "transformations": [
+        {
+          "operation": "replace_all",
+          "from": "\r\n",
+          "to": "\n",
+          "reason": "Normalize source code line endings only; never applied to fixture evidence"
+        }
+      ]
+    },
+    {
+      "source_path": "scripts/agent-receipt.mjs",
+      "git_blob_oid": "d9afadd65e8638006d8eed940bc90ce58f6134f3",
+      "git_blob_sha256": "f4a7def76a697560667f85131b6012834d90ca061e7c6099cd1ce1eaad2cc338",
+      "workspace_sha256": "4c246234a35da0f457e47813960bc9d17a0e2c8240ffa4c0783a847c856d8573",
+      "workspace_hash_role": "Optional checkout-byte observation only; not the commit blob or authoritative export input",
+      "exported_path": "scripts/agent-receipt.mjs",
+      "exported_sha256": "f5d73748b4e16aa9f876459c6766ce343fa3ee1dc252eca3d3794e80048f653a",
+      "transformations": [
+        {
+          "operation": "replace_all",
+          "from": "\r\n",
+          "to": "\n",
+          "reason": "Normalize source code line endings only; never applied to fixture evidence"
+        },
+        {
+          "operation": "replace_all",
+          "from": "../services/boards-api/lib/",
+          "to": "../lib/",
+          "reason": "Relocate relative imports"
+        }
+      ]
+    },
+    {
+      "source_path": "scripts/build-continuity-snapshot.mjs",
+      "git_blob_oid": "aa53e2e1dced1e7c80c4448b0481f590f51e566b",
+      "git_blob_sha256": "89fe3253d22eebc6cd4cf93db75059cca12b74cc73853e849b08edd534dbe801",
+      "workspace_sha256": "431ed090453a7bc55d2450848d44ee7a89f8a5aacad8aa665ec5421cd556d9d0",
+      "workspace_hash_role": "Optional checkout-byte observation only; not the commit blob or authoritative export input",
+      "exported_path": "scripts/build-continuity-snapshot.mjs",
+      "exported_sha256": "54397d10ed3803804b125e60bd4051a728abd180ad4979739bc7e07258b5e834",
+      "transformations": [
+        {
+          "operation": "replace_all",
+          "from": "\r\n",
+          "to": "\n",
+          "reason": "Normalize source code line endings only; never applied to fixture evidence"
+        },
+        {
+          "operation": "replace_all",
+          "from": "../services/boards-api/lib/",
+          "to": "../lib/",
+          "reason": "Relocate relative imports"
+        }
+      ]
+    },
+    {
+      "source_path": "test/receipts-snapshot.test.mjs",
+      "git_blob_oid": "5f87cd96048adabb71ecda2312ac6119f24ba6ae",
+      "git_blob_sha256": "4ea8eb3f18c1d94b5f5a764d9182db570652b14ffb1c9c3518f838b92b5e9711",
+      "workspace_sha256": "d551c75063729bc06f759a17556ef5bb121530013b433d8e40b1748314e3d9af",
+      "workspace_hash_role": "Optional checkout-byte observation only; not the commit blob or authoritative export input",
+      "exported_path": "test/receipts-snapshot.test.mjs",
+      "exported_sha256": "5e0a22f57707f14f046d91bde0acd344b4c2d65bfa84064bcc092ac5df78bb71",
+      "transformations": [
+        {
+          "operation": "replace_all",
+          "from": "\r\n",
+          "to": "\n",
+          "reason": "Normalize source code line endings only; never applied to fixture evidence"
+        },
+        {
+          "operation": "replace_all",
+          "from": "../services/boards-api/lib/",
+          "to": "../lib/",
+          "reason": "Relocate relative imports"
+        },
+        {
+          "operation": "replace_all",
+          "from": "import { validateIndex } from '../scripts/check-continuity-integrity.mjs';\n",
+          "to": "",
+          "reason": "Exclude validator absent from extracted subset"
+        },
+        {
+          "operation": "remove_between",
+          "start": "test('index diagnoses",
+          "end": "test('P1 legacy",
+          "reason": "Remove only validator test; retain end marker"
+        }
+      ]
+    }
+  ]
+}

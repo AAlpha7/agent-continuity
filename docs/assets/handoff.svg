@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="760" viewBox="0 0 680 760" role="img" aria-labelledby="title desc">
+  <title id="title">A handoff across sessions</title>
+  <desc id="desc">Session A reports work in a receipt. An operator reviews and explicitly synchronizes Git. Session B checks the snapshot and reads original evidence. The owner separately approves any next action. The toolkit does not orchestrate these actions.</desc>
+  <rect width="680" height="760" rx="24" fill="#f4f7fb"/>
+  <g font-family="system-ui, Segoe UI, sans-serif">
+    <text x="36" y="50" fill="#406078" font-size="17" font-weight="700" letter-spacing="2">EXAMPLE · TWO SESSIONS</text>
+    <text x="36" y="101" fill="#132a40" font-size="37" font-weight="750">Resume with context.</text>
+    <path d="M66 181v428" fill="none" stroke="#b9cbd9" stroke-width="3"/>
+    <g fill="#ffffff" stroke="#d6e1ea"><rect x="107" y="136" width="537" height="119" rx="16"/><rect x="107" y="282" width="537" height="119" rx="16"/><rect x="107" y="428" width="537" height="119" rx="16"/><rect x="107" y="574" width="537" height="119" rx="16"/></g>
+    <g fill="#153c55"><circle cx="66" cy="179" r="25"/><circle cx="66" cy="325" r="25"/><circle cx="66" cy="471" r="25"/><circle cx="66" cy="617" r="25"/></g>
+    <g fill="#ffffff" font-size="23" font-weight="700" text-anchor="middle"><text x="66" y="187">1</text><text x="66" y="333">2</text><text x="66" y="479">3</text><text x="66" y="625">4</text></g>
+    <g fill="#132a40" font-size="26" font-weight="700"><text x="131" y="176">Session A leaves a receipt</text><text x="131" y="322">Operator reviews + syncs Git</text><text x="131" y="468">Session B checks the evidence</text><text x="131" y="614">Owner decides the next action</text></g>
+    <g fill="#406078" font-size="22"><text x="131" y="213">What was reported; which source.</text><text x="131" y="242">An ordinary record, not a grant.</text><text x="131" y="359">Explicit step, outside this toolkit.</text><text x="131" y="388">Preserve dirty or diverged work.</text><text x="131" y="505">Check snapshot + original inputs.</text><text x="131" y="534">Investigate stale or conflicting data.</text><text x="131" y="651">Separate approval is required.</text><text x="131" y="680">No automatic admission or execution.</text></g>
+    <text x="36" y="734" fill="#406078" font-size="19">Synthetic example · no orchestration implied</text>
+  </g>
+</svg>

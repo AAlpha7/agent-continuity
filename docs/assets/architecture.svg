@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="740" viewBox="0 0 680 740" role="img" aria-labelledby="title desc">
+  <title id="title">Local records, inspectable continuity</title>
+  <desc id="desc">A trusted local operator supplies handoffs, reported facts and independent receipts. Byte and schema checks feed immutable snapshots and preserved original inputs. This toolkit does not verify identities or execute remote actions.</desc>
+  <rect width="680" height="740" rx="24" fill="#101c2c"/>
+  <g font-family="system-ui, Segoe UI, sans-serif">
+    <text x="36" y="48" fill="#81e6c0" font-size="17" font-weight="700" letter-spacing="2">AGENT CONTINUITY · LOCAL FILES</text>
+    <text x="36" y="104" fill="#f4f8ff" font-size="39" font-weight="750">Keep the handoff.</text>
+    <text x="36" y="152" fill="#f4f8ff" font-size="39" font-weight="750">Keep the evidence.</text>
+    <rect x="36" y="189" width="608" height="112" rx="16" fill="#21354c"/>
+    <text x="60" y="228" fill="#b8cce2" font-size="18" font-weight="700">INPUT · TRUSTED LOCAL OPERATOR</text>
+    <text x="60" y="268" fill="#ffffff" font-size="25">Handoff + facts + independent receipts</text>
+    <path d="M340 310v30m-7-8 7 8 7-8" fill="none" stroke="#81e6c0" stroke-width="3"/>
+    <rect x="36" y="352" width="608" height="112" rx="16" fill="#173d3a" stroke="#81e6c0"/>
+    <text x="60" y="391" fill="#a5f0d4" font-size="18" font-weight="700">CHECK · EXACT BYTES</text>
+    <text x="60" y="431" fill="#ffffff" font-size="25">UTF-8 · schema · IDs · source hashes</text>
+    <path d="M340 473v30m-7-8 7 8 7-8" fill="none" stroke="#81e6c0" stroke-width="3"/>
+    <rect x="36" y="515" width="608" height="112" rx="16" fill="#21354c"/>
+    <text x="60" y="554" fill="#b8cce2" font-size="18" font-weight="700">OUTPUT · PRESERVED INPUTS</text>
+    <text x="60" y="594" fill="#ffffff" font-size="25">Immutable snapshots + original bytes</text>
+    <text x="36" y="675" fill="#f1d08b" font-size="23" font-weight="650">Reports are not execution approval.</text>
+    <text x="36" y="710" fill="#b8cce2" font-size="20">No identity service. No remote execution.</text>
+  </g>
+</svg>
