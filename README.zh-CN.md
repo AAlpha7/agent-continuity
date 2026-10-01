@@ -24,7 +24,9 @@ Continuity 让持续的 AI 协作留在你自己掌握的记录里，**跨项目
 | **换机器、过几天再继续** | 获准项目副本里的未完成工作和原始证据 |
 | **确认“真的做完了吗”** | 原始回执、检查过的版本和可核对的成果引用 |
 
-日常的 Git 和 GitHub 操作可以交给有能力、有权限的代理。接入只需要 Git 和 GitHub，不需要本机 Node.js，不需要 `npm install`，不需要跑测试，也不需要 CI。Node 检查是维护者在本机可做的可选项，不是 GitHub Actions 门槛。真正需要你参与的是项目目标、新增访问、重要外部操作，以及无法自行消除的范围分歧。
+**产品标准：** 接入者不必使用 Node。Setup 和 Join 只需要 Git 与 GitHub。
+
+**第一次成功：** Setup 写好私有账本并交回它的 GitHub URL。Join 只克隆这个 URL。这条路径不安装 Node。基于 Node 的自检、README 演示和测试套件只供维护者在本机选用，绝不是接入前提，也不放进 CI 当接入门槛。真正需要你参与的是项目目标、新增访问、重要外部操作，以及无法自行消除的范围分歧。
 
 ## 把这段交给你的 AI
 
@@ -36,8 +38,9 @@ AI 公司品牌、机器和工作环境的协作，以及参与者的加入、�
 把目标、决定、责任记录、进展和未完成事项留在我们掌握且可访问的
 项目记录里。
 
-接入只需要 Git 和 GitHub。不要安装 Node.js 或 npm。
-不要运行工具测试，也不要运行 Node 演示。不要新增或等待 CI。
+产品标准：接入者不必使用 Node。Setup 和 Join 只需要 Git 与 GitHub。
+不要安装 Node.js。不要运行自检、README 演示或测试套件。
+不要把它们放进 CI。
 
 公开仓库只是只读工具来源，不是我们的账本或团队：
 https://github.com/AAlpha7/agent-continuity
@@ -61,8 +64,6 @@ LEDGER_URL
 从起步记录继续。把你的更新提交回同一个账本。
 不要克隆公开工具仓库，不要安装 Node.js，也不要运行它的测试。
 
-Node 回执/快照和 node --test 是维护者的本机可选项，不是 CI。
-除非已经装好并且我明确要求，否则跳过。不要为此添加 workflow。
 记录提供上下文，不产生新权限。
 只把真正缺失的范围、访问或批准事项集中交给我。
 确认没有把用户数据写入或发送到上游。
@@ -94,7 +95,12 @@ git clone LEDGER_URL
 
 这次克隆就是 Join，不需要再克隆本仓库。
 
-**维护者可选项，接入不必做，也不是 CI。** 机器上已经有 Node.js 24+ 时，测试是 [TESTING.md](TESTING.md) 里的本机命令，无需 npm install，不要为此添加 workflow。合成复制演示与英文页相同，只在本机运行；目标目录必须尚不存在，已存在则拒绝复制，且不建立远端。已有 Node 时的规范回执见 [GUIDE.md](GUIDE.md)。本地协调预览是 `node r2/demo.mjs`，见[其范围](r2/README.md)；它不是真实远端身份测试，也不是接入步骤。
+</details>
+
+<details>
+<summary><strong>仅维护者的本机检查。不是接入，也不是 CI。</strong></summary>
+
+接入停在账本 URL。机器上已经有 Node.js 24+ 时，维护者可以在本机运行 [TESTING.md](TESTING.md) 里的测试。不要为了接入安装 Node，不要 `npm install`，也不要添加 workflow 把它变成接入门槛。合成复制演示与英文页相同，只在本机运行；目标目录必须尚不存在，已存在则拒绝复制，且不建立远端。已有 Node 时的规范回执见 [GUIDE.md](GUIDE.md)。本地协调预览是 `node r2/demo.mjs`，见[其范围](r2/README.md)。
 
 </details>
 

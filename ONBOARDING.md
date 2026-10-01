@@ -1,6 +1,8 @@
 # Agent onboarding
 
-Help the user keep their work usable as agents, providers and machines change. Use the inspected `v0.1.0-rc.3` release, with a separate user-owned private ledger. Adopting needs git and GitHub access only. Do not install Node.js or npm, do not run the test suite or the Node demo, and do not add or wait for CI. Before handing the project to another agent, leave the private ledger URL. That agent Joins with the ledger URL only and does not clone the toolkit again. A hash or path available only on the first machine is not a usable setup.
+**Product bar:** Adopters must not need Node. Requirements for Setup and Join: git and GitHub access only. The Node self-check, README demo, and test suite are maintainer-optional local commands only — never an onboarding prerequisite, and do not put them in CI as the adopter gate.
+
+**First success:** (1) Setup writes a private GitHub ledger and commits `START_HERE.md`, with no Node install. (2) Setup returns that private ledger URL. (3) Join clones that URL only and continues from `START_HERE.md`. Do not send the toolkit URL again. A hash or path available only on the first machine is not a usable setup.
 
 Existing owner-approved GitHub PR listeners can provide notifications where supported; see [NOTIFICATIONS.md](docs/NOTIFICATIONS.md). No listener or external permission is created by this toolkit.
 
@@ -43,9 +45,9 @@ The agent can carry out approved setup mechanics. Return only grouped human deci
 - The public toolkit is documentation for Setup, not the ledger. Do not assume a folder with the same name is safe to overwrite. If you clone the toolkit to read this runbook, keep that checkout separate and record `git rev-parse HEAD` only as the docs revision you read. If a reviewer supplies a candidate branch/commit, use that exact revision instead of a release tag or moving main. Never reset or switch someone else's dirty checkout. The joining agent does not need this clone.
 - If you lack git or GitHub access, report that capability gap. You may draft a handoff, but cannot claim setup or shared access has happened. Do not substitute a Node install for that gap.
 
-## 2. Set up with git and GitHub, then hand off the ledger URL
+## 2. First success: Setup, ledger URL, Join
 
-Adopting does not use Node.js, npm, or the test suite. Setup creates or reuses a **private ledger repository** and returns its GitHub URL. The next agent **Joins with that ledger URL only**.
+This is the adopter path. It uses git and GitHub only. Do not install Node.js. Setup creates or reuses a **private ledger repository** and returns its GitHub URL. The next agent **Joins with that ledger URL only**.
 
 Run this outside the toolkit checkout, and only after section 0 approval for the exact owner, name, private visibility and push:
 
