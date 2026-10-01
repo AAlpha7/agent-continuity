@@ -41,9 +41,26 @@ Project handoff: `projects/fresh-verify/CURRENT_STATE.md`
 
 Result: Minimal Setup→Join PASS, with a credential quirk (App credentials versus the AAlpha7 user integration).
 
-That run predates the ledger-local protocol copy. A new re-verify is required after this paste change. Do not treat the run above as evidence for `docs/PROTOCOL.md` or cold Join literacy.
+That run predates the ledger-local protocol copy. Do not treat the run above as evidence for `docs/PROTOCOL.md` or cold Join literacy.
 
-Re-verify after HOW_WE_COORDINATE paste change: pending.
+### Recorded run: 2026-10-01 Minimal Setup→Join + cold Join literacy
+
+2026-10-01 (America/Los_Angeles). Re-verify after the HOW_WE_COORDINATE paste change. Toolkit branch tip used: `cursor/ledger-local-protocol-8638` @ `168018e2cd7f03961a2620841d228e3684f16303`.
+
+Brand-new agents:
+
+- Agent A Setup: `bc-251285cd-7ef4-5770-b346-f9f5e2055210`
+- Agent B Join: `bc-8aee6c2f-7abc-54e2-a735-5a68dd60ea6f`
+
+New private ledger (private; not a fork): https://github.com/AAlpha7/ac-fresh-setup-20261001-protocol-6379
+
+Project handoff: `projects/protocol-verify/CURRENT_STATE.md`
+
+- Setup left `docs/PROTOCOL.md` (byte match SHA-256 `bd34e245aa82cdf42ac1e190ec330c601d66318ac967bf7461f89305b12ef225`), `docs/HOW_WE_COORDINATE.md`, `.gitattributes`, and `CURRENT_STATE`. Tip after Setup cleanup: `65661bb30c815573f3c13f6ebc0f15dbb441d900`.
+- Join commit `f3507489b009534cf43ea7775635fb5c79d80b1d` via `git push`. Join used the ledger `PROTOCOL` and `HOW_WE_COORDINATE`, and did not clone the public toolkit.
+- Smoke on the PR branch (Themis box): `ledger-smoke: ok` and `minimal-ledger: docs/PROTOCOL.md byte match`.
+
+Result: Minimal Setup→Join + cold Join literacy PASS.
 
 ## Optional quick protocol check
 
