@@ -1,5 +1,5 @@
 #!/bin/sh
-# Adopter self-check for a synthetic continuity ledger.
+# Optional synthetic ledger check. Maintainers run it before release; adopters may skip.
 # Requires: git, a POSIX shell, and sha256sum, shasum, or openssl.
 # Does not require Node.js, Python, gh, or a network.
 #

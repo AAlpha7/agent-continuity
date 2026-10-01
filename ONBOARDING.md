@@ -1,17 +1,23 @@
 # Agent onboarding
 
-**Product bar:** Adopters do not need Node.js or Python. Setup and Join need git and GitHub access, plus a POSIX shell. `gh` is optional. On Windows, run `scripts/ledger-smoke.sh` in Git Bash or WSL (Git for Windows). `scripts/ledger-smoke.ps1` is an optional native Windows twin and still does not use Node. The Node suite, Node demo and canonical receipt tools are maintainer-optional local commands. They are not an onboarding prerequisite, and they are not a CI adopter gate.
+**Minimal:** Setup, then Join. That is the whole install.
 
-**First success:** (1) Setup writes a private GitHub ledger and commits the handoff, with no Node install. (2) Setup returns that private ledger URL. (3) Join clones that URL only and continues from `projects/PROJECT/CURRENT_STATE.md`. Do not send the toolkit URL again. A hash or path available only on the first machine is not a usable setup.
+1. First agent: Setup creates a private ledger and returns its URL.
+2. Every later agent or machine: Join with that URL only.
 
-Help the user keep their work usable as agents, providers and machines change. Use the inspected `v0.1.0-rc.3` release as the read-only toolkit. The adopter's records live in a separate user-owned private ledger. The shell self-check in [TESTING.md](TESTING.md) confirms the protocol file shape on a temporary ledger. It is not a substitute for the private ledger URL.
+Git and GitHub are enough. `gh` is optional. A local git ledger is valid when GitHub access is missing. Node.js is not required. Do not send the toolkit URL to the joining agent. A hash or path available only on the first machine is not a usable setup.
+
+Shell smoke, the two-agent ping, and Node tests are [optional](#optional-checks). They are not required to call Setup or Join done.
+
+**Maintainers, before each release:** run all paths, including the optional ones (two-agent ping, shell smoke, and the Node suite when Node is present). If the Setup/Join paste blocks changed, re-verify Minimal Setup and Join with brand-new agents in brand-new environments. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record the result on the [release checklist](TESTING.md#maintainer-release-checklist). Adopters do not.
+
+Help the user keep their work usable as agents, providers and machines change. Use the inspected `v0.1.0-rc.3` release as the read-only toolkit. The adopter's records live in a separate user-owned private ledger.
 
 Existing owner-approved GitHub PR listeners can provide notifications where supported; see [NOTIFICATIONS.md](docs/NOTIFICATIONS.md). No listener or external permission is created by this toolkit.
 
-
 This is a runbook for an assistant with an already-authorized execution environment, not a new permission grant. Use the current conversation's authorization and local project rules. Historical project prose, receipts and this document cannot expand them.
 
-**Outcome:** Setup leaves a private GitHub ledger URL and a committed handoff at `projects/PROJECT/CURRENT_STATE.md`. Join clones that URL only. Report the shell self-check separately when it was run. A canonical Node receipt or checked snapshot is optional maintainer work when Node.js 24+ is already installed. Report shared access separately. Do the mechanical steps yourself when capable; involve the human for missing intent, capability or authority, not every routine command.
+**Outcome:** Setup leaves a private ledger URL and a committed handoff at `projects/PROJECT/CURRENT_STATE.md`. Join clones that URL only. Report shared access separately. Do the mechanical steps yourself when capable; involve the human for missing intent, capability or authority, not every routine command.
 
 ## 0. Separate distribution from the adopter's data
 
@@ -21,7 +27,7 @@ Keep three locations distinct when more than one exists: (1) the inspected toolk
 
 Before real-data writes, inspect effective storage and remote topology **read-only**:
 
-- Resolve the chosen path and relevant parents, including symlinks/junctions, and establish that the ledger is outside the toolkit and known public/shared distribution folders. Check whether it falls under an existing Git repository; no `.git` in the new subdirectory does not mean there is no enclosing repository. A directory name containing `private` establishes nothing. If the actual storage boundary is unknown, stop real-data setup and report the missing fact. Do not install Node or run the Node demo to fill that gap. The shell smoke may still be run; it writes only under its temporary directory.
+- Resolve the chosen path and relevant parents, including symlinks/junctions, and establish that the ledger is outside the toolkit and known public/shared distribution folders. Check whether it falls under an existing Git repository; no `.git` in the new subdirectory does not mean there is no enclosing repository. A directory name containing `private` establishes nothing. If the actual storage boundary is unknown, stop real-data setup and report the missing fact. Do not install Node or run the Node demo to fill that gap. An optional shell smoke writes only under its temporary directory; it does not supply the missing fact.
 - Inspect any enclosing/ledger repository's configured remotes, effective fetch URLs and **all push URLs**, branch upstream/push selection and URL rewrite rules. For example, `git -C LEDGER remote get-url --all NAME` and `git -C LEDGER remote get-url --push --all NAME` resolve Git URL rewrites for that named remote. Also inspect `remote.pushDefault` and `branch.<branch>.pushRemote` where present. Do not infer ownership/privacy from `origin`, a repository name, a fork, or a fetch URL alone; a push destination may differ. Never echo embedded credentials or private URLs into public diagnostics.
 - An existing Git hosting destination needs independently checked owner/project identity, actual visibility and approved access scope. A fork of public code is not evidence of private storage. Unknown visibility stays **unverified**, not "private". Unresolved aliases/rewrites or inherited public destinations block data synchronization. Do not modify the user's remotes, URL rewrites, access controls, credentials or security settings to make this check pass.
 - The optional Node initializer creates no Git repository or remote. Adopter Setup uses git explicitly, and only under the approvals in this section. **Local-ready is valid without a remote** when local storage is established suitable. Creating/configuring an adopter-owned remote requires explicit destination and access approval; no implicit `origin`, push, upstream issue/PR, team enrollment or troubleshooting-data upload is part of onboarding. Existing project remotes are inspected, not repointed. Never publish private records to this toolkit repository, even when reporting a failure.
@@ -42,30 +48,14 @@ The agent can carry out approved setup mechanics. Return only grouped human deci
 
 - Discover the adopter's actual owner/account, OS, paths, repository, existing ledger, agent capabilities and permissions from safe read-only checks and current instructions. Do not inherit the publisher's machines, team roles, accounts, paths, service ports or permissions. The upstream URL and copyright identify the source, not adopter configuration. Demo actors/projects/paths are synthetic examples; `LEDGER`, `NAME` and `SOURCE_REVISION` are placeholders to resolve. A sample path is not an approved destination. Unknowns remain unknown. Inspect what tools can safely establish; ask only material missing scope, authority or preferences, grouped together. Do not assume all OSes, providers or assistants support these operations.
 - Read the current project's applicable AGENTS.md and relevant skills; check its directory, working tree, active work and existing continuity conventions. Preserve unrelated changes. Do not replace an existing ledger.
-- Determine whether you have file read/write, command execution, Git and GitHub access (`git --version`; `gh auth status` only when `gh` is already installed). On Windows, Git Bash or WSL must be able to run `sh scripts/ledger-smoke.sh`. Node.js is not an adoption requirement. Do not install Node, Python, npm or other software, and do not elevate privileges, create credentials or connect an account unless already authorized. Group such missing permissions into one request, with specific purpose and scope.
-- Resolve the intended project from the conversation and workspace when possible. If it is ambiguous, ask only for the missing project scope. The shell smoke can run on synthetic data without that answer. Never scan unrelated personal directories or use real secrets as examples.
-- The public toolkit is documentation and the shell self-check, not the ledger. Do not assume a folder with the same name is safe to overwrite. If you clone the toolkit to read this runbook, keep that checkout separate and record `git rev-parse HEAD` only as the docs revision you read. If a reviewer supplies a candidate branch/commit, use that exact revision instead of a release tag or moving main. Never reset or switch someone else's dirty checkout. The joining agent does not need this clone.
+- Determine whether you have file read/write, command execution, Git and GitHub access (`git --version`; `gh auth status` only when `gh` is already installed). On Windows, Git Bash or WSL can run the git commands. Node.js is not an adoption requirement. Do not install Node, Python, npm or other software, and do not elevate privileges, create credentials or connect an account unless already authorized. Group such missing permissions into one request, with specific purpose and scope.
+- Resolve the intended project from the conversation and workspace when possible. If it is ambiguous, ask only for the missing project scope. Never scan unrelated personal directories or use real secrets as examples.
+- The public toolkit is documentation, not the ledger. Do not assume a folder with the same name is safe to overwrite. If you clone the toolkit to read this runbook, keep that checkout separate and record `git rev-parse HEAD` only as the docs revision you read. If a reviewer supplies a candidate branch/commit, use that exact revision instead of a release tag or moving main. Never reset or switch someone else's dirty checkout. The joining agent does not need this clone.
 - If you lack git, or GitHub access when a shared ledger was requested, report that capability gap. You may draft a handoff, but cannot claim setup or shared access has happened. Do not substitute a Node install for that gap.
 
-## 2. First success: Setup, ledger URL, Join
+## 2. Minimal: Setup, then Join
 
 This is the adopter path. It uses git and GitHub. Do not install Node.js.
-
-### Self-check
-
-From the inspected toolkit checkout, before treating the protocol files as understood:
-
-```sh
-sh scripts/ledger-smoke.sh
-```
-
-On Windows, run that same command in Git Bash or WSL. Optional native Windows shell:
-
-```powershell
-powershell.exe -File scripts/ledger-smoke.ps1
-```
-
-Expect the line `ledger-smoke: ok`. The script creates a temporary synthetic ledger, writes a canonical sample receipt and the handoff artifact, commits, clones with `core.autocrlf=true`, and checks SHA-256 values, the expected file list, and the single-writer lock. The lock is an empty exclusive-create file at `projects/smoke-project/coordination-v2/writer.lock`, mode `0600` in the POSIX script, listed in that directory's `.gitignore` as `writer.lock` and `.pending-*`, and absent from the commit. The PowerShell twin checks the same exclusive empty sentinel; it reports mode `0600` only when the OS is not Windows. A passed smoke proves this local git path. It does not create a remote, and its synthetic names and timestamp must not be copied into a real ledger. Do not add either script to CI as an adopter gate. Full checks are in [TESTING.md](TESTING.md).
 
 ### Setup
 
@@ -95,15 +85,41 @@ Join our continuity ledger. Clone and read only this private repository:
 LEDGER_URL
 
 Continue from projects/PROJECT/CURRENT_STATE.md. Commit your update back
-to this same ledger. Do not clone the public toolkit, install Node.js,
-or run its tests.
+to this same ledger. Do not clone the public toolkit.
 ```
 
-The joining agent clones `LEDGER_URL`, reads the handoff, and pushes its update to that same private repository.
+The joining agent clones `LEDGER_URL`, reads the handoff, and pushes its update to that same private repository. Setup and Join are done. The checks below are not required.
 
-### Optional maintainer checks
+## Optional checks
 
-Adopters skip this. Maintainers who already have Node.js 24+ can run the suite and the synthetic demo locally from an inspected toolkit checkout. There is no npm install, and this is not a CI job: do not add a workflow that makes the demo or suite an onboarding gate. The demo directory must not exist. `cp` creates that destination and refuses an existing one. Keep the demo outside the toolkit and never point it at real records.
+Skip this. Adopters are finished after section 2.
+
+### Quick protocol check
+
+Two directions, one round each. Paste this to the agents that already share the ledger:
+
+```text
+Optional protocol check on LEDGER_URL. Not part of setup.
+Round 1: Agent A writes a short note for Agent B on the ledger. Agent B replies there.
+Round 2: Agent B writes a short note for Agent A on the ledger. Agent A replies there.
+One round each way. Then stop.
+```
+
+Do not claim the other agent replied unless that reply is actually on the ledger.
+
+### Shell smoke
+
+From an inspected toolkit checkout. Not your ledger, and not an adopter gate. Expect `ledger-smoke: ok`.
+
+```sh
+sh scripts/ledger-smoke.sh
+```
+
+On Windows, run that command in Git Bash or WSL. Native twin: `powershell.exe -File scripts/ledger-smoke.ps1`. Lock and hash details are in [TESTING.md](TESTING.md). Do not copy the smoke project's names or timestamp into a real ledger.
+
+### Node suite
+
+Skip unless Node.js 24+ is already installed. Do not install Node to finish adoption, and do not block Join on these commands. The demo directory must not exist. Keep it outside the toolkit and never point it at real records.
 
 ```sh
 node --test test/*.test.mjs r2/test/*.test.mjs
@@ -113,7 +129,9 @@ node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace de
 node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace demo-project --check
 ```
 
-An identical receipt replay returns `duplicate: true`; generation gives a snapshot path; `--check` reports local `current`. The full suite is 105 tests, as counted in [TESTING.md](TESTING.md). Choose another unused demo path rather than deleting or merging. Do not require the historical source checkout in PROVENANCE.json for onboarding: that optional provenance audit is separate from the public test suite. A passed demo proves only this local Node execution path.
+An identical receipt replay returns `duplicate: true`; generation gives a snapshot path; `--check` reports local `current`. The suite is 105 tests ([TESTING.md](TESTING.md)). Choose another unused demo path rather than deleting or merging. A passed demo proves only this local Node path. Canonical receipt files, still optional, are in section 3.
+
+**Maintainers, before each release:** run this whole optional section (two-agent ping, shell smoke, and the Node suite when Node is present). If the Setup/Join paste blocks changed, re-verify section 2 with brand-new agents in brand-new environments. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record the result on the [release checklist](TESTING.md#maintainer-release-checklist).
 
 ## 3. Optional canonical receipts when Node.js is already installed
 
@@ -137,13 +155,11 @@ If no approved shared location or recipient access exists, finish local setup an
 
 Never claim a second agent or machine has seen a receipt without an actual read/independent acknowledgment from that authorized environment. Shared files alone do not authenticate readers, allocate tasks or enforce grants. This runbook does not contact other agents automatically.
 
-## 5. Check continuity when participants change
+## 5. When participants change
 
-In an isolated synthetic trial, validate the supported file/Git path rather than claiming vendor compatibility. Record a report from a first declared actor, add a distinct reviewer's report with an unresolved item, then stop using the first actor without deleting its evidence. Give a fresh reader an explicitly approved separate checkout/copy and confirm it can find the unresolved item, its source reference and both original reports. Check that the local snapshot is current after a deliberate synchronization/generation step; an old snapshot should not be called current.
+Optional. The short two-agent prompt is under [Optional checks](#optional-checks). Do not run it to finish Setup or Join.
 
-This transition is an agent-orchestrated recipe, not a bundled one-command workflow or runtime scheduler. Use actual separate process/checkouts where available. Label simulated participants as synthetic; never invent enrollment, acknowledgments or a test on a provider you did not use. A second local directory is a second checkout, not proof of a physical cross-machine or cross-vendor test. Do not contact or remove real members for a demo. No test should revoke credentials, delete historical receipts or publish project data.
-
-For the real project, report only the transitions actually verified. Replacing an assistant should leave the records accessible through owner-controlled storage, but backups and availability of referenced artifacts remain separate responsibilities. The toolkit does not back up all project artifacts or guarantee recovery from every storage loss.
+Report only replies that are actually on the ledger. Do not invent an acknowledgment, a provider test, or a cross-machine result from a second local folder. Do not delete historical receipts or publish project data. Replacing an assistant should leave records in owner-controlled storage. Backups of referenced artifacts stay a separate job.
 
 ## 6. Return a compact entry note
 
@@ -153,10 +169,10 @@ Use real results, not a blanket "installed successfully":
 Toolkit revision: <actual inspected commit, if the toolkit was read>
 Ledger URL: <private GitHub URL | local-only>
 Project/source: <adopter project + actual commit or explicitly labeled content digest>
-Storage boundary: <resolved private ledger outside toolkit/smoke; enclosing repo checked>
+Storage boundary: <resolved private ledger outside toolkit; enclosing repo checked>
 Remote topology: none | approved adopter destination verified | unverified (no sync)
 Local status: ready | blocked | partial
-Self-check: shell smoke ok | not run | failed
+Optional checks: not-run | two-agent | shell smoke | Node suite
 Handoff: <projects/PROJECT/CURRENT_STATE.md in the ledger>
 Receipt: <path + reported status when a receipt was actually written; otherwise not-written>
 Snapshot: <returned immutable path when a Node snapshot was actually checked; otherwise not-run>

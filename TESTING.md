@@ -1,8 +1,35 @@
 # What to run
 
-## Adopter self-check: shell and git
+**Optional for adopters. Required for maintainers on each release.**
 
-From an inspected toolkit checkout. Requires git and a POSIX shell, plus `sha256sum`, `shasum`, or `openssl`. Does not require Node.js, Python, `gh`, or a network.
+Adopters finish at Minimal Setup, then Join ([ONBOARDING.md](ONBOARDING.md)). Nothing on this page is an adopter gate. Do not require the two-agent ping, the shell smoke, or the Node suite to call Setup or Join done.
+
+## Maintainer release checklist
+
+Before each release or deploy, maintainers run **all** paths, including the optional ones:
+
+1. Two-agent ping, using the prompt below: A writes for B and B replies; then B writes for A and A replies.
+2. Shell smoke: `sh scripts/ledger-smoke.sh`. On Windows, Git Bash or WSL. `scripts/ledger-smoke.ps1` is the native twin.
+3. Node suite, when Node.js 24+ is available: the command under [Optional Node suite](#optional-node-suite).
+
+If the Setup/Join paste blocks changed, also re-verify Minimal Setup and Join with brand-new agents in brand-new environments. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record that result with the optional-path runs.
+
+Users do not run this checklist.
+
+## Optional quick protocol check
+
+Two directions, one round each. Paste this to agents that already share the ledger:
+
+```text
+Optional protocol check on LEDGER_URL. Not part of setup.
+Round 1: Agent A writes a short note for Agent B on the ledger. Agent B replies there.
+Round 2: Agent B writes a short note for Agent A on the ledger. Agent A replies there.
+One round each way. Then stop.
+```
+
+## Optional shell smoke
+
+From an inspected toolkit checkout. Requires git and a POSIX shell, plus `sha256sum`, `shasum`, or `openssl`. Does not require Node.js, Python, `gh`, or a network. Adopters may skip it. Maintainers run it before release. It is not the private ledger.
 
 ```sh
 sh scripts/ledger-smoke.sh
@@ -24,11 +51,11 @@ Expect `ledger-smoke: ok`. The script:
 
 The PowerShell twin performs the same file, hash, ignore and clone checks. It asserts mode `0600` only when `$env:OS` is not `Windows_NT`, because Windows has no POSIX mode bits. Exclusive create and the empty sentinel are checked on Windows too.
 
-This smoke is the documented self-check. It is not the adopter's private ledger, and it is not a CI gate. Do not add a workflow that runs it, the PowerShell twin, or the Node demo as an onboarding requirement.
+This smoke is optional for adopters and required for maintainers before release. It is not an adopter gate, and it is not the private ledger. Do not add a workflow that makes it, the PowerShell twin, or the Node demo an onboarding requirement.
 
-The adoption path itself is Setup, then the private ledger URL, then Join with that URL. See [ONBOARDING.md](ONBOARDING.md).
+Minimal Setup, then Join, is the adopter path. See [ONBOARDING.md](ONBOARDING.md).
 
-## Optional maintainer suite: Node.js 24+
+## Optional Node suite
 
 Run from an inspected checkout when Node.js 24+ and Git are already installed:
 
@@ -36,7 +63,7 @@ Run from an inspected checkout when Node.js 24+ and Git are already installed:
 node --test test/*.test.mjs r2/test/*.test.mjs
 ```
 
-No npm install, model call, remote participant, hosted CI or service is needed. Do not install Node so an adopter can run this, and do not put it in CI as the adopter gate. The suites contain **105 top-level tests: 15 original receipt/snapshot tests, 80 local coordination/bootstrap tests and 10 Windows lock/replacement failure regressions**. Tested environment: Windows, Node.js 24.11.1 and Git 2.45.2.windows.1. Passing tests supports these specific checks, not universal platform compatibility.
+No npm install, model call, remote participant, hosted CI or service is needed. Adopters may skip this. Maintainers run it before release when Node is available. Do not install Node so an adopter can run it, and do not make it an adopter gate. The suites contain **105 top-level tests: 15 original receipt/snapshot tests, 80 local coordination/bootstrap tests and 10 Windows lock/replacement failure regressions**. Tested environment: Windows, Node.js 24.11.1 and Git 2.45.2.windows.1. Passing tests supports these specific checks, not universal platform compatibility.
 
 The optional synthetic demo copies fixtures into a directory that does not yet exist. Do not `mkdir` that destination first: on Node.js 24.14 and later, `fs.cp` with `errorOnExist: true` then fails with `ERR_FS_CP_EEXIST`.
 

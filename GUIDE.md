@@ -2,7 +2,7 @@
 
 [Back to README](README.md)
 
-The adopter path does not use this page. Setup, the private ledger URL, and Join are in [ONBOARDING.md](ONBOARDING.md). The self-check is `sh scripts/ledger-smoke.sh` ([TESTING.md](TESTING.md)). The steps below are the optional Node.js 24+ initializer for maintainers who already have Node installed.
+The adopter path does not use this page. Minimal Setup, then Join, is in [ONBOARDING.md](ONBOARDING.md). The steps below are optional and need Node.js 24+ already installed. Shell smoke is also optional; see [TESTING.md](TESTING.md).
 
 ## Initialize your own local project
 
