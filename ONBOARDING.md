@@ -1,6 +1,6 @@
 # Agent onboarding
 
-Help the user keep their work usable as agents, providers and machines change. Use the inspected `v0.1.0-rc.3` release, with a separate user-owned private ledger. Adopting needs git and GitHub access only. Do not install Node.js or npm, and do not run the test suite or the Node demo. Before handing the project to another agent, leave the private ledger URL. That agent Joins with the ledger URL only and does not clone the toolkit again. A hash or path available only on the first machine is not a usable setup.
+Help the user keep their work usable as agents, providers and machines change. Use the inspected `v0.1.0-rc.3` release, with a separate user-owned private ledger. Adopting needs git and GitHub access only. Do not install Node.js or npm, do not run the test suite or the Node demo, and do not add or wait for CI. Before handing the project to another agent, leave the private ledger URL. That agent Joins with the ledger URL only and does not clone the toolkit again. A hash or path available only on the first machine is not a usable setup.
 
 Existing owner-approved GitHub PR listeners can provide notifications where supported; see [NOTIFICATIONS.md](docs/NOTIFICATIONS.md). No listener or external permission is created by this toolkit.
 
@@ -81,7 +81,7 @@ The joining agent clones `LEDGER_URL`, reads `START_HERE.md`, and pushes its upd
 
 ### Optional maintainer checks
 
-Adopters skip this section. Maintainers who already have Node.js 24+ can run the suite and the synthetic demo from an inspected toolkit checkout. There is still no npm install. The demo directory must not exist; the copy refuses an existing one. Keep that demo outside the toolkit and never point it at real records.
+Adopters skip this section. Maintainers who already have Node.js 24+ can run the suite and the synthetic demo locally from an inspected toolkit checkout. There is still no npm install, and this is not a CI job: do not add a workflow that makes the demo or suite an onboarding gate. The demo directory must not exist; the copy refuses an existing one. Keep that demo outside the toolkit and never point it at real records.
 
 ```sh
 node --test test/*.test.mjs r2/test/*.test.mjs

@@ -21,8 +21,8 @@
     },
     {
       "path": "ONBOARDING.md",
-      "bytes": 23943,
-      "sha256": "eb03e28bd66e004d237e43bee3dede10293b141e54e7e358af2bb8e672d1639a"
+      "bytes": 24075,
+      "sha256": "02b04413ea5d49c73e41d88a9bcc023a5e90e648f9ca08d39b1f2c78b6762d27"
     },
     {
       "path": "PROTOCOL.md",
@@ -36,13 +36,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 12291,
-      "sha256": "ccb29b4df15becc2875b7a1ee5bfbdcd15d8ff5e2ad552bf493c6dfeda996946"
+      "bytes": 12483,
+      "sha256": "b5d897fa335a86a68775274065111e7e44d15d54d974db109400ced248f1c127"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 10462,
-      "sha256": "aaed0859b16a7cbf0ac6fc81e6c3fee953a9d0139ba18fd3483a1d1838f8107d"
+      "bytes": 10680,
+      "sha256": "5b62c121a5bb510c90c633f52e4bef4089c6d7a2316303c8a9c0438bd82d6899"
     },
     {
       "path": "RECEIPT-SCHEMA.md",
