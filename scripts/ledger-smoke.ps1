@@ -1,6 +1,5 @@
 # Optional native Windows twin of scripts/ledger-smoke.sh.
-# The primary self-check remains that POSIX script, run on Windows
-# through Git Bash or WSL (Git for Windows).
+# Not an adopter gate. On Windows, Git Bash or WSL can run the shell script instead.
 #
 # Requires: git, and Windows PowerShell 5.1 or PowerShell 7+.
 # Does not require Node.js, Python, or gh.
