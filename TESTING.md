@@ -16,6 +16,25 @@ If the Setup/Join paste blocks changed, also re-verify Minimal Setup and Join wi
 
 Users do not run this checklist.
 
+### Recorded run: 2026-10-01 Minimal Setup→Join re-verify
+
+2026-10-01, about 13:07–13:14 PT (America/Los_Angeles). Setup/Join paste blocks changed in PR #4. Merged tip before this verify: `c9973b0e391aab56fab6dafa005dd92f84759e4a`. Toolkit tip used at Setup: `583aa8f84ae1321cb9c5bfa5da512e84a3507682`, after PR #5 also merged.
+
+Brand-new agents in brand-new environments:
+
+- Agent A Setup: `bc-35d362fd-92fb-5db4-977a-c9afb2fb95f5`
+- Agent B Join: `bc-d8cd3d33-cf74-5e40-8800-64355d877a22`
+
+New private ledger (`private: true`; not a toolkit fork): https://github.com/AAlpha7/ac-fresh-setup-20261001-f40a68
+
+Project handoff: `projects/fresh-verify/CURRENT_STATE.md`
+
+- Setup local status: `partial`. The Cursor App/`gh` bot could not push the private repo. The AAlpha7 user integration created the repo and wrote the handoff. Remote `main` tip after Setup: `12875ad7076211910be0b464f20215423c2005f3`.
+- Join local status: `ready`. Join commit `90fee23281646f870b78e01058a1caefef755e66` on `main`, via the AAlpha7 user integration Contents API, after `git clone` with App credentials failed (repository not found).
+- Optional checks: not run. This run was a Minimal-only re-verify after the paste change.
+
+Result: Minimal Setup→Join PASS, with a credential quirk (App credentials versus the AAlpha7 user integration).
+
 ## Optional quick protocol check
 
 Two directions, one round each. Paste this to agents that already share the ledger:
