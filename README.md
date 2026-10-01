@@ -76,7 +76,7 @@ With Node.js 24+ and Git available, from an inspected toolkit checkout:
 git clone --branch v0.1.0-rc.3 https://github.com/AAlpha7/agent-continuity.git
 cd agent-continuity
 node --test test/*.test.mjs
-node --input-type=module -e "import { mkdir, cp } from 'node:fs/promises'; const dest='../agent-continuity-demo'; await mkdir(dest); await cp('fixtures', dest, { recursive: true, errorOnExist: true, force: false });"
+node --input-type=module -e "import { cp } from 'node:fs/promises'; const dest='../agent-continuity-demo'; await cp('fixtures', dest, { recursive: true, errorOnExist: true, force: false });"
 node scripts/agent-receipt.mjs ../agent-continuity-demo/workspace ../agent-continuity-demo/receipt.json
 node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace demo-project
 node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace demo-project --check
