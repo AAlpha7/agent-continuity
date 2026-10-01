@@ -2,99 +2,78 @@
 
 ## Your agents change. Your work continues.
 
-**AI keeps improving. Your work should not restart with every switch.**
+**Change your AI. Change your team. Change your machine. Keep your work moving.**
 
-One provider's assistant fits today's coding task; tomorrow, another provider's new model catches your eye. You might combine several agents with different strengths, or move between a laptop, a server and other work environments.
+One agent is better at coding. Another catches the mistake. Tomorrow's model is worth trying—and sometimes you switch machines too. But your agents often do not know what the others decided, built or left unfinished. You become the messenger: repeat the background, move the records, check the progress. Close an old session, and useful context can stay behind.
 
-But they often do not know what the others have done. You repeat the background, move records and check progress. Use several together, and you become their messenger. When an old session ends, decisions and unfinished work can stay stranded in that conversation.
+Agent Continuity is **user-owned continuity for ongoing AI-assisted work—across projects, AI teams, tools and machines.** Give each project a shared record that outlasts any one agent, provider or machine. Keep **goals, decisions, recorded responsibilities, progress, artifact references and unfinished actions in files you control**. Authorized participants can coordinate ongoing work from the same saved evidence—whether several agents work together, a role changes, an old agent leaves or you continue in another environment. Keep those records accessible to approved readers, and the project need not start over with every change.
 
-**Agent Continuity keeps the project record in files you control.** Switch assistants, add a reviewer or stop using an old agent: the next authorized reader can inspect saved reports, decisions, reasons, artifact references and open work. You can choose your AI without rebuilding the background from memory, provided those records have been saved and remain accessible.
+[**Give this to your AI →**](#start-with-your-ai) · [See the workflow](#your-work-many-projects-changing-teams) · [简体中文](README.zh-CN.md)
 
-The vendor-neutral protocol and local tools preserve coordination records. Code and other artifacts stay in their own project storage; references do not back them up automatically.
+![A durable user-owned project connects changing AI tools and machines. Decisions, progress and unfinished work remain in the project record while agents can be added, combined or replaced.](docs/assets/agent-continuity-launch.png)
 
-[Give this to your AI](#give-this-to-your-ai) · [See an agent switch](#one-project-a-changing-team) · [What actually ships](#what-actually-ships) · [简体中文](README.zh-CN.md)
+*MIT · 0.1.0-rc.3 prerelease. Product icons illustrate the ecosystem; they are not a claim that every product has a tested integration. See [asset attribution](docs/assets/ATTRIBUTION.md).*
 
-![A user-owned project record remains accessible as an initial assistant works, a reviewer joins, and a replacement assistant continues from an approved copy on another machine. Access, synchronization and backups are explicit.](docs/assets/shared-memory.svg)
+## Less retelling. More getting on with it.
 
-**Open source · MIT · v0.1.0-rc.2 runtime.** A foundation for continuity and collaboration. It is not a universal chatbot integration, automatic backup service or autonomous orchestrator. Continuity still depends on approved access, deliberate synchronization and retained copies.
-
-## A better assistant should not mean starting over
-
-| The coordination burden | A shared record gives you |
+| When you… | What the next agent can find |
 | --- | --- |
-| “I want to switch assistants. Do I have to explain everything again?” | A project handoff, open work and original inputs that the next authorized reader can inspect |
-| “Please tell the other AI what we decided.” | Shared project files, rather than relying on the person to relay every report |
-| “Which version did you review?” | A declared source revision on each independent report |
-| “Two agents say done. What actually happened?” | Separate receipts to compare, with optional evidence references—not a merged success story |
-| “We restarted. Is that summary still current?” | A local snapshot check against its current inputs, with earlier evidence retained |
-| “Who owns this? May this agent act?” | A protocol for recording ownership and approval boundaries; unresolved claims stay decisions to resolve |
+| **Keep several projects moving** | Project-scoped decisions, progress and open tasks, without mixing their evidence or access |
+| **Try a better model** | The saved decisions and reasons, instead of another long briefing |
+| **Use several agents together** | Separate reports and source references, so disagreements stay visible |
+| **Change machines or resume later** | Open work and retained evidence in an approved project copy |
+| **Ask “is it really done?”** | The original receipt, checked revision and evidence to inspect—not just a merged success summary |
 
-The aim is **less human relaying**, not another dashboard to maintain. Your agent can handle the local setup and routine file operations it is already permitted to perform. You supply intent, missing access and decisions that need human authority.
+The agent handles routine Git, Node and file work within its existing permissions. Your part is the project goal and the decisions only you can make: new access, consequential actions and unresolved scope.
 
-## Give this to your AI
+## Start with your AI
 
-Use this with an assistant that can read repository files and run local commands, or has an approved execution connection. You do not need to learn the commands yourself.
+Copy this into an agent that can access files and run local commands, or use an approved execution connection:
 
 ```text
-Set up Agent Continuity for OUR project so we can change assistants
-while keeping our own private project records:
+Set up Agent Continuity for OUR ongoing work across projects, agents, AI
+providers and machines/environments, including changing participants.
+Keep goals, decisions, responsibilities, progress and open work in our
+own accessible project records. Use the inspected v0.1.0-rc.3 toolkit:
 https://github.com/AAlpha7/agent-continuity
 
-That public repository is a READ-ONLY source of protocol/tools/examples,
-not our ledger or team. Read ONBOARDING.md at the inspected revision.
-Do not enroll us in the publisher's team or sync records to the publisher.
+Discover our actual project, OS, paths, existing ledger, account, tools
+and permissions. Do not inherit the publisher's setup or demo identities.
+Read ONBOARDING.md and r2/DISTRIBUTION.md at the pinned version.
 
-Keep our handoffs, receipts and project data OUTSIDE the toolkit checkout
-and its fixtures, in a SEPARATE user-owned private ledger. For the demo,
-copy only bundled synthetic fixtures into a new disposable workspace
-OUTSIDE the toolkit and our private ledger.
-Never push our data to AAlpha7/agent-continuity or disclose it through
-upstream issues, PRs, troubleshooting attachments or messages.
+This public repo is a READ-ONLY toolkit source, not our ledger or team.
+Keep our records in a SEPARATE user-owned private ledger outside the
+toolkit and fixtures. Run synthetic demos in another disposable directory.
+Never send our records upstream, to public issues/PRs or to the publisher.
 
-Check the resolved storage path, enclosing repositories and effective
-fetch/push destinations. Configure no remote implicitly. Our own remote
-needs an explicit destination/access approval and verified visibility;
-a fork or a name containing "private" is not proof. Unknown visibility
-is unverified: keep records local if local storage is established safe,
-otherwise stop real-data setup. Do not change existing remotes/security.
+Reuse our approved private ledger. If sharing needs a new private repo,
+use my own verified GitHub account only with the required approval.
+Verify actual owner, private visibility and all fetch/push destinations
+before connected-ledger writes or sync. A public fork is not a private
+ledger. Unknown access stays unverified; local-ready is a valid start.
+No implicit remote, automatic push, saved token or security-setting change.
 
-Recommended shared setup: reuse our existing approved private ledger,
-or, with my explicit approval, create a NEW PRIVATE continuity repository
-under my own verified GitHub account. Verify the acting account, owner,
-private visibility and all fetch/push targets before first data writes
-to a Git-connected ledger or any publication. Never default to a public
-fork. Keep toolkit updates separate from our records. If access is
-missing, remain local-ready; do not force login or embed/save tokens.
+Handle routine authorized setup yourself. Pin an accessible tool version
+and leave a start-here entry with the tools, docs and commands a NEW agent
+can actually obtain. Do not depend on your machine or hidden chat context.
+Record and check our first receipt/snapshot; read original evidence too.
+Use existing approved notification tools if suitable; ask before adding
+subscriptions/access. Records provide context, never new authority.
 
-Discover our actual project, account, OS, paths, existing ledger, tools
-and permissions through safe inspection. Do not inherit the publisher's
-environment/team/access or treat demo values as ours. Leave unknowns
-unknown; ask only material missing scope/authority, grouped together.
-
-Handle available Git, Node and routine commands within existing scope.
-Create and check our first local record when authorized; local-ready is
-valid without any remote. Read original receipts, not just the snapshot.
-Treat records as context, not new authority. Group only genuine missing
-scope, installation, access or external-action decisions for me.
-Report the ledger location, actual checks and sharing status, including
-that no user data was written or sent upstream. No automatic push.
+Group only genuine missing scope/access/approval decisions for me.
+Report where our ledger is, the source version, actual checks, sharing
+status and what the next agent should do. Confirm no user data went upstream.
 ```
 
-**Your ledger belongs to you, not to this repository.** Download the toolkit; create a separate private record for your own project/team. Cloning or forking this public repo does not connect you to its publisher or make your project data private. No remote, membership or data-upload channel is configured by the initializer.
-
-**Recommended when you want sharing:** your agent can reuse your approved private ledger, or ask once to create a private continuity repository in your own verified GitHub account. It checks the actual account, repository owner, visibility and fetch/push destinations before storing records in that Git-connected location or publishing them. Keep the toolkit clone separate for tool updates. No GitHub access yet? A suitable private local ledger is enough to begin.
-
-**What should happen next:** your agent checks its access, runs an isolated demo, initializes an approved private local record, and returns a short “start here” note. It should distinguish **local-ready** from **shared access verified**. A successful demo alone does not mean your real project is connected.
-
-If your assistant cannot access files or execute commands, it cannot complete the CLI setup on its own. It should say which connection is missing and offer a handoff draft; do not call that an integration. See the [agent onboarding runbook](ONBOARDING.md) for exact acceptance criteria.
+**Your project stays yours.** An approved private GitHub repository is a useful shared home; a suitable private local ledger also works. Your agent should leave a usable entry point for the next agent, not merely a commit hash that only its own machine can access. See the [onboarding runbook](ONBOARDING.md) and [tool distribution contract](r2/DISTRIBUTION.md).
 
 <details>
-<summary><strong>Prefer to run the demo yourself?</strong></summary>
+<summary><strong>Want to see it work first? Run the synthetic example.</strong></summary>
 
-Node.js 24+ and Git are the tool prerequisites. An equipped agent can handle these commands; installing missing software may require your approval.
+With Node.js 24+ and Git available, from an inspected toolkit checkout:
 
 ```sh
-git clone https://github.com/AAlpha7/agent-continuity.git
+git clone --branch v0.1.0-rc.3 https://github.com/AAlpha7/agent-continuity.git
 cd agent-continuity
 node --test test/*.test.mjs
 node --input-type=module -e "import { mkdir, cp } from 'node:fs/promises'; const dest='../agent-continuity-demo'; await mkdir(dest); await cp('fixtures', dest, { recursive: true, errorOnExist: true, force: false });"
@@ -103,63 +82,55 @@ node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace de
 node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace demo-project --check
 ```
 
-The sibling demo directory must not already exist; choose another unused path consistently if it does. Only copied synthetic fixtures are used. The toolkit checkout remains unchanged. The receipt replays with `duplicate: true`; generation returns an immutable snapshot path; `--check` reports local `current`. `remote` remains `not-attempted`. Use the [setup guide](GUIDE.md) for a separate private ledger of your own.
-
-A `current` snapshot is an input-consistent local index, not a guarantee of current task conclusions or remote freshness. Its receipt table omits summaries and individual source revisions; open the linked original receipts and unabridged handoff. Coordinator facts require deliberate review and refresh.
+The new demo directory must not exist. The example copies only synthetic data outside the toolkit, replays a receipt and checks a local snapshot. It sets up no remote. For your own project, use [GUIDE.md](GUIDE.md). For the separate local coordination preview, run `node r2/demo.mjs`; see [its scope](r2/README.md).
 
 </details>
 
-## One project, a changing team
+## Your work, many projects, changing teams
 
-**Illustrative scenario: a checkout retry bug that spans several sessions.** This describes how to use the files, not an automated or certified cross-vendor integration.
+Keep a product build, a research thread and a planning project moving alongside each other. Each keeps its own goals, decisions, contributions and open work. Choose different agents for different strengths, add a reviewer, retire an old assistant or move to another machine; an approved reader starts from the saved record instead of another full briefing. A handoff is one moment in this ongoing collaboration.
 
-1. **Start with a building assistant.** It reports “Added a retry limit,” with a source revision and a reference to test output in its own receipt.
-2. **Add a reviewing assistant.** It reads the approved project copy and independently reports “Timeout regression still missing.” The earlier report stays intact.
-3. **Stop using the first assistant.** Keep its project records and referenced artifacts. Removing its access is a separate operation; retaining its report does not retain or grant permission.
-4. **Continue with a new assistant or machine.** Provide an approved, synchronized copy. The new reader checks the snapshot, reads the original reports and sees the unresolved test work. It continues under the existing assignment and authority, or raises a genuinely missing decision.
+Project/task scopes keep records organized; a portfolio overview can link to them. This is a file-based working agreement, not an automatic portfolio manager. Recorded responsibilities expose unresolved ownership; they do not enforce a distributed lease or grant permission.
 
-You do not need the old chat to stay open to inspect the saved records. You still need the project files and any referenced code or artifacts to be retained and accessible. **The tools check and preserve records; they do not guarantee recovery after every storage loss or prove an assistant's claims.**
+**A small example:** a builder reports a retry fix and its source revision. A reviewer finds a missing timeout check. You try another assistant. It reads both original reports, keeps the disagreement visible, and works on that remaining check under your approved assignment. The old chat need not remain open for those saved records to be useful.
 
-![Before: changing an assistant sends the person back to retelling context, chasing versions and reconciling claims. With a retained project record: the next authorized reader inspects decisions and open work, checks the local snapshot and follows evidence. Technical setup can be handled by a capable agent; human decisions remain scope, new access and consequential actions.](docs/assets/continuity-before-after.svg)
+![Before: the person repeats context and relays updates between isolated chats. With Continuity: agents consult the user's project record, preserve independent evidence and leave the next step for the next authorized reader.](docs/assets/continuity-before-after.svg)
 
-### More than a handoff
+### Notifications when your setup supports them
 
-- **Parallel work:** compare separate reports instead of letting the last summary erase disagreement. Task allocation and conflict resolution remain explicit.
-- **Interruption and recovery:** resume from preserved inputs and inspect stale or missing local snapshots. A crashed writer's lock needs inspection, not automatic takeover.
-- **Review and audit:** follow reports back to their declared source and evidence references. References are claims to verify, not proof that tests ran.
-- **Across machines and tools:** use the same files wherever approved readers can access them. An agent may perform Git synchronization within its existing permissions; this toolkit does not run an autosync service.
+**GitHub PR event notifications have been tested with OpenAI dot and Grok Bot in configured, owner-approved setups.** A supported listener can tell an agent that something changed; the agent then fetches the actual project record before continuing.
 
-## What actually ships
+This is a tested setup, not a universal plug-in. Check each participant's actual listener/event support and authorization. This repository does not install a listener, create a subscription or promise instant delivery. Manual invocation and explicit synchronization remain valid when event support is unavailable. [Notification setup and evidence](docs/NOTIFICATIONS.md).
 
-| Layer | Available now | Boundary |
-| --- | --- | --- |
-| **Protocol** | Conventions for independent reporting, transferable coordination, ownership handoffs and approval separation | Conventions do not enforce ownership or authenticate a principal |
-| **Local tools** | Unique receipt IDs; exact retry/conflict checks; cooperative file locks; atomic publication; strict UTF-8; immutable snapshots and byte-preserved input archives | One trusted local OS boundary; no hostile same-account or cross-tenant isolation |
-| **Your agent environment** | Existing approved file access and execution tools can drive the CLI | Must be checked per environment; no universal chatbot plug-in is bundled |
-| **Not implemented** | Identity enrollment, signed approvals/revocation, task scheduling, ownership arbitration, automatic remote sync and remote execution | Do not infer these capabilities from a receipt, Git author, role label or diagram |
+## What you get in rc.3
 
-**Records carry context, not authority.** A matching digest does not prove content is true or an action permitted. The CLI assumes a trusted local operator, which may be your already-authorized agent process. There is no authenticated remote intake. Continue within existing permission; require a new decision only when scope or authority actually changes.
+- **Project memory you own:** independent immutable receipts, byte-preserved handoffs and checked local snapshots.
+- **A usable entry for the next agent:** pinned tools/docs, an optional source-only package and a verifier that extracts outside the ledger without executing package code.
+- **A local coordination preview:** bounded action turns, explicit closure, durable terminal outboxes, per-recipient acceptance and recoverable current views under one trusted local controller.
+- **Evidence you can inspect:** source revisions, conflict detection, exact replay checks and tests you can run without a model subscription or hosted service.
 
-## Evidence, not a promise of magic
+### What has been checked
 
-The rc.2 toolset passed **15 local tests, zero failures/skips** on Windows with Node 24.11.1. Coverage includes independent processes, a killed lock holder, malformed UTF-8, concurrent handoff appends and a real `core.autocrlf=true` Git clone. That clone runs a separate 12-test subset and checks every payload byte. See [TESTING.md](TESTING.md).
+The release has **105 tests: 80 local coordination/bootstrap, 15 receipt/snapshot compatibility and 10 Windows filesystem failure regressions**. Coverage includes real independent-process races and crashes, copied-controller rejection, strict byte checks and Windows Git clones with `core.autocrlf=true`. Independent review covered the core and bootstrap. A fresh-agent private-ledger trial preserved earlier work and completed canonical receipt/snapshot closeout after an initial missing-distribution failure was fixed. [Test scope and limits](TESTING.md).
 
-[MANIFEST.json](MANIFEST.json) inventories this checkout. [PROVENANCE.json](PROVENANCE.json) records the historical extraction without distributing the private source checkout. Its verification requires authorized access to that historical source; public tests and onboarding do not. Hashes are not signatures. Power-loss durability, network filesystems and universal cross-agent compatibility are not certified.
+### Where the boundaries are
 
-## Explore when you need it
+Saved records and referenced artifacts must remain accessible; references do not automatically back up the artifacts. A snapshot can be locally consistent while remote updates or coordinator facts are stale—read original reports and synchronize deliberately.
 
-| Question | Guide |
+Actor labels, Git authors and matching hashes do not authenticate an agent, prove a claim or grant permission. The local controller is not a remote execution/identity service or a distributed ownership system. There is no universal hidden memory, automatic distributed orchestration or always-on backup service. This release does not restore a vendor's chat window, auto-connect every closed chatbot, install an autosync service or guarantee delivery. Access changes and controller takeover remain explicit, separately reviewed operations.
+
+## Go deeper when you need to
+
+| Need | Read |
 | --- | --- |
-| What should my AI do, and when should it involve me? | [Agent onboarding](ONBOARDING.md) |
-| How do we create our own project and handle STALE / CORRUPT / CONFLICT? | [Setup and troubleshooting](GUIDE.md) |
-| What is in a receipt? | [Wire schema](RECEIPT-SCHEMA.md) |
-| How should coordination and ownership be recorded? | [Protocol](PROTOCOL.md) |
-| How was this checked? | [Tests and limits](TESTING.md) |
+| Set up your own ledger | [Agent onboarding](ONBOARDING.md) · [Project guide](GUIDE.md) |
+| Let a fresh agent obtain the tools | [Distribution and bootstrap](r2/DISTRIBUTION.md) |
+| Understand receipts and collaboration | [Receipt schema](RECEIPT-SCHEMA.md) · [Protocol](PROTOCOL.md) |
+| Try bounded local coordination | [R2 preview](r2/README.md) · [Wire contract](r2/WIRE.md) |
+| Inspect tests and file integrity | [TESTING.md](TESTING.md) · [MANIFEST.json](MANIFEST.json) |
 
-Future exploration may study duplicate claims, interrupted work and stale conclusions with an offline three-worker simulation. Ownership enforcement and learning from failures are future work. Mock outcomes would not establish real-LLM performance.
+## License and author
 
-## License
+[MIT](LICENSE) · Copyright © 2026 [AAlpha7](https://github.com/AAlpha7). Maintained by AAlpha7; follow [Lance · @xhuang26](https://x.com/xhuang26?s=11).
 
-Maintained by [AAlpha7](https://github.com/AAlpha7). Follow [Lance · @xhuang26](https://x.com/xhuang26?s=11) on X.
-
-[MIT](LICENSE) · Copyright © 2026 [AAlpha7](https://github.com/AAlpha7). Code, docs and original diagrams share the license. [Attribution and dependency boundaries](RIGHTS-AND-DEPENDENCIES.md). No hosted CI, model subscription or deployment is configured; Node.js and Git are separately installed prerequisites. `private: true` prevents accidental npm publication.
+Code, docs and original project diagrams are MIT. Product marks remain their owners' property; their use is referential, not endorsement. [Rights and dependencies](RIGHTS-AND-DEPENDENCIES.md). No hosted CI, paid model service or deployment is configured.

@@ -1,15 +1,19 @@
 {
-  "scope": "documentation/onboarding candidate; runtime, tests and evidence unchanged from rc.2",
+  "release": "0.1.0-rc.3",
+  "scope": "distributed source, docs, synthetic fixtures and assets only",
   "status": "pass",
-  "files_scanned": 32,
+  "files_scanned": 59,
   "findings": [],
-  "relative_links_checked": 39,
+  "relative_links_and_anchors_checked": 89,
+  "runtime_delta_from_reviewed_candidate": [
+    "lib/safe-files.mjs: bounded Windows EPERM retries"
+  ],
   "checks": [
     "private identifier/path and credential patterns",
-    "internal context",
-    "relative Markdown targets",
-    "SVG scripts/external resources",
-    "exact rc.2 runtime/test/fixture/provenance/license byte preservation"
+    "private trial identifiers and internal context",
+    "relative Markdown targets and heading anchors",
+    "SVG external content and scripts",
+    "reviewed runtime bytes except explicit reliability fix"
   ],
-  "limitations": "Targeted scan is not proof of absence of all sensitive data. Agent-add/switch trials must report their actual environment; no universal compatibility claim."
+  "limitations": "Targeted scanning is not proof that all sensitive data is absent. Product marks are referential and not endorsements. Test results establish only documented profiles."
 }

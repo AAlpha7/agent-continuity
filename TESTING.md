@@ -1,16 +1,42 @@
-# Candidate 0.1.0-rc.2 validation
+# What rc.3 has been checked against
 
-MIT-licensed release candidate, not stable GA or an identity-security certification.
+Run from an inspected checkout with Node.js 24+ and Git available:
 
-Run `node --test test/*.test.mjs` with an existing Node 24+ and Git installation. No npm install, external fetch, paid API, remote member or server is used. Latest local run: **15 tests passed, 0 failed, 0 skipped** (Windows, Node 24.11.1).
+```sh
+node --test test/*.test.mjs r2/test/*.test.mjs
+```
 
-- Twelve receipt/snapshot/byte-integrity tests include independent processes, a killed lock holder, legacy concurrent append preservation and strict UTF-8 checks.
-- A real Git test copies this package into an isolated directory, initializes and commits it locally, then creates a fresh clone with `core.autocrlf=true`. It compares every payload file's SHA-256 before/after, successfully replays the bundled receipt, generates/checks the snapshot and requires a clean working tree.
-- That clone also executes all twelve receipt/snapshot tests in a separate runner. The test clears only the inherited Node test-runner marker and asserts the child actually reports 12 passed, zero failed/skipped; a silently skipped child cannot count as success.
-- Two initializer tests cover a new project's BOM/CRLF byte preservation and history digest, receipt/generation/check workflow, refusal to overwrite an existing directory and rejection of invalid UTF-8 before creation.
+No npm install, model call, remote participant, hosted CI or service is needed. The suites contain **105 top-level tests: 15 original receipt/snapshot tests, 80 local coordination/bootstrap tests and 10 Windows lock/replacement failure regressions**. Tested environment: Windows, Node.js 24.11.1 and Git 2.45.2.windows.1. Passing tests supports these specific checks, not universal platform compatibility.
 
-Negative control: in a separate temporary copy, removing only `.gitattributes` makes the fresh-clone byte-identity assertion fail. No fixture evidence was edited to make the regression pass.
+## Local test coverage
 
-`node tools/verify-provenance.mjs SOURCE_CHECKOUT` independently verified five source Git blobs and all declared transformations. Workspace hashes are optional observations and are not compared as commit evidence. The four extracted runtime files retain identical exported bytes from the previous candidate; changes are packaging, provenance, documentation, new initializer/verifier examples and regression tests.
+- Independent processes race one receipt, one action guard, the last available turn and closure. Tests kill owned child processes at selected commit boundaries and retain the recovery intent.
+- A copied control directory cannot become a second writer against the same ledger. The original control binding and one ledger-local lock prevent the reproduced duplicate-controller fork.
+- Closure plus immutable bytes and per-recipient terminal outboxes commit together. Local acceptance plus closed state and projection invalidation commit together. Publication, local acceptance and participant-reported receipt remain different facts.
+- Action versions/recipient/source permissions, bounded budgets, expired keys, unknown effects, scoped setup reconciliation and concrete cleanup evidence fail closed where tested. Real resource creation/deletion is not performed.
+- Strict UTF-8, original BOM/CRLF bytes, corrupt evidence, concurrent legacy appends and exact receipt replays are covered. A real `core.autocrlf=true` Git clone compares payload hashes; its separate 12-test subprocess must genuinely pass. New R2 journal files have their own byte-preserving attributes.
+- Bootstrap rejects wrong hashes, path traversal, case collisions, missing docs and overwrites. A full source-package extraction preserves all files; its extracted receipt writer, replay and snapshot generation/check were exercised against synthetic data.
 
-Production Linux/filesystem behavior, power-loss durability, hostile same-account tampering, authenticated membership and distributed ownership are not verified. The extracted rc2 candidate passed independent review; release-only documentation and licensing changes are separately checked. Passing tests and byte hashes do not grant execution authority, ownership or redistribution rights.
+The [local case matrix](r2/ACCEPTANCE.md) distinguishes actual processes from synthetic accounts, clocks, event labels and provider results. The controller does not run a real external effect provider or verify remote identity.
+
+## Independent review and fresh-agent trial
+
+Earlier independent review identified controller/setup defects. After correction, review reran the **75 coordination/regression tests plus 15 legacy tests** successfully. A separate bootstrap review verified **56 candidate source files and 5 focused bootstrap tests** without a blocking finding. Release preparation added one runtime reliability fix in `lib/safe-files.mjs` and ten regression tests: bounded Windows `EPERM` retries during exclusive lock acquisition and atomic replacement. All other reviewed runtime files retain their bytes. Exact transformations and release file inventories are recorded in the provenance and manifests.
+
+A real fresh-agent trial used an approved private GitHub ledger with synthetic work. The first recipient recovered the project decision and completed the content task, but canonical closeout correctly stopped because the pinned toolkit/docs were unavailable. That failure was retained. The distribution contract was corrected with a source-only package, complete docs and byte verification; a subsequently fresh recipient completed canonical receipt/snapshot closeout. This is evidence for the tested agent-mediated GitHub record workflow. It is not a claim of independently authenticated remote executors or universal vendor support.
+
+Configured, owner-approved **OpenAI dot and Grok Bot GitHub PR event notifications** were also tested. Listener support, authorization and actual fetched records still need verification per setup. See [NOTIFICATIONS.md](docs/NOTIFICATIONS.md). No delivery SLA follows from those tests.
+
+## Release-preparation failures and corrections
+
+The first combined run passed 94/95 and failed while opening a writer lock with Windows `EPERM`. Eight independent processes then reproduced 14 `EPERM` failures in 8,000 attempts. A lock-only correction exposed a second transient `EPERM` during atomic replacement of a controller anchor (100/101 tests). Both original failures were retained; a later isolated pass was not treated as a fix.
+
+The final correction retries only these Windows `EPERM` operations within bounded waits. It never steals a lock, deletes the destination to force replacement, changes permissions or executes without a successful exclusive open. Persistent `EPERM` remains an error; other permission errors fail immediately. Ten isolated-process, deterministic fault-injection tests cover recovery, deadlines, untouched destinations and immutable no-clobber publication. The corrected combined suite passed **105/105**.
+
+An independent 8-process × 1,000-attempt lock stress check of the actual patch recorded 7,999 successes, one `BUSY` timeout, zero `EPERM` failures and zero exclusive-sentinel overlaps. A five-second lock wait has no fairness guarantee: sustained contention may legitimately return `BUSY`. The exact Windows kernel cause was not traced; evidence establishes the reproduced error and bounded recovery behavior, not a universal filesystem guarantee.
+
+## Limits
+
+No certification of abrupt power-loss durability, network filesystems, malicious same-account writers, physical multi-host fencing, signatures/revocation services, independent per-agent credentials, every closed chatbot or automatic chat-window restoration is made. Local hash consistency does not establish remote freshness, truth or permission. A shared GitHub account is one hosting identity, not proof of separate AI identities.
+
+Historical extraction provenance remains in [PROVENANCE.json](PROVENANCE.json). Its optional source-checkout verifier needs authorized access to that historical source; public tests and onboarding do not. [MANIFEST.json](MANIFEST.json) inventories this release's distributed bytes, while uploaded ZIP checksums apply to the named release asset, not GitHub's separately generated archives.

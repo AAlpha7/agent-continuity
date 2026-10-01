@@ -1,0 +1,112 @@
+{
+  "release": "0.1.0-rc.3",
+  "classification": "trusted-local-controller preview; remote identity and execution unimplemented",
+  "algorithm": "sha256",
+  "files": [
+    {
+      "path": "r2/ACCEPTANCE.md",
+      "bytes": 11291,
+      "sha256": "41028484c047ca3fb890296100b5318d8684819dbe7d2b69d2845eeaed193697"
+    },
+    {
+      "path": "r2/DISTRIBUTION.md",
+      "bytes": 6157,
+      "sha256": "c3db78883d543d3afb22c648c3b6ef542c26330e3b6c27f9257b660109201c63"
+    },
+    {
+      "path": "r2/ONBOARDING.md",
+      "bytes": 12943,
+      "sha256": "3af8bdb4bb64dbdb4b7eece29a78c1b347f8ad2a0dbf937124ba888443192a6c"
+    },
+    {
+      "path": "r2/README.md",
+      "bytes": 3587,
+      "sha256": "94235c15e34c26b24da4e62eaf25ebab243d975d6054410cbd4489976cd447ce"
+    },
+    {
+      "path": "r2/TWO-AGENT-PLAN.md",
+      "bytes": 9590,
+      "sha256": "dae84aba5c2361d75143943c55304e03edd283068a1282c859fae79b5bf77176"
+    },
+    {
+      "path": "r2/VALIDATION.json",
+      "bytes": 696,
+      "sha256": "3c3268a9a6f7fe025c2f5ca50ef778248cec3e78eae13ecdc3a9203092b6bfa2"
+    },
+    {
+      "path": "r2/WIRE.md",
+      "bytes": 11772,
+      "sha256": "70d8407dfac3f4dad550947d86aa4aed8573c49ad56efbce047011481e57ddc4"
+    },
+    {
+      "path": "r2/bootstrap-toolkit.mjs",
+      "bytes": 5474,
+      "sha256": "843dd7e035aa3caf677b4712631a783fb6fc2a3e50e35dedf75a46847051a484"
+    },
+    {
+      "path": "r2/cli.mjs",
+      "bytes": 1371,
+      "sha256": "48f24dc637ea3227193306f35bee9322f134c25dbeab68fd8b4ddc94cf471092"
+    },
+    {
+      "path": "r2/codec.mjs",
+      "bytes": 8938,
+      "sha256": "39b2b978d5bb11eb430967f54caf30b49aa32a87a371a3a223c968609be2a015"
+    },
+    {
+      "path": "r2/controller.mjs",
+      "bytes": 32628,
+      "sha256": "b4d2302bba1263f9b55ee4dddacce10eae19110132e82e4d16d4e918cce72464"
+    },
+    {
+      "path": "r2/demo.mjs",
+      "bytes": 7717,
+      "sha256": "d9a733ceda1d66ef6e321464cf783160f4a3c4bb7a0ba4a71505c2b6cb561d7d"
+    },
+    {
+      "path": "r2/local-files.mjs",
+      "bytes": 4924,
+      "sha256": "139a17673a0d442b1613fd7c97f3eab5c28bd36c88d1243bf2331a43a16c488e"
+    },
+    {
+      "path": "r2/store.mjs",
+      "bytes": 11310,
+      "sha256": "657d133adb68a90702d95ae9a56d57e82d4f5735be52f4e1019cd86c74cd99e9"
+    },
+    {
+      "path": "r2/test/bootstrap.test.mjs",
+      "bytes": 4000,
+      "sha256": "5218318763b7aade15f8e1150c7d7bc261defac5706ce8039581e5ccfe537b85"
+    },
+    {
+      "path": "r2/test/child.mjs",
+      "bytes": 691,
+      "sha256": "9815996e8ec34eccc67b110158f3a4dec7e448965d120e8b94ed1144e11d321f"
+    },
+    {
+      "path": "r2/test/control-race-child.mjs",
+      "bytes": 720,
+      "sha256": "5d0ca50356de2325b2f1f6299d27c1d8a0db556c395d45ccab1812bee92ed359"
+    },
+    {
+      "path": "r2/test/helpers.mjs",
+      "bytes": 6176,
+      "sha256": "7304bda4b8ef36f42e4730fce3918be1215e6bc9e1ac65a49e0012dad9d06fb5"
+    },
+    {
+      "path": "r2/test/r2.test.mjs",
+      "bytes": 32577,
+      "sha256": "2d1a7293e23c66eeb674082934d5892a817b9f3da56d918e11b3dd74f621a762"
+    },
+    {
+      "path": "r2/test/regression.test.mjs",
+      "bytes": 8242,
+      "sha256": "e4e4c64082bd0b72b1bad70fb14e8e32441e4faefb3e8327235165f4c1d42574"
+    },
+    {
+      "path": "r2/test/review-regression.test.mjs",
+      "bytes": 9723,
+      "sha256": "de998e43bf75dfa34135260a636fe9c9dc2db3af1aa2855887357862ab29a091"
+    }
+  ]
+}

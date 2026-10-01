@@ -11,15 +11,34 @@
       "workspace_sha256": "b1cac3f79d287d639a6c0c89959036a1c10e3f02218bb8df1c62ddd52fb29eb7",
       "workspace_hash_role": "Optional checkout-byte observation only; not the commit blob or authoritative export input",
       "exported_path": "lib/safe-files.mjs",
-      "exported_sha256": "da9c9004ea5342bb95e3732a5c42953538502be7d7b02ed64de85bcb77a014f0",
+      "exported_sha256": "dc4bc8d084c2ddee44c1cfd9e187a3531de3f6916fbc7e1f1a809753efe34282",
       "transformations": [
         {
           "operation": "replace_all",
           "from": "\r\n",
           "to": "\n",
           "reason": "Normalize source code line endings only; never applied to fixture evidence"
+        },
+        {
+          "operation": "replace_all",
+          "from": "export async function withFileLock(path, action, timeoutMs = 5000) {\n  const lock = `${path}.lock`;\n  const deadline = Date.now() + timeoutMs;\n  let handle;\n  while (!handle) {\n    try { handle = await open(lock, 'wx', 0o600); }\n    catch (error) {\n      if (error.code !== 'EEXIST') throw error;\n      if (Date.now() >= deadline) throw fault('BUSY', 'writer lock busy; inspect before recovery');\n      await delay(20);\n    }\n  }\n  try { return await action(); }\n  finally { await handle.close(); await unlink(lock); }\n}\n\n",
+          "to": "export async function withFileLock(path, action, timeoutMs = 5000) {\n  const lock = `${path}.lock`;\n  const deadline = Date.now() + timeoutMs;\n  let handle;\n  while (!handle) {\n    try { handle = await open(lock, 'wx', 0o600); }\n    catch (error) {\n      // Windows can transiently reject creation while another process releases\n      // this path. A retry grants nothing: only a successful wx open owns it.\n      const windowsContention = process.platform === 'win32' && error.code === 'EPERM';\n      if (error.code !== 'EEXIST' && !windowsContention) throw error;\n      if (Date.now() >= deadline) {\n        if (windowsContention) throw error; // Preserve a persistent permission failure.\n        throw fault('BUSY', 'writer lock busy; inspect before recovery');\n      }\n      await delay(20);\n    }\n  }\n  try { return await action(); }\n  finally { await handle.close(); await unlink(lock); }\n}\n\n",
+          "reason": "rc.3: bounded Windows-only EPERM lock acquisition retries; exclusive ownership and persistent errors preserved"
+        },
+        {
+          "operation": "replace_all",
+          "from": "// Same-directory temporary + rename for replacement; hard link for atomic\n",
+          "to": "async function renameWithRetry(source, target) {\n  const deadline = Date.now() + 5000;\n  for (;;) {\n    try { await rename(source, target); return; }\n    catch (error) {\n      // A Windows reader can transiently prevent replacement. Keep the same\n      // durable temporary and destination; never delete the target to succeed.\n      if (process.platform !== 'win32' || error.code !== 'EPERM' || Date.now() >= deadline) throw error;\n      await delay(20);\n    }\n  }\n}\n\n// Same-directory temporary + rename for replacement; hard link for atomic\n",
+          "reason": "rc.3: bounded Windows-only atomic replacement retry; never remove the destination"
+        },
+        {
+          "operation": "replace_all",
+          "from": "else await rename(temporary, path);",
+          "to": "else await renameWithRetry(temporary, path);",
+          "reason": "Use the bounded replacement helper; immutable link publication unchanged"
         }
-      ]
+      ],
+      "historical_exported_sha256": "da9c9004ea5342bb95e3732a5c42953538502be7d7b02ed64de85bcb77a014f0"
     },
     {
       "source_path": "services/boards-api/lib/ledger-write.mjs",

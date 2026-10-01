@@ -1,0 +1,25 @@
+{
+  "release": "0.1.0-rc.3",
+  "profile": "single trusted local controller; agent-mediated GitHub collaboration is separate",
+  "tests": {
+    "protocol_cases": 57,
+    "guard_regressions": 10,
+    "controller_setup_regressions": 8,
+    "distribution_regressions": 5,
+    "total": 80
+  },
+  "legacy_tests": 15,
+  "independent_review": {
+    "core_and_regressions": 75,
+    "legacy": 15,
+    "bootstrap_focused": 5,
+    "bootstrap_candidate_source_files": 56
+  },
+  "live_identity_service": false,
+  "remote_executor": false,
+  "distributed_takeover": false,
+  "test_details": "../TESTING.md",
+  "limits": "../r2/ACCEPTANCE.md",
+  "windows_failure_regressions": 10,
+  "release_total_tests": 105
+}

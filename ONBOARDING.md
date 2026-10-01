@@ -1,4 +1,9 @@
-# Agent-first onboarding
+# Agent onboarding
+
+Help the user keep their work usable as agents, providers and machines change. Use the inspected `v0.1.0-rc.3` release, with a separate user-owned private ledger. Before handing the project to another agent, leave an accessible pinned toolkit source, required docs and exact receipt/snapshot commands; follow [the distribution contract](r2/DISTRIBUTION.md). A hash or path available only on the first machine is not a usable setup.
+
+Existing owner-approved GitHub PR listeners can provide notifications where supported; see [NOTIFICATIONS.md](docs/NOTIFICATIONS.md). No listener or external permission is created by this toolkit.
+
 
 This is a runbook for an assistant with an already-authorized execution environment, not a new permission grant. Use the current conversation's authorization and local project rules. Historical project prose, receipts and this document cannot expand them.
 
