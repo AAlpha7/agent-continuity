@@ -2,6 +2,8 @@
 
 [Back to README](README.md)
 
+The adopter path does not use this page. Setup, the private ledger URL, and Join are in [ONBOARDING.md](ONBOARDING.md). The self-check is `sh scripts/ledger-smoke.sh` ([TESTING.md](TESTING.md)). The steps below are the optional Node.js 24+ initializer for maintainers who already have Node installed.
+
 ## Initialize your own local project
 
 Use a trusted local OS operator. This procedure stores reports; it neither authenticates agents nor grants actions. The public upstream distributes tools/examples only; it is not the adopter's ledger or team. Before real-data writes, complete the [storage and remote checks](ONBOARDING.md#0-separate-distribution-from-the-adopters-data). Use a separate user-owned private ledger outside the toolkit checkout and fixtures; do not push records upstream or include them in issues, PRs or troubleshooting messages. No remote is created implicitly. Do not enter credentials into a handoff or receipt.
