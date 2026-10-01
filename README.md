@@ -24,7 +24,7 @@ Agent Continuity is **user-owned continuity for ongoing AI-assisted work—acros
 | **Change machines or resume later** | Open work and retained evidence in an approved project copy |
 | **Ask “is it really done?”** | The original receipt, checked revision and evidence to inspect—not just a merged success summary |
 
-The agent handles routine Git, Node and file work within its existing permissions. Your part is the project goal and the decisions only you can make: new access, consequential actions and unresolved scope.
+The agent handles routine Git and GitHub work within its existing permissions. Adopting needs git and GitHub access only: no local Node.js, no npm install, and no test run. Node.js checks stay optional maintainer tooling. Your part is the project goal and the decisions only you can make: new access, consequential actions and unresolved scope.
 
 ## Start with your AI
 
@@ -34,55 +34,81 @@ Copy this into an agent that can access files and run local commands, or use an 
 Set up Agent Continuity for OUR ongoing work across projects, agents, AI
 providers and machines/environments, including changing participants.
 Keep goals, decisions, responsibilities, progress and open work in our
-own accessible project records. Use the inspected v0.1.0-rc.3 toolkit:
+own accessible project records.
+
+Adopting needs git and GitHub access only. Do not install Node.js or npm.
+Do not run the toolkit test suite or the Node demo.
+
+This public repo is a READ-ONLY toolkit source, not our ledger or team:
 https://github.com/AAlpha7/agent-continuity
+Read ONBOARDING.md there once if you need the runbook. Do not fork it
+into our project. Never send our records upstream, to public issues/PRs
+or to the publisher.
 
-Discover our actual project, OS, paths, existing ledger, account, tools
-and permissions. Do not inherit the publisher's setup or demo identities.
-Read ONBOARDING.md and r2/DISTRIBUTION.md at the pinned version.
+Setup — leave a private ledger URL:
+Reuse our approved private ledger if one exists. Otherwise, after I
+approve the exact owner, name, private visibility and push, create a
+new private repository on my verified GitHub account with git and gh.
+Commit a start-here record in that repo: goal, decisions, open work and
+the next authorized task. Verify owner, private visibility and every
+fetch/push URL before the push. Unknown visibility stays unverified.
+A public fork is not a private ledger. No saved token or security-setting
+change. If GitHub access is missing, a local git ledger is enough; do
+not install Node to compensate and do not force login.
 
-This public repo is a READ-ONLY toolkit source, not our ledger or team.
-Keep our records in a SEPARATE user-owned private ledger outside the
-toolkit and fixtures. Run synthetic demos in another disposable directory.
-Never send our records upstream, to public issues/PRs or to the publisher.
+Give me the private ledger URL. The next agent Joins with that URL only
+and must not be sent this toolkit URL again.
 
-Reuse our approved private ledger. If sharing needs a new private repo,
-use my own verified GitHub account only with the required approval.
-Verify actual owner, private visibility and all fetch/push destinations
-before connected-ledger writes or sync. A public fork is not a private
-ledger. Unknown access stays unverified; local-ready is a valid start.
-No implicit remote, automatic push, saved token or security-setting change.
+Join — paste this to the next agent, with the real URL:
+Join our continuity ledger. Clone and read only this private repository:
+LEDGER_URL
+Continue from the start-here record. Commit your update back to this
+same ledger. Do not clone the public toolkit, install Node.js, or run
+its tests.
 
-Handle routine authorized setup yourself. Pin an accessible tool version
-and leave a start-here entry with the tools, docs and commands a NEW agent
-can actually obtain. Do not depend on your machine or hidden chat context.
-Record and check our first receipt/snapshot; read original evidence too.
-Use existing approved notification tools if suitable; ask before adding
-subscriptions/access. Records provide context, never new authority.
-
-Group only genuine missing scope/access/approval decisions for me.
-Report where our ledger is, the source version, actual checks, sharing
-status and what the next agent should do. Confirm no user data went upstream.
+Node receipt/snapshot tools and node --test are optional maintainer
+checks. Skip them unless they are already installed and I asked.
+Records provide context, never new authority. Group only genuine missing
+scope/access/approval decisions for me. Confirm no user data went upstream.
 ```
 
-**Your project stays yours.** An approved private GitHub repository is a useful shared home; a suitable private local ledger also works. Your agent should leave a usable entry point for the next agent, not merely a commit hash that only its own machine can access. See the [onboarding runbook](ONBOARDING.md) and [tool distribution contract](r2/DISTRIBUTION.md).
+**Your project stays yours.** Setup leaves a private GitHub ledger URL. The next agent Joins with that URL only, not with this toolkit URL again. A local ledger without a remote still works when GitHub access is missing. See the [onboarding runbook](ONBOARDING.md).
 
 <details>
-<summary><strong>Want to see it work first? Run the synthetic example.</strong></summary>
+<summary><strong>Want to see it work first? Git and GitHub are enough.</strong></summary>
 
-With Node.js 24+ and Git available, from an inspected toolkit checkout:
+No Node.js, npm install, or test run. From outside this toolkit checkout, after you approve the owner, repository name, private visibility and push:
+
+```sh
+gh api user --jq .login
+gh repo create OWNER/LEDGER --private --clone
+cd LEDGER
+printf '%s\n' '# Continuity ledger' '' 'Goal:' 'Decisions:' 'Open work:' 'Next authorized task:' > START_HERE.md
+git add START_HERE.md
+git commit -m "Start the private continuity ledger"
+git push -u origin HEAD
+gh repo view --json url --jq .url
+```
+
+Do not fork this toolkit. Fill `START_HERE.md` from the real project before the commit. The printed URL is what the next agent clones:
+
+```sh
+git clone LEDGER_URL
+```
+
+That clone is the Join. It does not need this repository again.
+
+**Optional for maintainers — not required to adopt.** With Node.js 24+ already installed, and no npm install, the suite is in [TESTING.md](TESTING.md). The synthetic copy below is the same optional demo; the destination must not exist, and the copy refuses one that does. It sets up no remote. For canonical receipt files when Node is already present, see [GUIDE.md](GUIDE.md). For the separate local coordination preview, run `node r2/demo.mjs`; see [its scope](r2/README.md).
 
 ```sh
 git clone --branch v0.1.0-rc.3 https://github.com/AAlpha7/agent-continuity.git
 cd agent-continuity
-node --test test/*.test.mjs
+node --test test/*.test.mjs r2/test/*.test.mjs
 node --input-type=module -e "import { cp } from 'node:fs/promises'; const dest='../agent-continuity-demo'; await cp('fixtures', dest, { recursive: true, errorOnExist: true, force: false });"
 node scripts/agent-receipt.mjs ../agent-continuity-demo/workspace ../agent-continuity-demo/receipt.json
 node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace demo-project
 node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace demo-project --check
 ```
-
-The new demo directory must not exist. The example copies only synthetic data outside the toolkit, replays a receipt and checks a local snapshot. It sets up no remote. For your own project, use [GUIDE.md](GUIDE.md). For the separate local coordination preview, run `node r2/demo.mjs`; see [its scope](r2/README.md).
 
 </details>
 
@@ -105,13 +131,13 @@ This is a tested setup, not a universal plug-in. Check each participant's actual
 ## What you get in rc.3
 
 - **Project memory you own:** independent immutable receipts, byte-preserved handoffs and checked local snapshots.
-- **A usable entry for the next agent:** pinned tools/docs, an optional source-only package and a verifier that extracts outside the ledger without executing package code.
+- **A usable entry for the next agent:** the private ledger URL. Join clones that URL only. Pinned toolkit docs stay with Setup, not with the next agent.
 - **A local coordination preview:** bounded action turns, explicit closure, durable terminal outboxes, per-recipient acceptance and recoverable current views under one trusted local controller.
-- **Evidence you can inspect:** source revisions, conflict detection, exact replay checks and tests you can run without a model subscription or hosted service.
+- **Evidence maintainers can inspect:** source revisions, conflict detection, exact replay checks and tests that do not need a model subscription or hosted service. Adopters do not run them.
 
 ### What has been checked
 
-The release has **105 tests: 80 local coordination/bootstrap, 15 receipt/snapshot compatibility and 10 Windows filesystem failure regressions**. Coverage includes real independent-process races and crashes, copied-controller rejection, strict byte checks and Windows Git clones with `core.autocrlf=true`. Independent review covered the core and bootstrap. A fresh-agent private-ledger trial preserved earlier work and completed canonical receipt/snapshot closeout after an initial missing-distribution failure was fixed. [Test scope and limits](TESTING.md).
+The release has **105 tests: 80 local coordination/bootstrap, 15 receipt/snapshot compatibility and 10 Windows filesystem failure regressions**. Coverage includes real independent-process races and crashes, copied-controller rejection, strict byte checks and Windows Git clones with `core.autocrlf=true`. Independent review covered the core and bootstrap. A fresh-agent private-ledger trial preserved earlier work and completed canonical receipt/snapshot closeout after an initial missing-distribution failure was fixed. Those tests are maintainer evidence. Adopters do not run them. [Test scope and limits](TESTING.md).
 
 ### Where the boundaries are
 
