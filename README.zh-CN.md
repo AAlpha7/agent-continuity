@@ -24,7 +24,11 @@ Continuity 让持续的 AI 协作留在你自己掌握的记录里，**跨项目
 | **换机器、过几天再继续** | 获准项目副本里的未完成工作和原始证据 |
 | **确认“真的做完了吗”** | 原始回执、检查过的版本和可核对的成果引用 |
 
-Git、Node、文件操作可以交给有能力、有权限的代理。真正需要你参与的是项目目标、新增访问、重要外部操作，以及无法自行消除的范围分歧。
+**产品要求：** 建立和加入只需要 git、GitHub，以及一个 POSIX shell。`gh` 可选。不需要 Node.js，也不需要 Python。在 Windows 上，用 Git for Windows 自带的 Git Bash 或 WSL 运行同一份 shell 自检。`scripts/ledger-smoke.ps1` 是可选的本机 PowerShell 对照脚本，仍然只用 git，不用 Node。
+
+**第一步成功路径：** 建立私有账本并返回它的 GitHub URL；加入时只克隆这个 URL。下面的 shell 自检会在临时账本里核对协议要求的回执、哈希和单写者锁。105 项 Node 测试和 Node 演示是可选的维护者命令，不是接入前提，也不作为 CI 门槛。
+
+真正需要你参与的是项目目标、新增访问、重要外部操作，以及无法自行消除的范围分歧。
 
 ## 把这段交给你的 AI
 
@@ -34,42 +38,111 @@ Git、Node、文件操作可以交给有能力、有权限的代理。真正需�
 请为我们自己的持续工作接入 Agent Continuity，支持跨项目、跨代理、
 AI 公司品牌、机器和工作环境的协作，以及参与者的加入、替换和退出。
 把目标、决定、责任记录、进展和未完成事项留在我们掌握且可访问的
-项目记录里。使用检查过的 v0.1.0-rc.3 工具版本：
+项目记录里。
+
+产品要求：建立和加入只需要 git、GitHub，以及 POSIX shell。gh 可选。
+不要安装 Node.js 或 Python。在 Windows 上用 Git Bash 或 WSL 运行
+scripts/ledger-smoke.sh。PowerShell 对照脚本 scripts/ledger-smoke.ps1
+可选，仍然不用 Node。
+
+公开仓库只是只读工具来源，不是我们的账本或团队：
 https://github.com/AAlpha7/agent-continuity
+需要步骤时阅读其中的 ONBOARDING.md。不要把它 fork 进我们的项目。
+不得把记录发到上游、公开 issue/PR 或发布者。
 
-先安全检查我们的实际项目、系统、路径、现有账本、账号、工具和权限。
-不要套用发布者的环境或演示身份。阅读固定版本的 ONBOARDING.md
-和 r2/DISTRIBUTION.md。
+如果手头有检查过的工具目录，自检命令是：
+sh scripts/ledger-smoke.sh
+接入时不要运行 node --test 或 Node 演示，也不要把它们放进 CI。
 
-公开仓库只是只读工具来源，不是我们的账本或团队。把真实记录放在
-工具目录与 fixtures 之外、由我控制的独立私有账本里。
-合成演示另用一次性目录。不得把记录发到上游、公开 issue/PR 或发布者。
+建立 — 留下私有账本 URL：
+优先复用已批准的私有账本。若需要新建，只在我批准确切所有者、
+名称、私有可见性和 push 之后，用 git（以及已经可用的 gh）在已核实的
+我自己的 GitHub 账号下创建私有仓库。第一次提交前，把工具目录里的
+.gitattributes 复制进去。根据已检查的证据提交
+projects/PROJECT/CURRENT_STATE.md：目标、决定、未完成事项和
+下一项获准任务。push 前核实所有者、真实私有可见性和全部 fetch/push
+目标。未知保持未验证。公开 fork 不等于私库。不保存 token，不修改
+安全设置。没有 GitHub 时，本地 git 账本即可；不要为了补齐而安装
+Node，也不要强迫登录。
 
-优先复用已批准的私有账本。若共享需要新建私库，只在必要授权齐备后
-使用已核实的我自己的 GitHub 账号。写入连接 Git 的账本或同步前，
-核实所有者、真实私有可见性、全部 fetch/push 目标。
-公开 fork 不等于私库；未知保持未验证。没有远端也可以先本地可用。
-不隐式配置远端，不自动 push，不保存 token，不修改安全设置。
+把私有账本 URL 交给我。下一位代理只用这个 URL 加入，不要再把
+工具仓库 URL 发给它。
 
-日常授权步骤由你完成。固定一个新代理实际能取得的工具版本，
-留下入口、文档和命令，不依赖你的机器路径或旧聊天里的隐藏提示。
-创建并检查首份回执/快照，同时阅读原始证据。
-合适时使用已有获准的通知工具；新增订阅或访问先取得具体授权。
-记录提供上下文，不产生新权限。
+加入 — 把下面这段连同真实 URL 交给下一位代理：
+加入我们的连续性账本。只克隆并阅读这个私有仓库：
+LEDGER_URL
+从 projects/PROJECT/CURRENT_STATE.md 继续。把更新提交回同一个账本。
+不要克隆公开工具仓库，不要安装 Node.js，不要运行它的测试。
 
-只把真正缺失的范围、访问或批准事项集中交给我。
-报告账本位置、来源版本、实际检查、共享状态和下一位代理如何继续，
-并确认没有把用户数据写入或发送到上游。
+记录提供上下文，不产生新权限。只把真正缺失的范围、访问或批准事项
+集中交给我，并确认没有把用户数据写入或发送到上游。
 ```
 
-**账本属于你。** 已获准的私有 GitHub 仓库适合跨代理共享，合适的私有本地目录也能开始。代理应留下下一位真正能用的入口，而不是只有自己机器上才找得到的一串 commit。见[接入手册](ONBOARDING.md)与[工具分发契约](r2/DISTRIBUTION.md)。
+**账本属于你。** 建立步骤留下私有 GitHub 账本 URL。下一位代理只用这个 URL 加入，而不是再次打开工具仓库。没有 GitHub 时，没有远端的本地 git 账本仍然可以开始。见[接入手册](ONBOARDING.md)。
 
 <details>
-<summary><strong>想先看看它怎么工作？</strong></summary>
+<summary><strong>第一步：建立、私有账本 URL、加入。</strong></summary>
 
-准备好 Node.js 24+ 和 Git 后，在检查过的工具目录运行[英文页的合成示例](README.md#start-with-your-ai)。示例只复制合成数据到工具目录外，不建立远端。自己的项目按 [GUIDE.md](GUIDE.md) 初始化。
+不需要 Node.js。在工具目录之外，并在你批准所有者、仓库名、私有可见性和 push 之后执行。Windows 上使用 Git Bash 或 WSL。`gh` 可选；没有它时，在 GitHub 网页上创建私有仓库，再用 git 克隆。
 
-本地协调预览另有 `node r2/demo.mjs`：演示重复请求、独立终止状态、尚未确认的接收方和可恢复视图；它不是真实远端身份测试。
+```sh
+gh api user --jq .login
+gh repo create OWNER/LEDGER --private --clone
+cd LEDGER
+cp /path/to/inspected-toolkit/.gitattributes .gitattributes
+mkdir -p projects/PROJECT
+# 提交前，根据真实项目写下 projects/PROJECT/CURRENT_STATE.md。
+git add .gitattributes projects/PROJECT/CURRENT_STATE.md
+git commit -m "Start the private continuity ledger"
+git push -u origin HEAD
+gh repo view --json url,visibility --jq '{url:.url,visibility:.visibility}'
+git remote get-url --all origin
+git remote get-url --push --all origin
+```
+
+`OWNER/LEDGER` 必须是获准的私有仓库，不是本工具仓库的 fork。创建前，`gh api user` 的登录名必须与获准所有者一致。只有在所有者、私有可见性和全部 fetch/push URL 都核实之后才能 push。打印出的 URL 就是下一位代理要克隆的地址：
+
+```sh
+git clone LEDGER_URL
+```
+
+这次克隆就是加入。阅读 `projects/PROJECT/CURRENT_STATE.md`，并把更新提交回同一个账本。不需要再使用本仓库。
+
+</details>
+
+<details>
+<summary><strong>自检：shell 和 git。不用 Node。</strong></summary>
+
+在检查过的工具目录中：
+
+```sh
+sh scripts/ledger-smoke.sh
+```
+
+Windows 上用 Git Bash 或 WSL（Git for Windows）运行同一脚本。可选的本机 Windows shell 仍然只用 git、不用 Node：
+
+```powershell
+powershell.exe -File scripts/ledger-smoke.ps1
+```
+
+自检会建立临时合成账本，写入协议描述的样例回执和交接文本，提交后再以 `core.autocrlf=true` 克隆，并核对哈希、预期文件和单写者 `writer.lock` 的形态。它不创建 GitHub 远端，也不是你的账本。不要把其中的合成项目名或时间戳抄进真实记录。不要把这个脚本、PowerShell 对照脚本或 Node 演示放进 CI 当作接入门槛。详见 [TESTING.md](TESTING.md)。
+
+</details>
+
+<details>
+<summary><strong>可选的维护者检查。机器上已经有 Node.js 24+。</strong></summary>
+
+采用者停在账本 URL 和 shell 自检。已经安装 Node.js 24+ 的维护者可以在本地运行测试套件和合成演示。不要为了接入去安装 Node，也不要添加把它们变成接入门槛的 workflow。目标目录必须尚不存在；`cp` 会创建它，并拒绝已存在的目录。
+
+```sh
+node --test test/*.test.mjs r2/test/*.test.mjs
+node --input-type=module -e "import { cp } from 'node:fs/promises'; const dest='../agent-continuity-demo'; await cp('fixtures', dest, { recursive: true, errorOnExist: true, force: false });"
+node scripts/agent-receipt.mjs ../agent-continuity-demo/workspace ../agent-continuity-demo/receipt.json
+node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace demo-project
+node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace demo-project --check
+```
+
+复制只把合成数据放到工具目录外，不建立远端。机器上已有 Node 时，规范回执文件见 [GUIDE.md](GUIDE.md)。本地协调预览是 `node r2/demo.mjs`，范围见 [r2/README.md](r2/README.md)。
 
 </details>
 
@@ -92,13 +165,13 @@ https://github.com/AAlpha7/agent-continuity
 ## rc.3 带来了什么
 
 - **你自己的项目记忆：** 独立不可变回执、原文按字节保留、可检查的本地快照。
-- **下一位能用的入口：** 固定工具和文档，可选源码包与不执行包内代码的校验解包器。
+- **下一位能用的入口：** 私有账本 URL。加入时只克隆这个 URL。
 - **本地协调预览：** 限额动作、明确终止、持久终止发送记录、逐接收方状态和可恢复视图；只在一个受信本地控制器内工作。
-- **可自己检查的证据：** 来源版本、冲突与原样重放检查；无需模型订阅或托管服务即可运行测试。
+- **维护者可检查的证据：** 来源版本、冲突与原样重放检查，以及可选的 Node 套件。采用者运行 shell 自检。不需要模型订阅或托管服务。
 
 ### 为什么可以试
 
-本版有 **105 项测试：80 项本地协调／分发、15 项回执／快照兼容，以及 10 项 Windows 文件系统失败回归**，覆盖真实进程竞争与中断、复制控制器拒绝、严格字节校验及 Windows `core.autocrlf=true` 克隆。核心和解包器经过独立审查。真实新代理私库试验先暴露了工具分发缺口；修复后，新的接收方完成了规范回执和快照收尾，旧记录保留。详见[测试范围](TESTING.md)。
+可选的维护者套件有 **105 项测试：80 项本地协调／分发、15 项回执／快照兼容，以及 10 项 Windows 文件系统失败回归**，覆盖真实进程竞争与中断、复制控制器拒绝、严格字节校验及 Windows `core.autocrlf=true` 克隆。核心和解包器经过独立审查。真实新代理私库试验先暴露了工具分发缺口；修复后，新的接收方完成了规范回执和快照收尾，旧记录保留。这些测试是维护者证据。采用者运行[shell 自检](TESTING.md)，不运行这套测试。
 
 ### 需要知道的边界
 
@@ -108,7 +181,7 @@ https://github.com/AAlpha7/agent-continuity
 
 ## 用到时再展开
 
-[接入与权限](ONBOARDING.md) · [自己的项目](GUIDE.md) · [回执格式](RECEIPT-SCHEMA.md) · [协议](PROTOCOL.md) · [本地协调预览](r2/README.md) · [文件校验清单](MANIFEST.json)
+[接入与权限](ONBOARDING.md) · [自检](TESTING.md) · [回执格式](RECEIPT-SCHEMA.md) · [协议](PROTOCOL.md) · [可选的 Node 初始化](GUIDE.md) · [本地协调预览](r2/README.md) · [文件校验清单](MANIFEST.json)
 
 ## 许可与作者
 

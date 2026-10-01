@@ -11,8 +11,13 @@
     },
     {
       "path": "GUIDE.md",
-      "bytes": 6606,
-      "sha256": "0eb29bb962f3ad18677dba0b19bb6d27a6f45bfeff2590a73fa97cd971c70ac3"
+      "bytes": 6908,
+      "sha256": "48d8bbb6f9a5e6483164ce5a3bc3ac65786006abf50dd10c94df8bf3771fdb89"
+    },
+    {
+      "path": "History/2026-10-01-shell-git-smoke.md",
+      "bytes": 1028,
+      "sha256": "1b70d0732eb34535f9096570a939a0b3145302968548ad1670343986bf83b100"
     },
     {
       "path": "LICENSE",
@@ -21,8 +26,8 @@
     },
     {
       "path": "ONBOARDING.md",
-      "bytes": 20942,
-      "sha256": "a4f99e37cb6cf23fa729bb715c1ed9f96cbc4faef5dbb577a920c4640fc2ebd0"
+      "bytes": 26427,
+      "sha256": "479b8085e6da06438425c2f3aef03373f6e567e0592e0fb15514312851265d06"
     },
     {
       "path": "PROTOCOL.md",
@@ -36,13 +41,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 11286,
-      "sha256": "57671989c61a72a882ccaa029f7fb34ab0131056b5919096663080f7ab10f4d4"
+      "bytes": 14582,
+      "sha256": "f0452c3f8b2fde16787661ce7c8dc11096a093d89004e70e3b0de85daa60ea84"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 9389,
-      "sha256": "3f8e8875e9b7adaee005253a559610a9bfac7a1e6a28631999c72f55e5cf13a5"
+      "bytes": 13405,
+      "sha256": "7314b2abc2f02ab9fa27af24dfc12b235ec3d272af8b0d6582d33717771ecdc5"
     },
     {
       "path": "RECEIPT-SCHEMA.md",
@@ -66,13 +71,18 @@
     },
     {
       "path": "TESTING.md",
-      "bytes": 6082,
-      "sha256": "67d57b405d9b4f132104e4311b1f2ba58ef5d7f82a47c46622b751e7612a145d"
+      "bytes": 8568,
+      "sha256": "ab30acce131e3bfd6d7a1de2c77996407f2621ed723e05973f06f645638fa0d9"
     },
     {
       "path": "docs/NOTIFICATIONS.md",
       "bytes": 2299,
       "sha256": "436564ea0189c0eb5ea8cf0a9f3c09217c126288849c42bba5ee8c381f7ecb88"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "bytes": 749,
+      "sha256": "6d20bf73659fc701c3487b2be88856cf21af48f07d4ca592fcc383ae58d96056"
     },
     {
       "path": "docs/assets/ATTRIBUTION.md",
@@ -278,6 +288,16 @@
       "path": "scripts/build-continuity-snapshot.mjs",
       "bytes": 6938,
       "sha256": "54397d10ed3803804b125e60bd4051a728abd180ad4979739bc7e07258b5e834"
+    },
+    {
+      "path": "scripts/ledger-smoke.ps1",
+      "bytes": 13291,
+      "sha256": "45c2319cf0a5fb79c1f3fbd7d442c969d08df80ca02ab2bd8e1033a6021e925b"
+    },
+    {
+      "path": "scripts/ledger-smoke.sh",
+      "bytes": 9432,
+      "sha256": "6f997cdb79ae5a5eaae8ec23491225635adfabada6af233dc1a680a77a7f7017"
     },
     {
       "path": "test/extraction-boundaries.test.mjs",

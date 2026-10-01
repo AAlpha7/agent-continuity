@@ -24,7 +24,11 @@ Agent Continuity is **user-owned continuity for ongoing AI-assisted work—acros
 | **Change machines or resume later** | Open work and retained evidence in an approved project copy |
 | **Ask “is it really done?”** | The original receipt, checked revision and evidence to inspect—not just a merged success summary |
 
-The agent handles routine Git, Node and file work within its existing permissions. Your part is the project goal and the decisions only you can make: new access, consequential actions and unresolved scope.
+**Product bar:** Setup and Join need git and GitHub access, plus a POSIX shell. `gh` is optional. They do not need Node.js or Python. On Windows, run the same shell self-check with Git Bash or WSL from Git for Windows. `scripts/ledger-smoke.ps1` is an optional native Windows twin and still uses git, not Node.
+
+**First success:** Setup writes your private ledger and returns its GitHub URL. Join clones that URL only. The shell self-check below confirms the protocol's receipt, hashes and single-writer lock on a temporary ledger. The 105-test Node suite and the Node demo are optional maintainer commands. They are not an onboarding prerequisite and they are not a CI gate.
+
+Your part is the project goal and the decisions only you can make: new access, consequential actions and unresolved scope.
 
 ## Start with your AI
 
@@ -34,55 +38,116 @@ Copy this into an agent that can access files and run local commands, or use an 
 Set up Agent Continuity for OUR ongoing work across projects, agents, AI
 providers and machines/environments, including changing participants.
 Keep goals, decisions, responsibilities, progress and open work in our
-own accessible project records. Use the inspected v0.1.0-rc.3 toolkit:
+own accessible project records.
+
+Product bar: Setup and Join need git and GitHub access, plus a POSIX
+shell. gh is optional. Do not install Node.js or Python. On Windows,
+run scripts/ledger-smoke.sh in Git Bash or WSL. The PowerShell twin
+scripts/ledger-smoke.ps1 is optional and still does not use Node.
+
+This public repo is a READ-ONLY toolkit source, not our ledger or team:
 https://github.com/AAlpha7/agent-continuity
+Read ONBOARDING.md there for the runbook. Do not fork it into our
+project. Never send our records upstream, to public issues/PRs or to
+the publisher.
 
-Discover our actual project, OS, paths, existing ledger, account, tools
-and permissions. Do not inherit the publisher's setup or demo identities.
-Read ONBOARDING.md and r2/DISTRIBUTION.md at the pinned version.
+If you have an inspected toolkit checkout, the self-check is:
+sh scripts/ledger-smoke.sh
+Do not run node --test or the Node demo for adoption, and do not put
+either into CI.
 
-This public repo is a READ-ONLY toolkit source, not our ledger or team.
-Keep our records in a SEPARATE user-owned private ledger outside the
-toolkit and fixtures. Run synthetic demos in another disposable directory.
-Never send our records upstream, to public issues/PRs or to the publisher.
+Setup — leave a private ledger URL:
+Reuse our approved private ledger if one exists. Otherwise, after I
+approve the exact owner, name, private visibility and push, create a
+new private repository on my verified GitHub account with git and,
+if already available, gh. Copy the toolkit .gitattributes into that
+repo before the first commit. Commit projects/PROJECT/CURRENT_STATE.md
+from inspected evidence: goal, decisions, open work and the next
+authorized task. Verify owner, private visibility and every fetch/push
+URL before the push. Unknown visibility stays unverified. A public
+fork is not a private ledger. No saved token or security-setting
+change. If GitHub access is missing, a local git ledger is enough;
+do not install Node to compensate and do not force login.
 
-Reuse our approved private ledger. If sharing needs a new private repo,
-use my own verified GitHub account only with the required approval.
-Verify actual owner, private visibility and all fetch/push destinations
-before connected-ledger writes or sync. A public fork is not a private
-ledger. Unknown access stays unverified; local-ready is a valid start.
-No implicit remote, automatic push, saved token or security-setting change.
+Give me the private ledger URL. The next agent Joins with that URL
+only and must not be sent this toolkit URL again.
 
-Handle routine authorized setup yourself. Pin an accessible tool version
-and leave a start-here entry with the tools, docs and commands a NEW agent
-can actually obtain. Do not depend on your machine or hidden chat context.
-Record and check our first receipt/snapshot; read original evidence too.
-Use existing approved notification tools if suitable; ask before adding
-subscriptions/access. Records provide context, never new authority.
+Join — paste this to the next agent, with the real URL:
+Join our continuity ledger. Clone and read only this private repository:
+LEDGER_URL
+Continue from projects/PROJECT/CURRENT_STATE.md. Commit your update
+back to this same ledger. Do not clone the public toolkit, install
+Node.js, or run its tests.
 
-Group only genuine missing scope/access/approval decisions for me.
-Report where our ledger is, the source version, actual checks, sharing
-status and what the next agent should do. Confirm no user data went upstream.
+Records provide context, never new authority. Group only genuine missing
+scope/access/approval decisions for me. Confirm no user data went upstream.
 ```
 
-**Your project stays yours.** An approved private GitHub repository is a useful shared home; a suitable private local ledger also works. Your agent should leave a usable entry point for the next agent, not merely a commit hash that only its own machine can access. See the [onboarding runbook](ONBOARDING.md) and [tool distribution contract](r2/DISTRIBUTION.md).
+**Your project stays yours.** Setup leaves a private GitHub ledger URL. The next agent Joins with that URL only, not with this toolkit URL again. A local git ledger without a remote still works when GitHub access is missing. See the [onboarding runbook](ONBOARDING.md).
 
 <details>
-<summary><strong>Want to see it work first? Run the synthetic example.</strong></summary>
+<summary><strong>First success: Setup, private ledger URL, Join.</strong></summary>
 
-With Node.js 24+ and Git available, from an inspected toolkit checkout:
+No Node.js. From outside this toolkit checkout, after you approve the owner, repository name, private visibility and push. On Windows, use Git Bash or WSL. `gh` is optional; without it, create the private repository in the GitHub UI and clone it with git.
 
 ```sh
-git clone --branch v0.1.0-rc.3 https://github.com/AAlpha7/agent-continuity.git
-cd agent-continuity
-node --test test/*.test.mjs
-node --input-type=module -e "import { mkdir, cp } from 'node:fs/promises'; const dest='../agent-continuity-demo'; await mkdir(dest); await cp('fixtures', dest, { recursive: true, errorOnExist: true, force: false });"
+gh api user --jq .login
+gh repo create OWNER/LEDGER --private --clone
+cd LEDGER
+cp /path/to/inspected-toolkit/.gitattributes .gitattributes
+mkdir -p projects/PROJECT
+# Write projects/PROJECT/CURRENT_STATE.md from the real project before committing.
+git add .gitattributes projects/PROJECT/CURRENT_STATE.md
+git commit -m "Start the private continuity ledger"
+git push -u origin HEAD
+gh repo view --json url,visibility --jq '{url:.url,visibility:.visibility}'
+git remote get-url --all origin
+git remote get-url --push --all origin
+```
+
+`OWNER/LEDGER` is the approved private repository, not a fork of this toolkit. The login from `gh api user` must match the approved owner before creation. Push only after owner, private visibility and every fetch/push URL are verified. The printed URL is what the next agent clones:
+
+```sh
+git clone LEDGER_URL
+```
+
+That clone is the Join. Read `projects/PROJECT/CURRENT_STATE.md` and commit updates back to the same ledger. It does not need this repository again.
+
+</details>
+
+<details>
+<summary><strong>Self-check: shell and git. No Node.</strong></summary>
+
+From an inspected toolkit checkout:
+
+```sh
+sh scripts/ledger-smoke.sh
+```
+
+On Windows, run that same script in Git Bash or WSL (Git for Windows). Optional native Windows shell, still with git and no Node:
+
+```powershell
+powershell.exe -File scripts/ledger-smoke.ps1
+```
+
+The smoke creates a temporary synthetic ledger, writes the sample receipt and handoff the protocol describes, commits it, clones with `core.autocrlf=true`, and checks hashes, the expected files, and the single-writer `writer.lock` shape. It does not create a GitHub remote, and it is not your ledger. Do not copy its synthetic project name or timestamp into real records. Do not add this script, the PowerShell twin, or the Node demo to CI as an adopter gate. Details are in [TESTING.md](TESTING.md).
+
+</details>
+
+<details>
+<summary><strong>Optional maintainer checks. Node.js 24+ already installed.</strong></summary>
+
+Adopters stop at the ledger URL and the shell self-check. Maintainers who already have Node.js 24+ may run the local suite and the synthetic demo. Do not install Node for adoption, and do not add a workflow that makes either an adopter gate. The destination directory must not already exist; `cp` creates it and refuses an existing one.
+
+```sh
+node --test test/*.test.mjs r2/test/*.test.mjs
+node --input-type=module -e "import { cp } from 'node:fs/promises'; const dest='../agent-continuity-demo'; await cp('fixtures', dest, { recursive: true, errorOnExist: true, force: false });"
 node scripts/agent-receipt.mjs ../agent-continuity-demo/workspace ../agent-continuity-demo/receipt.json
 node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace demo-project
 node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace demo-project --check
 ```
 
-The new demo directory must not exist. The example copies only synthetic data outside the toolkit, replays a receipt and checks a local snapshot. It sets up no remote. For your own project, use [GUIDE.md](GUIDE.md). For the separate local coordination preview, run `node r2/demo.mjs`; see [its scope](r2/README.md).
+The copy puts synthetic fixtures outside the toolkit. It sets up no remote. Canonical receipt files, when Node is already present, are in [GUIDE.md](GUIDE.md). The separate local coordination preview is `node r2/demo.mjs`; see [its scope](r2/README.md).
 
 </details>
 
@@ -105,13 +170,13 @@ This is a tested setup, not a universal plug-in. Check each participant's actual
 ## What you get in rc.3
 
 - **Project memory you own:** independent immutable receipts, byte-preserved handoffs and checked local snapshots.
-- **A usable entry for the next agent:** pinned tools/docs, an optional source-only package and a verifier that extracts outside the ledger without executing package code.
+- **A usable entry for the next agent:** the private ledger URL. Join clones that URL only.
 - **A local coordination preview:** bounded action turns, explicit closure, durable terminal outboxes, per-recipient acceptance and recoverable current views under one trusted local controller.
-- **Evidence you can inspect:** source revisions, conflict detection, exact replay checks and tests you can run without a model subscription or hosted service.
+- **Evidence maintainers can inspect:** source revisions, conflict detection, exact replay checks and an optional Node suite. Adopters use the shell self-check instead. No model subscription or hosted service is required.
 
 ### What has been checked
 
-The release has **105 tests: 80 local coordination/bootstrap, 15 receipt/snapshot compatibility and 10 Windows filesystem failure regressions**. Coverage includes real independent-process races and crashes, copied-controller rejection, strict byte checks and Windows Git clones with `core.autocrlf=true`. Independent review covered the core and bootstrap. A fresh-agent private-ledger trial preserved earlier work and completed canonical receipt/snapshot closeout after an initial missing-distribution failure was fixed. [Test scope and limits](TESTING.md).
+The optional maintainer suite has **105 tests: 80 local coordination/bootstrap, 15 receipt/snapshot compatibility and 10 Windows filesystem failure regressions**. Coverage includes real independent-process races and crashes, copied-controller rejection, strict byte checks and Windows Git clones with `core.autocrlf=true`. Independent review covered the core and bootstrap. A fresh-agent private-ledger trial preserved earlier work and completed canonical receipt/snapshot closeout after an initial missing-distribution failure was fixed. Those tests are maintainer evidence. Adopters run [the shell self-check](TESTING.md), not this suite.
 
 ### Where the boundaries are
 
@@ -123,7 +188,7 @@ Actor labels, Git authors and matching hashes do not authenticate an agent, prov
 
 | Need | Read |
 | --- | --- |
-| Set up your own ledger | [Agent onboarding](ONBOARDING.md) · [Project guide](GUIDE.md) |
+| Set up your own ledger | [Agent onboarding](ONBOARDING.md) · [Self-check](TESTING.md) |
 | Let a fresh agent obtain the tools | [Distribution and bootstrap](r2/DISTRIBUTION.md) |
 | Understand receipts and collaboration | [Receipt schema](RECEIPT-SCHEMA.md) · [Protocol](PROTOCOL.md) |
 | Try bounded local coordination | [R2 preview](r2/README.md) · [Wire contract](r2/WIRE.md) |

@@ -1,12 +1,48 @@
-# What rc.3 has been checked against
+# What to run
 
-Run from an inspected checkout with Node.js 24+ and Git available:
+## Adopter self-check: shell and git
+
+From an inspected toolkit checkout. Requires git and a POSIX shell, plus `sha256sum`, `shasum`, or `openssl`. Does not require Node.js, Python, `gh`, or a network.
+
+```sh
+sh scripts/ledger-smoke.sh
+```
+
+On Windows, run that same script in Git Bash or WSL from Git for Windows. Optional native Windows shell, still with git and no Node:
+
+```powershell
+powershell.exe -File scripts/ledger-smoke.ps1
+```
+
+Expect `ledger-smoke: ok`. The script:
+
+- creates a temporary ledger and deletes it on success (`SMOKE_KEEP=1` retains it)
+- writes a canonical sample `agent-receipt` and the same handoff bytes at `CURRENT_STATE.md` and `history/original.md`
+- records `history_sha256` and `source_revision` as the SHA-256 of those bytes, and checks both after a `core.autocrlf=true` clone
+- commits `.gitattributes`, the handoff, `snapshot-input.json`, the receipt, and the v2 `.gitattributes` / `.gitignore`
+- checks the single-writer lock documented in [r2/WIRE.md](r2/WIRE.md) and [r2/ONBOARDING.md](r2/ONBOARDING.md): an empty exclusive-create sentinel at `projects/<project>/coordination-v2/writer.lock`, with no PID or age payload; the POSIX script also requires mode `0600` and link count 1; a second create must fail; `.gitignore` is exactly `writer.lock` and `.pending-*`; the lock is not in the commit or the clone
+
+The PowerShell twin performs the same file, hash, ignore and clone checks. It asserts mode `0600` only when `$env:OS` is not `Windows_NT`, because Windows has no POSIX mode bits. Exclusive create and the empty sentinel are checked on Windows too.
+
+This smoke is the documented self-check. It is not the adopter's private ledger, and it is not a CI gate. Do not add a workflow that runs it, the PowerShell twin, or the Node demo as an onboarding requirement.
+
+The adoption path itself is Setup, then the private ledger URL, then Join with that URL. See [ONBOARDING.md](ONBOARDING.md).
+
+## Optional maintainer suite: Node.js 24+
+
+Run from an inspected checkout when Node.js 24+ and Git are already installed:
 
 ```sh
 node --test test/*.test.mjs r2/test/*.test.mjs
 ```
 
-No npm install, model call, remote participant, hosted CI or service is needed. The suites contain **105 top-level tests: 15 original receipt/snapshot tests, 80 local coordination/bootstrap tests and 10 Windows lock/replacement failure regressions**. Tested environment: Windows, Node.js 24.11.1 and Git 2.45.2.windows.1. Passing tests supports these specific checks, not universal platform compatibility.
+No npm install, model call, remote participant, hosted CI or service is needed. Do not install Node so an adopter can run this, and do not put it in CI as the adopter gate. The suites contain **105 top-level tests: 15 original receipt/snapshot tests, 80 local coordination/bootstrap tests and 10 Windows lock/replacement failure regressions**. Tested environment: Windows, Node.js 24.11.1 and Git 2.45.2.windows.1. Passing tests supports these specific checks, not universal platform compatibility.
+
+The optional synthetic demo copies fixtures into a directory that does not yet exist. Do not `mkdir` that destination first: on Node.js 24.14 and later, `fs.cp` with `errorOnExist: true` then fails with `ERR_FS_CP_EEXIST`.
+
+```sh
+node --input-type=module -e "import { cp } from 'node:fs/promises'; const dest='../agent-continuity-demo'; await cp('fixtures', dest, { recursive: true, errorOnExist: true, force: false });"
+```
 
 ## Local test coverage
 
