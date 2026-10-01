@@ -9,7 +9,9 @@
 # The script writes a temporary ledger, commits it, and clones with
 # core.autocrlf=true. It checks the sample receipt, handoff bytes,
 # history SHA-256, and the single-writer lock shape documented in
-# r2/WIRE.md and r2/ONBOARDING.md. It does not create a remote.
+# r2/WIRE.md and r2/ONBOARDING.md. It also builds a second temporary
+# ledger in the Minimal Setup shape and checks that docs/PROTOCOL.md
+# byte-matches toolkit PROTOCOL.md. It does not create a remote.
 # This is not a CI adopter gate.
 
 set -eu
@@ -63,6 +65,10 @@ command -v mktemp >/dev/null 2>&1 || die "mktemp is required"
 script_dir=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
 toolkit=$(CDPATH= cd -- "$script_dir/.." && pwd)
 [ -f "$toolkit/.gitattributes" ] || die "missing $toolkit/.gitattributes"
+[ -f "$toolkit/PROTOCOL.md" ] || die "missing $toolkit/PROTOCOL.md"
+[ -f "$toolkit/templates/HOW_WE_COORDINATE.md" ] || die "missing $toolkit/templates/HOW_WE_COORDINATE.md"
+grep -F '<commit or unset>' "$toolkit/templates/HOW_WE_COORDINATE.md" >/dev/null || die "template missing revision token"
+grep -F 'docs/PROTOCOL.md' "$toolkit/templates/HOW_WE_COORDINATE.md" >/dev/null || die "template does not point at docs/PROTOCOL.md"
 
 work=$(mktemp -d "${TMPDIR:-/tmp}/ledger-smoke.XXXXXX")
 hooks=$work/empty-hooks
@@ -251,6 +257,84 @@ is_sha256 "$receipt_sha" || die "receipt hash is not 64 lowercase hex"
 clone_receipt=$(hash_file "$clone/projects/smoke-project/receipts/smoke-receipt-0001.json")
 [ "$clone_receipt" = "$receipt_sha" ] || die "clone receipt hash mismatch"
 
+# Minimal Setup shape. Separate synthetic ledger. Same git config.
+# Copies match the documented Setup commands: .gitattributes, a byte
+# copy of PROTOCOL.md, the short entry with the revision set to unset,
+# and a handoff that names the documented fields.
+minimal=$work/minimal
+minimal_clone=$work/minimal-clone
+mkdir -m 700 -p "$minimal/docs" "$minimal/projects/PROJECT"
+cp "$toolkit/.gitattributes" "$minimal/.gitattributes"
+cp "$toolkit/PROTOCOL.md" "$minimal/docs/PROTOCOL.md"
+sed 's/<commit or unset>/unset/' "$toolkit/templates/HOW_WE_COORDINATE.md" > "$minimal/docs/HOW_WE_COORDINATE.md"
+cmp -s "$toolkit/.gitattributes" "$minimal/.gitattributes" || die "minimal .gitattributes is not a byte copy"
+cmp -s "$toolkit/PROTOCOL.md" "$minimal/docs/PROTOCOL.md" || die "docs/PROTOCOL.md is not a byte copy of toolkit PROTOCOL.md"
+sed 's/<commit or unset>/unset/' "$toolkit/templates/HOW_WE_COORDINATE.md" > "$work/expected-coordinate.md"
+cmp -s "$work/expected-coordinate.md" "$minimal/docs/HOW_WE_COORDINATE.md" || die "HOW_WE_COORDINATE is not the filled template"
+grep -F 'docs/PROTOCOL.md' "$minimal/docs/HOW_WE_COORDINATE.md" >/dev/null || die "HOW_WE_COORDINATE does not point at docs/PROTOCOL.md"
+grep -F 'CURRENT_STATE.md' "$minimal/docs/HOW_WE_COORDINATE.md" >/dev/null || die "HOW_WE_COORDINATE does not point at CURRENT_STATE.md"
+grep -F 'Toolkit docs revision (optional): unset' "$minimal/docs/HOW_WE_COORDINATE.md" >/dev/null || die "HOW_WE_COORDINATE revision line was not filled"
+if grep -F '<commit or unset>' "$minimal/docs/HOW_WE_COORDINATE.md" >/dev/null; then
+  die "HOW_WE_COORDINATE still has the unfilled revision token"
+fi
+cat > "$minimal/projects/PROJECT/CURRENT_STATE.md" <<'EOF'
+# Synthetic minimal handoff
+
+Goal: exercise Minimal ledger shape only.
+Decisions: none.
+Verified: none. This file is synthetic.
+Reported but unverified: none.
+Open questions: none.
+Next authorized task: none. Shape check only.
+Unresolved ownership: none.
+EOF
+for field in Goal Decisions Verified unverified 'Open questions' 'Next authorized task' 'Unresolved ownership'; do
+  grep -F "$field" "$minimal/projects/PROJECT/CURRENT_STATE.md" >/dev/null || die "CURRENT_STATE missing $field"
+done
+if ! gitc -C "$minimal" init --template= >"$work/git-out" 2>&1; then
+  cat "$work/git-out" >&2
+  die "minimal git init failed"
+fi
+if ! gitc -C "$minimal" add -- \
+  .gitattributes \
+  docs/PROTOCOL.md \
+  docs/HOW_WE_COORDINATE.md \
+  projects/PROJECT/CURRENT_STATE.md \
+  >"$work/git-out" 2>&1; then
+  cat "$work/git-out" >&2
+  die "minimal git add failed"
+fi
+if ! gitc -C "$minimal" commit -m "Synthetic minimal ledger" >"$work/git-out" 2>&1; then
+  cat "$work/git-out" >&2
+  die "minimal git commit failed"
+fi
+gitc -C "$minimal" ls-files > "$work/minimal-files"
+cat > "$work/expected-minimal" <<'EOF'
+.gitattributes
+docs/HOW_WE_COORDINATE.md
+docs/PROTOCOL.md
+projects/PROJECT/CURRENT_STATE.md
+EOF
+while IFS= read -r rel; do
+  [ -n "$rel" ] || continue
+  if ! grep -F -x "$rel" "$work/minimal-files" >/dev/null; then
+    die "missing minimal committed file: $rel"
+  fi
+done < "$work/expected-minimal"
+minimal_count=$(awk 'NF { n++ } END { print n + 0 }' "$work/minimal-files")
+minimal_expected=$(awk 'NF { n++ } END { print n + 0 }' "$work/expected-minimal")
+[ "$minimal_count" = "$minimal_expected" ] || die "minimal committed file count $minimal_count != $minimal_expected"
+if ! gitc clone --no-local --config core.autocrlf=true "$minimal" "$minimal_clone" >"$work/git-out" 2>&1; then
+  cat "$work/git-out" >&2
+  die "minimal git clone failed"
+fi
+while IFS= read -r rel; do
+  [ -n "$rel" ] || continue
+  cmp -s "$minimal/$rel" "$minimal_clone/$rel" || die "minimal clone byte mismatch: $rel"
+done < "$work/minimal-files"
+cmp -s "$toolkit/PROTOCOL.md" "$minimal_clone/docs/PROTOCOL.md" || die "cloned docs/PROTOCOL.md does not byte-match toolkit PROTOCOL.md"
+cmp -s "$toolkit/.gitattributes" "$minimal_clone/.gitattributes" || die "cloned minimal .gitattributes does not byte-match"
+
 commit=$(gitc -C "$ledger" rev-parse HEAD)
 printf '%s\n' \
   "ledger-smoke: ok" \
@@ -258,4 +342,5 @@ printf '%s\n' \
   "receipt_sha256: $receipt_sha" \
   "commit: $commit" \
   "clone: core.autocrlf=true byte match" \
-  "writer.lock: empty exclusive sentinel mode 0600; not committed"
+  "writer.lock: empty exclusive sentinel mode 0600; not committed" \
+  "minimal-ledger: docs/PROTOCOL.md byte match"

@@ -9,10 +9,16 @@ Adopters finish at Minimal Setup, then Join ([ONBOARDING.md](ONBOARDING.md)). No
 Before each release or deploy, maintainers run **all** paths, including the optional ones:
 
 1. Two-agent ping, using the prompt below: A writes for B and B replies; then B writes for A and A replies.
-2. Shell smoke: `sh scripts/ledger-smoke.sh`. On Windows, Git Bash or WSL. `scripts/ledger-smoke.ps1` is the native twin.
-3. Node suite, when Node.js 24+ is available: the command under [Optional Node suite](#optional-node-suite).
+2. Shell smoke: `sh scripts/ledger-smoke.sh`. On Windows, Git Bash or WSL. `scripts/ledger-smoke.ps1` is the native twin. Every run includes the automated Minimal ledger shape check: `.gitattributes`, `docs/PROTOCOL.md` as a byte copy of toolkit `PROTOCOL.md`, `docs/HOW_WE_COORDINATE.md`, and `projects/PROJECT/CURRENT_STATE.md`. This shape check is part of the smoke. It is not an adopter gate, and it does not replace the live cold Join check below.
+3. Node suite, when Node.js 24+ is available: the command under [Optional Node suite](#optional-node-suite). Do not install Node to satisfy this checklist item, and do not make Node an adopter gate.
 
-If the Setup/Join paste blocks changed, also re-verify Minimal Setup and Join with brand-new agents in brand-new environments. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record that result with the optional-path runs.
+If the Setup/Join paste blocks changed, also re-verify Minimal Setup and Join with brand-new agents, brand-new environments, and brand-new ledgers. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Cold Join literacy is part of that re-verify:
+
+- Do not give the Join agent the public toolkit URL.
+- The Join agent must show that it used `docs/PROTOCOL.md` and `docs/HOW_WE_COORDINATE.md`, or fail if either file is missing, and that it updated `CURRENT_STATE.md` according to those rules.
+- PASS requires the ledger to contain `docs/PROTOCOL.md` (the real protocol copy) and `docs/HOW_WE_COORDINATE.md` after Setup, and the Join update to follow that protocol without cloning the toolkit.
+
+Record that result with the optional-path runs. The automated shape check in item 2 still runs on every maintainer release, including when this live trial is not repeated.
 
 Users do not run this checklist.
 
@@ -34,6 +40,10 @@ Project handoff: `projects/fresh-verify/CURRENT_STATE.md`
 - Optional checks: not run. This run was a Minimal-only re-verify after the paste change.
 
 Result: Minimal Setup→Join PASS, with a credential quirk (App credentials versus the AAlpha7 user integration).
+
+That run predates the ledger-local protocol copy. A new re-verify is required after this paste change. Do not treat the run above as evidence for `docs/PROTOCOL.md` or cold Join literacy.
+
+Re-verify after HOW_WE_COORDINATE paste change: pending.
 
 ## Optional quick protocol check
 
@@ -67,6 +77,7 @@ Expect `ledger-smoke: ok`. The script:
 - records `history_sha256` and `source_revision` as the SHA-256 of those bytes, and checks both after a `core.autocrlf=true` clone
 - commits `.gitattributes`, the handoff, `snapshot-input.json`, the receipt, and the v2 `.gitattributes` / `.gitignore`
 - checks the single-writer lock documented in [r2/WIRE.md](r2/WIRE.md) and [r2/ONBOARDING.md](r2/ONBOARDING.md): an empty exclusive-create sentinel at `projects/<project>/coordination-v2/writer.lock`, with no PID or age payload; the POSIX script also requires mode `0600` and link count 1; a second create must fail; `.gitignore` is exactly `writer.lock` and `.pending-*`; the lock is not in the commit or the clone
+- builds a second temporary ledger the way Minimal Setup does: `.gitattributes`, `docs/PROTOCOL.md` as a byte copy of toolkit `PROTOCOL.md`, `docs/HOW_WE_COORDINATE.md` from `templates/HOW_WE_COORDINATE.md` with the revision line set to `unset`, and `projects/PROJECT/CURRENT_STATE.md` with the documented handoff fields. It commits those four paths, clones with `core.autocrlf=true`, and checks `docs/PROTOCOL.md` still byte-matches the toolkit file. This shape check runs every time the smoke runs. It is not an adopter gate.
 
 The PowerShell twin performs the same file, hash, ignore and clone checks. It asserts mode `0600` only when `$env:OS` is not `Windows_NT`, because Windows has no POSIX mode bits. Exclusive create and the empty sentinel are checked on Windows too.
 

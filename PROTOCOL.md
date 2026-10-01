@@ -10,4 +10,4 @@
 8. Signatures would bind a key to bytes, not prove content true, safe or approved. Shared keys cannot distinguish agents. New persistent credentials, member activation, scope changes and protection changes need separate owner decisions.
 
 
-The ordinary receipt workflow remains compatible. The optional [R2 local preview](r2/WIRE.md) adds a bounded single-controller journal; it does not turn Git clones into a distributed lock or remote identity service. Every fresh recipient also needs an [accessible pinned toolkit and runbook](r2/DISTRIBUTION.md).
+The ordinary receipt workflow remains compatible. The optional [R2 local preview](r2/WIRE.md) adds a bounded single-controller journal; it does not turn Git clones into a distributed lock or remote identity service. Minimal Join follows this file from the private ledger and does not clone the public toolkit. A full toolkit and receipt bootstrap remains optional. See [distribution](r2/DISTRIBUTION.md).

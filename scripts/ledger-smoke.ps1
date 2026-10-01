@@ -8,9 +8,11 @@
 #
 # Checks match the shell script: temporary ledger, canonical sample
 # receipt, handoff bytes, history SHA-256, git commit, autocrlf=true
-# clone, and the single-writer lock shape. POSIX mode 0600 is asserted
-# only when $env:OS is not Windows_NT. On Windows the lock check is
-# the empty exclusive-create sentinel (a second create must fail).
+# clone, and the single-writer lock shape. It also builds a second
+# temporary ledger in the Minimal Setup shape and checks that
+# docs/PROTOCOL.md byte-matches toolkit PROTOCOL.md. POSIX mode 0600
+# is asserted only when $env:OS is not Windows_NT. On Windows the lock
+# check is the empty exclusive-create sentinel (a second create must fail).
 
 $ErrorActionPreference = 'Stop'
 # PowerShell 7 can turn git's stderr and non-zero exits into terminating
@@ -308,12 +310,88 @@ try {
   if ($LASTEXITCODE -ne 0) { Fail 'git rev-parse failed' }
   $commit = "$commit".Trim()
 
+  $protocol = Join-Path $toolkit 'PROTOCOL.md'
+  $coordTemplate = Join-Path (Join-Path $toolkit 'templates') 'HOW_WE_COORDINATE.md'
+  if (-not (Test-Path -LiteralPath $protocol)) { Fail "missing $protocol" }
+  if (-not (Test-Path -LiteralPath $coordTemplate)) { Fail "missing $coordTemplate" }
+  $templateText = [System.IO.File]::ReadAllText($coordTemplate, $script:Utf8)
+  if (-not $templateText.Contains('<commit or unset>')) { Fail 'template missing revision token' }
+  if (-not $templateText.Contains('docs/PROTOCOL.md')) { Fail 'template does not point at docs/PROTOCOL.md' }
+  $filled = $templateText.Replace('<commit or unset>', 'unset')
+  if ($filled.Contains('<commit or unset>')) { Fail 'HOW_WE_COORDINATE still has the unfilled revision token' }
+  if (-not $filled.Contains('Toolkit docs revision (optional): unset')) { Fail 'HOW_WE_COORDINATE revision line was not filled' }
+  if (-not $filled.Contains('CURRENT_STATE.md')) { Fail 'HOW_WE_COORDINATE does not point at CURRENT_STATE.md' }
+
+  $minimal = Join-Path $script:Work 'minimal'
+  $minimalClone = Join-Path $script:Work 'minimal-clone'
+  $minimalDocs = Join-Path $minimal 'docs'
+  $minimalProject = Join-Path (Join-Path $minimal 'projects') 'PROJECT'
+  New-Item -ItemType Directory -Path $minimalDocs | Out-Null
+  New-Item -ItemType Directory -Path $minimalProject | Out-Null
+  $minimalAttributes = Join-Path $minimal '.gitattributes'
+  $minimalProtocol = Join-Path $minimalDocs 'PROTOCOL.md'
+  $minimalCoordinate = Join-Path $minimalDocs 'HOW_WE_COORDINATE.md'
+  $minimalState = Join-Path $minimalProject 'CURRENT_STATE.md'
+  [System.IO.File]::Copy($attributes, $minimalAttributes)
+  [System.IO.File]::Copy($protocol, $minimalProtocol)
+  Write-Utf8Text $minimalCoordinate $filled
+  Assert-SameFile $attributes $minimalAttributes 'minimal .gitattributes'
+  Assert-SameFile $protocol $minimalProtocol 'docs/PROTOCOL.md'
+  Write-Lf $minimalState @(
+    '# Synthetic minimal handoff',
+    '',
+    'Goal: exercise Minimal ledger shape only.',
+    'Decisions: none.',
+    'Verified: none. This file is synthetic.',
+    'Reported but unverified: none.',
+    'Open questions: none.',
+    'Next authorized task: none. Shape check only.',
+    'Unresolved ownership: none.'
+  )
+  $stateText = [System.IO.File]::ReadAllText($minimalState, $script:Utf8)
+  foreach ($field in @('Goal', 'Decisions', 'Verified', 'unverified', 'Open questions', 'Next authorized task', 'Unresolved ownership')) {
+    if (-not $stateText.Contains($field)) { Fail "CURRENT_STATE missing $field" }
+  }
+
+  Invoke-GitQuiet -C $minimal init '--template='
+  Invoke-Git -C $minimal add -- .gitattributes docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/PROJECT/CURRENT_STATE.md
+  Invoke-GitQuiet -C $minimal commit -m 'Synthetic minimal ledger'
+
+  $minimalListArgs = $script:GitPrefix + @('-C', $minimal, 'ls-files')
+  $rawMinimal = & git @minimalListArgs
+  if ($LASTEXITCODE -ne 0) { Fail 'minimal git ls-files failed' }
+  $minimalListed = @($rawMinimal | ForEach-Object { "$_".Trim() } | Where-Object { $_ -ne '' })
+  $minimalExpected = @(
+    '.gitattributes',
+    'docs/HOW_WE_COORDINATE.md',
+    'docs/PROTOCOL.md',
+    'projects/PROJECT/CURRENT_STATE.md'
+  )
+  if ($minimalListed.Count -ne $minimalExpected.Count) {
+    Fail "minimal committed file count $($minimalListed.Count) != $($minimalExpected.Count)"
+  }
+  foreach ($rel in $minimalExpected) {
+    $foundMinimal = $false
+    foreach ($item in $minimalListed) {
+      if ($item -ceq $rel) { $foundMinimal = $true }
+    }
+    if (-not $foundMinimal) { Fail "missing minimal committed file: $rel" }
+  }
+
+  Invoke-GitQuiet clone --no-local --config core.autocrlf=true $minimal $minimalClone
+  foreach ($rel in $minimalExpected) {
+    Assert-SameFile (Join-Path $minimal $rel) (Join-Path $minimalClone $rel) "minimal $rel"
+  }
+  Assert-SameFile $protocol (Join-Path (Join-Path $minimalClone 'docs') 'PROTOCOL.md') 'cloned docs/PROTOCOL.md'
+  Assert-SameFile $attributes (Join-Path $minimalClone '.gitattributes') 'cloned minimal .gitattributes'
+
   Write-Output 'ledger-smoke: ok'
   Write-Output "history_sha256: $historySha"
   Write-Output "receipt_sha256: $receiptSha"
   Write-Output "commit: $commit"
   Write-Output 'clone: core.autocrlf=true byte match'
   Write-Output $lockLine
+  Write-Output 'minimal-ledger: docs/PROTOCOL.md byte match'
   $script:Failed = $false
 } finally {
   if ($script:Work -and (Test-Path -LiteralPath $script:Work)) {
