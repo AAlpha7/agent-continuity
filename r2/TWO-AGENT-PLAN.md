@@ -15,7 +15,7 @@ Do not gate the first useful trial on implementing the second as a remote servic
 
 Pin an inspected public `v0.1.0-rc.3` commit or an independently approved source-only package. The ordinary receipt/snapshot workflow and local R2 preview are separate modes. A public source URL works only if it actually contains the requested revision; do not ask an agent to guess a missing private checkout.
 
-The ledger must itself resolve the tools and required docs through the [delivery contract](DISTRIBUTION.md). An approved package includes exact-byte hashes, a standalone bootstrap and complete commands. Extract it outside the ledger. A source commit string alone, the prior agent's local path or hidden chat hints are insufficient. Preserve first-run failures; fix the visible entry before restarting with a fresh participant.
+Minimal Join does not use this section. Setup copies `PROTOCOL.md` into the ledger as `docs/PROTOCOL.md`, with `docs/HOW_WE_COORDINATE.md`, and a basic Join clones that ledger only. The full toolkit and receipt bootstrap still resolves tools through the [delivery contract](DISTRIBUTION.md). An approved package includes exact-byte hashes, a standalone bootstrap and complete commands. Extract it outside the ledger. A source commit string alone, the prior agent's local path or hidden chat hints are insufficient. Preserve first-run failures; fix the visible entry before restarting with a fresh participant.
 
 ## 3. Minimal actual trial
 
