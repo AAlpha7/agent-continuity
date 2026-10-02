@@ -11,8 +11,23 @@
     },
     {
       "path": "GUIDE.md",
-      "bytes": 6908,
-      "sha256": "48d8bbb6f9a5e6483164ce5a3bc3ac65786006abf50dd10c94df8bf3771fdb89"
+      "bytes": 6841,
+      "sha256": "ea30f779e77081240f82e821c21261abec5f4e2d5c759a55255919c3608ad99d"
+    },
+    {
+      "path": "History/2026-10-01-ledger-local-protocol.md",
+      "bytes": 1022,
+      "sha256": "c765ddcf972f325ab27f5cfd1d56ec6e479186b29ed61968964342be5cec1e47"
+    },
+    {
+      "path": "History/2026-10-01-minimal-setup-join-reverify.md",
+      "bytes": 1118,
+      "sha256": "e01ac295917d6296b17730f326d3cb9995258d86af68d310670441e6339d37ec"
+    },
+    {
+      "path": "History/2026-10-01-minimal-vs-optional.md",
+      "bytes": 890,
+      "sha256": "3ebc927ea4b091037ff665932350c1fff68af2c952b83f437c509551ca9c48f3"
     },
     {
       "path": "History/2026-10-01-shell-git-smoke.md",
@@ -26,13 +41,13 @@
     },
     {
       "path": "ONBOARDING.md",
-      "bytes": 26427,
-      "sha256": "479b8085e6da06438425c2f3aef03373f6e567e0592e0fb15514312851265d06"
+      "bytes": 26693,
+      "sha256": "b810d30c9271bbb7f32d4c823b26b99f939c0e983bbd9aca9e5f7e2284d98fc6"
     },
     {
       "path": "PROTOCOL.md",
-      "bytes": 2465,
-      "sha256": "9cbd2b082e6bab5454c9c89372d961f1c02cda5a8f5802a593a9feaa1690262a"
+      "bytes": 2557,
+      "sha256": "bd34e245aa82cdf42ac1e190ec330c601d66318ac967bf7461f89305b12ef225"
     },
     {
       "path": "PROVENANCE.json",
@@ -41,13 +56,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 14582,
-      "sha256": "f0452c3f8b2fde16787661ce7c8dc11096a093d89004e70e3b0de85daa60ea84"
+      "bytes": 14483,
+      "sha256": "9f6bb1a4a94056f7b7c38e4a09ddecb3e7bd775ec3074a2fb2defa145dc93b65"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 13405,
-      "sha256": "7314b2abc2f02ab9fa27af24dfc12b235ec3d272af8b0d6582d33717771ecdc5"
+      "bytes": 13569,
+      "sha256": "f707c71c488cf73712df549298a4e73372a2a25bca65b440f31f794720bf193f"
     },
     {
       "path": "RECEIPT-SCHEMA.md",
@@ -56,8 +71,8 @@
     },
     {
       "path": "RELEASE-NOTES.md",
-      "bytes": 1795,
-      "sha256": "307ef22bdaa5936f43ae2907bf626477ea69764d9cf53081ae074abbd0b5f516"
+      "bytes": 2155,
+      "sha256": "2f7175b32c1056ad8db1feb56bcb1182215db9159ea351e03495f82e9d568ef2"
     },
     {
       "path": "RIGHTS-AND-DEPENDENCIES.md",
@@ -71,8 +86,8 @@
     },
     {
       "path": "TESTING.md",
-      "bytes": 8568,
-      "sha256": "ab30acce131e3bfd6d7a1de2c77996407f2621ed723e05973f06f645638fa0d9"
+      "bytes": 15202,
+      "sha256": "6cee6619572edc4824d9a391871a03f2845a700e31b8a48d58808999d480c21b"
     },
     {
       "path": "docs/NOTIFICATIONS.md",
@@ -81,8 +96,8 @@
     },
     {
       "path": "docs/STATUS.md",
-      "bytes": 749,
-      "sha256": "6d20bf73659fc701c3487b2be88856cf21af48f07d4ca592fcc383ae58d96056"
+      "bytes": 1258,
+      "sha256": "9d7611a7fd41951947c8f055e405e9687caa49819744949ca22e10e09c940aaa"
     },
     {
       "path": "docs/assets/ATTRIBUTION.md",
@@ -113,6 +128,11 @@
       "path": "docs/assets/shared-memory.svg",
       "bytes": 2887,
       "sha256": "020782efa46979c490204529e567e31832409101ea8792bc2a76f6e053643824"
+    },
+    {
+      "path": "docs/design/realtime-bidirectional-channel-draft.md",
+      "bytes": 7108,
+      "sha256": "5d20813f4fe4fad8031588f6971c934a3e4c437c8cef6892fc1021fb1f79ba58"
     },
     {
       "path": "examples/init-project.mjs",
@@ -176,18 +196,18 @@
     },
     {
       "path": "r2/DISTRIBUTION.md",
-      "bytes": 6157,
-      "sha256": "c3db78883d543d3afb22c648c3b6ef542c26330e3b6c27f9257b660109201c63"
+      "bytes": 7343,
+      "sha256": "b46a4f20a4a17964958c09cdda8215bd4fb6039fbc39d26526435d932f223f7d"
     },
     {
       "path": "r2/MANIFEST.json",
-      "bytes": 3397,
-      "sha256": "41cb1af7746df98fd47f65497ebdfdf6c0e40cd1cc7c6bc3b78f39079c79698b"
+      "bytes": 3398,
+      "sha256": "b03eb591f30da7e7e4c4fb8364c119ba372c5c2093c1e9d293aa80285c62f5bd"
     },
     {
       "path": "r2/ONBOARDING.md",
-      "bytes": 12943,
-      "sha256": "3af8bdb4bb64dbdb4b7eece29a78c1b347f8ad2a0dbf937124ba888443192a6c"
+      "bytes": 13098,
+      "sha256": "9357719936145cd265f9781bcfc9f375e1923f03557bc56dc1f3a59888fc1f7e"
     },
     {
       "path": "r2/README.md",
@@ -196,8 +216,8 @@
     },
     {
       "path": "r2/TWO-AGENT-PLAN.md",
-      "bytes": 9590,
-      "sha256": "dae84aba5c2361d75143943c55304e03edd283068a1282c859fae79b5bf77176"
+      "bytes": 9773,
+      "sha256": "392159bd336ac8d4d763985e26337d9c801bccf29b2ec3a311ca841aa6697352"
     },
     {
       "path": "r2/VALIDATION.json",
@@ -211,8 +231,8 @@
     },
     {
       "path": "r2/bootstrap-toolkit.mjs",
-      "bytes": 5474,
-      "sha256": "843dd7e035aa3caf677b4712631a783fb6fc2a3e50e35dedf75a46847051a484"
+      "bytes": 5991,
+      "sha256": "225df70a171ace71dc8a7828e5918e17796767cd878a9d08113ff7fca4eed30b"
     },
     {
       "path": "r2/cli.mjs",
@@ -246,8 +266,8 @@
     },
     {
       "path": "r2/test/bootstrap.test.mjs",
-      "bytes": 4000,
-      "sha256": "5218318763b7aade15f8e1150c7d7bc261defac5706ce8039581e5ccfe537b85"
+      "bytes": 10350,
+      "sha256": "7a6e47bb20d4e440c51a66bcdb43504a3e09f0c427686e55318a56ba50027cb7"
     },
     {
       "path": "r2/test/child.mjs",
@@ -291,13 +311,18 @@
     },
     {
       "path": "scripts/ledger-smoke.ps1",
-      "bytes": 13291,
-      "sha256": "45c2319cf0a5fb79c1f3fbd7d442c969d08df80ca02ab2bd8e1033a6021e925b"
+      "bytes": 17500,
+      "sha256": "460a3d2ed63129a5e2100986d78f30b63f05093a268d53ce908e3385c5a0e81d"
     },
     {
       "path": "scripts/ledger-smoke.sh",
-      "bytes": 9432,
-      "sha256": "6f997cdb79ae5a5eaae8ec23491225635adfabada6af233dc1a680a77a7f7017"
+      "bytes": 14070,
+      "sha256": "d4247757dbfafa751fd724ea5a127e6eb858b492549f325e0cb4f06237eb5525"
+    },
+    {
+      "path": "templates/HOW_WE_COORDINATE.md",
+      "bytes": 1356,
+      "sha256": "e8e9fa8aeabe99c9949b5c6b2e2f07d82c134767847428679c46e1b1f4a664b8"
     },
     {
       "path": "test/extraction-boundaries.test.mjs",
@@ -313,6 +338,16 @@
       "path": "test/lock-retry.test.mjs",
       "bytes": 4851,
       "sha256": "eb716b48ced76663b1ecd2b1d84463a3103a518a3e6e26b40046d49fde4b1c94"
+    },
+    {
+      "path": "test/manifests.test.mjs",
+      "bytes": 1144,
+      "sha256": "2108a99716c3b139809bdeb7006873ef9b578add7e7b20d524cdc1032dc45640"
+    },
+    {
+      "path": "test/onboarding-docs.test.mjs",
+      "bytes": 2642,
+      "sha256": "2e9d357c6b1251a2215dbc2cc6c6259af070e54c25f0e97b259d1245b1cee725"
     },
     {
       "path": "test/receipts-snapshot.test.mjs",

@@ -81,8 +81,14 @@ projects/PROJECT/CURRENT_STATE.md。按该协议执行。把更新提交回
 
 ```sh
 gh api user --jq .login
+# Stop unless this login matches the approved owner.
 gh repo create OWNER/LEDGER --private --clone
 cd LEDGER
+gh repo view --json url,visibility --jq '{url:.url,visibility:.visibility}'
+git remote get-url --all origin
+git remote get-url --push --all origin
+# Stop unless owner, private visibility and ALL effective URLs match approval.
+# Only after those checks, write and publish the real handoff below.
 mkdir -p docs projects/PROJECT
 cp /path/to/inspected-toolkit/.gitattributes .gitattributes
 cp /path/to/inspected-toolkit/PROTOCOL.md docs/PROTOCOL.md
@@ -92,9 +98,6 @@ cp /path/to/inspected-toolkit/templates/HOW_WE_COORDINATE.md docs/HOW_WE_COORDIN
 git add .gitattributes docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/PROJECT/CURRENT_STATE.md
 git commit -m "Start the private continuity ledger"
 git push -u origin HEAD
-gh repo view --json url,visibility --jq '{url:.url,visibility:.visibility}'
-git remote get-url --all origin
-git remote get-url --push --all origin
 ```
 
 `OWNER/LEDGER` 必须是获准的私有仓库，不是本工具仓库的 fork。创建前，`gh api user` 的登录名必须与获准所有者一致。`docs/PROTOCOL.md` 必须与工具目录里的 `PROTOCOL.md` 字节相同。只有在所有者、私有可见性和全部 fetch/push URL 都核实之后才能 push。打印出的 URL 就是下一位代理要克隆的地址：
@@ -132,7 +135,7 @@ sh scripts/ledger-smoke.sh
 
 Windows 上用 Git Bash 或 WSL 运行同一脚本。本机对照脚本仍然可选：`powershell.exe -File scripts/ledger-smoke.ps1`。它用的是临时合成账本，不是你的项目。维护者：同一条命令会检查最少步骤的账本形状，包括 `PROTOCOL.md` 的原字节副本。采用者可以不做。
 
-如果已经安装了 Node.js 24+，也可以运行 105 项测试和合成演示。不要为了这个去安装 Node。演示目录必须尚不存在。
+如果已经安装了 Node.js 24+，也可以运行 112 项测试和合成演示。不要为了这个去安装 Node。演示目录必须尚不存在。
 
 ```sh
 node --test test/*.test.mjs r2/test/*.test.mjs
@@ -179,7 +182,7 @@ node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace de
 
 ### 为什么可以试
 
-这套测试有 **105 项：80 项本地协调／分发、15 项回执／快照兼容，以及 10 项 Windows 文件系统失败回归**，覆盖真实进程竞争与中断、复制控制器拒绝、严格字节校验及 Windows `core.autocrlf=true` 克隆。核心和解包器经过独立审查。真实新代理私库试验先暴露了工具分发缺口；修复后，新的接收方完成了规范回执和快照收尾，旧记录保留。采用者可以不跑这些测试。维护者在每次发布前连同其他可选路径一起跑。见[测试范围](TESTING.md)。
+这套测试有 **112 项：84 项本地协调与分发、15 项回执与快照兼容、10 项 Windows 文件系统失败回归，以及 3 项入门文档与清单检查**，覆盖真实进程竞争与中断、复制控制器拒绝、严格字节校验及 Windows `core.autocrlf=true` 克隆。核心和解包器经过独立审查。真实新代理私库试验先暴露了工具分发缺口；修复后，新的接收方完成了规范回执和快照收尾，旧记录保留。采用者可以不跑这些测试。维护者在每次发布前连同其他可选路径一起跑。见[测试范围](TESTING.md)。
 
 ### 需要知道的边界
 

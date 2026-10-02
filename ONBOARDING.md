@@ -11,7 +11,7 @@ Shell smoke, the two-agent ping, and Node tests are [optional](#optional-checks)
 
 **Maintainers, before each release:** run all paths, including the optional ones (two-agent ping, shell smoke with the automated Minimal ledger shape check, and the Node suite when Node is present). If the Setup/Join paste blocks changed, re-verify Minimal Setup and Join with brand-new agents, environments, and ledgers, including cold Join literacy in [TESTING.md](TESTING.md#maintainer-release-checklist). Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Adopters do not.
 
-Help the user keep their work usable as agents, providers and machines change. Use the inspected `v0.1.0-rc.3` release as the read-only toolkit. The adopter's records live in a separate user-owned private ledger.
+Help the user keep their work usable as agents, providers and machines change. Use this runbook from the exact toolkit commit you inspected and record its full commit ID. Do not switch to `v0.1.0-rc.3` for Minimal Setup/Join: that historical release predates the no-Node path. The toolkit remains read-only; the adopter's records live in a separate user-owned private ledger.
 
 Existing owner-approved GitHub PR listeners can provide notifications where supported; see [NOTIFICATIONS.md](docs/NOTIFICATIONS.md). No listener or external permission is created by this toolkit.
 
@@ -63,8 +63,14 @@ Run this outside the toolkit checkout, and only after section 0 approval for the
 
 ```sh
 gh api user --jq .login
+# Stop unless this login matches the approved owner.
 gh repo create OWNER/LEDGER --private --clone
 cd LEDGER
+gh repo view --json url,visibility --jq '{url:.url,visibility:.visibility}'
+git remote get-url --all origin
+git remote get-url --push --all origin
+# Stop unless owner, private visibility and ALL effective URLs match approval.
+# Only after those checks, write and publish the real handoff below.
 mkdir -p docs projects/PROJECT
 cp /path/to/inspected-toolkit/.gitattributes .gitattributes
 cp /path/to/inspected-toolkit/PROTOCOL.md docs/PROTOCOL.md
@@ -74,9 +80,6 @@ cp /path/to/inspected-toolkit/templates/HOW_WE_COORDINATE.md docs/HOW_WE_COORDIN
 git add .gitattributes docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/PROJECT/CURRENT_STATE.md
 git commit -m "Start the private continuity ledger"
 git push -u origin HEAD
-gh repo view --json url,visibility --jq '{url:.url,visibility:.visibility}'
-git remote get-url --all origin
-git remote get-url --push --all origin
 ```
 
 `OWNER/LEDGER` must be the approved private repository, not a fork of this toolkit. The login from `gh api user` must match the approved owner before creation. Copy `.gitattributes` before the first commit so later evidence files stay byte-stable. `docs/PROTOCOL.md` must be the same bytes as the toolkit `PROTOCOL.md`. Do not substitute a summary. Copy `templates/HOW_WE_COORDINATE.md` to `docs/HOW_WE_COORDINATE.md` and fill the revision line with the inspected toolkit commit, or with `unset`. Fill `projects/PROJECT/CURRENT_STATE.md` from inspected project evidence: goal, decisions, verified work, reported-but-unverified work, open questions, the next authorized task and unresolved ownership. Redact credentials. Do not fabricate another agent's acknowledgment. Push only after owner, private visibility and every fetch/push URL are verified. If GitHub access or that approval is missing, keep a local git repository and report `shared_access: not-configured`. Do not install Node and do not force login.
@@ -133,7 +136,7 @@ node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace de
 node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace demo-project --check
 ```
 
-An identical receipt replay returns `duplicate: true`; generation gives a snapshot path; `--check` reports local `current`. The suite is 105 tests ([TESTING.md](TESTING.md)). Choose another unused demo path rather than deleting or merging. A passed demo proves only this local Node path. Canonical receipt files, still optional, are in section 3.
+An identical receipt replay returns `duplicate: true`; generation gives a snapshot path; `--check` reports local `current`. The suite is 112 tests ([TESTING.md](TESTING.md)). Choose another unused demo path rather than deleting or merging. A passed demo proves only this local Node path. Canonical receipt files, still optional, are in section 3.
 
 **Maintainers, before each release:** run this whole optional section (two-agent ping, shell smoke including the automated Minimal ledger shape check, and the Node suite when Node is present). If the Setup/Join paste blocks changed, re-verify section 2 with brand-new agents, environments, and ledgers. Cold Join literacy: do not give the Join agent the toolkit URL; it must use `docs/PROTOCOL.md` and `docs/HOW_WE_COORDINATE.md`, or fail if either is missing, and update `CURRENT_STATE.md` from those rules. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record the result on the [release checklist](TESTING.md#maintainer-release-checklist).
 

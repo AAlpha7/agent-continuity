@@ -1,8 +1,10 @@
 # A new recipient must be able to obtain the toolkit
 
+**Optional tooling only.** Minimal Setup and Join use the private ledger URL and Git; they do not require this package, Node.js or canonical receipt/snapshot checks. Use this contract only when the optional toolkit workflow has been requested and Node.js 24+ is already available. Do not install a runtime to finish Minimal onboarding.
+
 Minimal Setup copies toolkit `PROTOCOL.md` into the private ledger as `docs/PROTOCOL.md`, plus `docs/HOW_WE_COORDINATE.md`. That ledger-local copy is enough for a basic Join. This page stays the optional path for a full toolkit and receipt bootstrap.
 
-A commit string is not a distribution. Before calling an adopter ledger ready for another agent, its root README must identify an **accessible exact toolkit source**, the supported workflow and all commands/docs required to finish it. A path on the first agent's machine, a commit absent from the named repository, or "ask the coordinator for the tools" does not meet this contract.
+A commit string is not a distribution. Before calling the optional canonical workflow ready for another agent, the ledger's root README must identify an **accessible exact toolkit source**, the supported workflow and all commands/docs required to finish it. A path on the first agent's machine, a commit absent from the named repository, or "ask the coordinator for the tools" does not meet this contract. Pin the exact inspected commit; historical release tags retain their original onboarding instructions.
 
 ## Required ledger-side entry
 
@@ -27,7 +29,7 @@ A new recipient first reads the root README and BOOTSTRAP instructions, inspects
 node LEDGER/.continuity/bootstrap-toolkit.mjs LEDGER NEW_TOOLKIT_DIRECTORY EXPECTED_PACKAGE_SHA256
 ```
 
-The parent of `NEW_TOOLKIT_DIRECTORY` must exist and the new directory must be outside the ledger and absent. The bootstrap verifies the entire package before writing, rejects traversal/aliases/duplicate or reserved paths, preserves original bytes, writes no `.git`, and runs **none** of the extracted code. It does not use the network or configure a remote. Readback hashes do not certify that code is safe; inspect it before running. On partial I/O failure retain the new directory for diagnosis rather than retrying over it.
+The parent of `NEW_TOOLKIT_DIRECTORY` must exist and the new directory must be outside the ledger and absent. The bootstrap verifies the entire package before writing, rejects traversal/aliases/duplicate or reserved paths, preserves original bytes, writes no `.git`, and runs **none** of the extracted code. Required files include the receipt/snapshot entrypoints, both imported `lib/` helpers, `examples/init-project.mjs`, `.gitattributes`, `templates/HOW_WE_COORDINATE.md`, license and workflow docs, with exact path casing. Git regular-file modes `100644` and `100755` are supported; new files are owner-readable/writable, with owner execution enabled for `100755` on POSIX. Windows does not implement these POSIX mode bits. Links, gitlinks and special modes remain rejected. It does not use the network or configure a remote. Readback hashes do not certify that code is safe; inspect it before running. On partial I/O failure retain the new directory for diagnosis rather than retrying over it.
 
 After extraction, read `ONBOARDING.md`, `GUIDE.md`, `RECEIPT-SCHEMA.md`, `PROTOCOL.md` and, where appropriate, `r2/ONBOARDING.md`. Run the declared tests, then the workflow from those docs. The ordinary rc.2 receipt/snapshot commands are:
 

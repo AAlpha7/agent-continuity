@@ -85,8 +85,14 @@ No Node.js. From outside this toolkit checkout, after you approve the owner, rep
 
 ```sh
 gh api user --jq .login
+# Stop unless this login matches the approved owner.
 gh repo create OWNER/LEDGER --private --clone
 cd LEDGER
+gh repo view --json url,visibility --jq '{url:.url,visibility:.visibility}'
+git remote get-url --all origin
+git remote get-url --push --all origin
+# Stop unless owner, private visibility and ALL effective URLs match approval.
+# Only after those checks, write and publish the real handoff below.
 mkdir -p docs projects/PROJECT
 cp /path/to/inspected-toolkit/.gitattributes .gitattributes
 cp /path/to/inspected-toolkit/PROTOCOL.md docs/PROTOCOL.md
@@ -96,9 +102,6 @@ cp /path/to/inspected-toolkit/templates/HOW_WE_COORDINATE.md docs/HOW_WE_COORDIN
 git add .gitattributes docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/PROJECT/CURRENT_STATE.md
 git commit -m "Start the private continuity ledger"
 git push -u origin HEAD
-gh repo view --json url,visibility --jq '{url:.url,visibility:.visibility}'
-git remote get-url --all origin
-git remote get-url --push --all origin
 ```
 
 `OWNER/LEDGER` is the approved private repository, not a fork of this toolkit. The login from `gh api user` must match the approved owner before creation. `docs/PROTOCOL.md` must be the same bytes as the toolkit `PROTOCOL.md`. Push only after owner, private visibility and every fetch/push URL are verified. The printed URL is what the next agent clones:
@@ -136,7 +139,7 @@ sh scripts/ledger-smoke.sh
 
 On Windows, run that script in Git Bash or WSL. Native twin, still optional: `powershell.exe -File scripts/ledger-smoke.ps1`. It uses temporary synthetic ledgers, not yours. Maintainers: the same command checks the Minimal ledger shape, including a byte copy of `PROTOCOL.md`. Adopters may skip it.
 
-If Node.js 24+ is already installed, you may also run the 105-test suite and the synthetic demo. Do not install Node for this. The demo directory must not already exist.
+If Node.js 24+ is already installed, you may also run the 112-test suite and the synthetic demo. Do not install Node for this. The demo directory must not already exist.
 
 ```sh
 node --test test/*.test.mjs r2/test/*.test.mjs
@@ -183,7 +186,7 @@ This is a tested setup, not a universal plug-in. Check each participant's actual
 
 ### What has been checked
 
-The suite has **105 tests: 80 local coordination/bootstrap, 15 receipt/snapshot compatibility and 10 Windows filesystem failure regressions**. Coverage includes real independent-process races and crashes, copied-controller rejection, strict byte checks and Windows Git clones with `core.autocrlf=true`. Independent review covered the core and bootstrap. A fresh-agent private-ledger trial preserved earlier work and completed canonical receipt/snapshot closeout after an initial missing-distribution failure was fixed. Adopters may skip these tests. Maintainers run them, with the other optional paths, before each release. [Test scope](TESTING.md).
+The suite has **112 tests: 84 local coordination/bootstrap, 15 receipt/snapshot compatibility, 10 Windows filesystem failure regressions and 3 onboarding documentation/manifest checks**. Coverage includes real independent-process races and crashes, copied-controller rejection, strict byte checks and Windows Git clones with `core.autocrlf=true`. Independent review covered the core and bootstrap. A fresh-agent private-ledger trial preserved earlier work and completed canonical receipt/snapshot closeout after an initial missing-distribution failure was fixed. Adopters may skip these tests. Maintainers run them, with the other optional paths, before each release. [Test scope](TESTING.md).
 
 ### Where the boundaries are
 
