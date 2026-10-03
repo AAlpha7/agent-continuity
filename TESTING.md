@@ -9,10 +9,16 @@ Adopters finish at Minimal Setup, then Join ([ONBOARDING.md](ONBOARDING.md)). No
 Before each release or deploy, maintainers run **all** paths, including the optional ones:
 
 1. Two-agent ping, using the prompt below: A writes for B and B replies; then B writes for A and A replies.
-2. Shell smoke: `sh scripts/ledger-smoke.sh`. On Windows, Git Bash or WSL. `scripts/ledger-smoke.ps1` is the native twin.
-3. Node suite, when Node.js 24+ is available: the command under [Optional Node suite](#optional-node-suite).
+2. Shell smoke: `sh scripts/ledger-smoke.sh`. On Windows, Git Bash or WSL. `scripts/ledger-smoke.ps1` is the native twin. Every run includes the automated Minimal ledger shape check: `.gitattributes`, `docs/PROTOCOL.md` as a byte copy of toolkit `PROTOCOL.md`, `docs/HOW_WE_COORDINATE.md`, and `projects/PROJECT/CURRENT_STATE.md`. This shape check is part of the smoke. It is not an adopter gate, and it does not replace the live cold Join check below.
+3. Node suite, when Node.js 24+ is available: the command under [Optional Node suite](#optional-node-suite). Do not install Node to satisfy this checklist item, and do not make Node an adopter gate.
 
-If the Setup/Join paste blocks changed, also re-verify Minimal Setup and Join with brand-new agents in brand-new environments. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record that result with the optional-path runs.
+If the Setup/Join paste blocks changed, also re-verify Minimal Setup and Join with brand-new agents, brand-new environments, and brand-new ledgers. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Cold Join literacy is part of that re-verify:
+
+- Do not give the Join agent the public toolkit URL.
+- The Join agent must show that it used `docs/PROTOCOL.md` and `docs/HOW_WE_COORDINATE.md`, or fail if either file is missing, and that it updated `CURRENT_STATE.md` according to those rules.
+- PASS requires the ledger to contain `docs/PROTOCOL.md` (the real protocol copy) and `docs/HOW_WE_COORDINATE.md` after Setup, and the Join update to follow that protocol without cloning the toolkit.
+
+Record that result with the optional-path runs. The automated shape check in item 2 still runs on every maintainer release, including when this live trial is not repeated.
 
 Users do not run this checklist.
 
@@ -22,18 +28,39 @@ Users do not run this checklist.
 
 Brand-new agents in brand-new environments:
 
-- Agent A Setup: `bc-35d362fd-92fb-5db4-977a-c9afb2fb95f5`
-- Agent B Join: `bc-d8cd3d33-cf74-5e40-8800-64355d877a22`
+- Agent A Setup: `[private trial agent ID omitted]`
+- Agent B Join: `[private trial agent ID omitted]`
 
-New private ledger (`private: true`; not a toolkit fork): https://github.com/AAlpha7/ac-fresh-setup-20261001-f40a68
+New private ledger (`private: true`; not a toolkit fork): [private trial ledger URL omitted]
 
-Project handoff: `projects/fresh-verify/CURRENT_STATE.md`
+Project handoff: `projects/PROJECT/CURRENT_STATE.md`
 
-- Setup local status: `partial`. The Cursor App/`gh` bot could not push the private repo. The AAlpha7 user integration created the repo and wrote the handoff. Remote `main` tip after Setup: `12875ad7076211910be0b464f20215423c2005f3`.
-- Join local status: `ready`. Join commit `90fee23281646f870b78e01058a1caefef755e66` on `main`, via the AAlpha7 user integration Contents API, after `git clone` with App credentials failed (repository not found).
+- Setup local status: `partial`. The Cursor App/`gh` bot could not push the private repo. The AAlpha7 user integration created the repo and wrote the handoff. Remote `main` tip after Setup: `[private trial commit ID omitted]`.
+- Join local status: `ready`. Join commit `[private trial commit ID omitted]` on `main`, via the AAlpha7 user integration Contents API, after `git clone` with App credentials failed (repository not found).
 - Optional checks: not run. This run was a Minimal-only re-verify after the paste change.
 
 Result: Minimal Setup→Join PASS, with a credential quirk (App credentials versus the AAlpha7 user integration).
+
+That run predates the ledger-local protocol copy. Do not treat the run above as evidence for `docs/PROTOCOL.md` or cold Join literacy.
+
+### Recorded run: 2026-10-01 Minimal Setup→Join + cold Join literacy
+
+2026-10-01 (America/Los_Angeles). Re-verify after the HOW_WE_COORDINATE paste change. Toolkit branch tip used: `cursor/ledger-local-protocol-8638` @ `168018e2cd7f03961a2620841d228e3684f16303`.
+
+Brand-new agents:
+
+- Agent A Setup: `[private trial agent ID omitted]`
+- Agent B Join: `[private trial agent ID omitted]`
+
+New private ledger (private; not a fork): [private trial ledger URL omitted]
+
+Project handoff: `projects/PROJECT/CURRENT_STATE.md`
+
+- Setup left `docs/PROTOCOL.md` (byte match SHA-256 `bd34e245aa82cdf42ac1e190ec330c601d66318ac967bf7461f89305b12ef225`), `docs/HOW_WE_COORDINATE.md`, `.gitattributes`, and `CURRENT_STATE`. Tip after Setup cleanup: `[private trial commit ID omitted]`.
+- Join commit `[private trial commit ID omitted]` via `git push`. Join used the ledger `PROTOCOL` and `HOW_WE_COORDINATE`, and did not clone the public toolkit.
+- Smoke on the PR branch (trial environment): `ledger-smoke: ok` and `minimal-ledger: docs/PROTOCOL.md byte match`.
+
+Result: Minimal Setup→Join + cold Join literacy PASS.
 
 ## Optional quick protocol check
 
@@ -67,6 +94,7 @@ Expect `ledger-smoke: ok`. The script:
 - records `history_sha256` and `source_revision` as the SHA-256 of those bytes, and checks both after a `core.autocrlf=true` clone
 - commits `.gitattributes`, the handoff, `snapshot-input.json`, the receipt, and the v2 `.gitattributes` / `.gitignore`
 - checks the single-writer lock documented in [r2/WIRE.md](r2/WIRE.md) and [r2/ONBOARDING.md](r2/ONBOARDING.md): an empty exclusive-create sentinel at `projects/<project>/coordination-v2/writer.lock`, with no PID or age payload; the POSIX script also requires mode `0600` and link count 1; a second create must fail; `.gitignore` is exactly `writer.lock` and `.pending-*`; the lock is not in the commit or the clone
+- builds a second temporary ledger the way Minimal Setup does: `.gitattributes`, `docs/PROTOCOL.md` as a byte copy of toolkit `PROTOCOL.md`, `docs/HOW_WE_COORDINATE.md` from `templates/HOW_WE_COORDINATE.md` with the revision line set to `unset`, and `projects/PROJECT/CURRENT_STATE.md` with the documented handoff fields. It commits those four paths, clones with `core.autocrlf=true`, and checks `docs/PROTOCOL.md` still byte-matches the toolkit file. This shape check runs every time the smoke runs. It is not an adopter gate.
 
 The PowerShell twin performs the same file, hash, ignore and clone checks. It asserts mode `0600` only when `$env:OS` is not `Windows_NT`, because Windows has no POSIX mode bits. Exclusive create and the empty sentinel are checked on Windows too.
 
@@ -82,7 +110,9 @@ Run from an inspected checkout when Node.js 24+ and Git are already installed:
 node --test test/*.test.mjs r2/test/*.test.mjs
 ```
 
-No npm install, model call, remote participant, hosted CI or service is needed. Adopters may skip this. Maintainers run it before release when Node is available. Do not install Node so an adopter can run it, and do not make it an adopter gate. The suites contain **105 top-level tests: 15 original receipt/snapshot tests, 80 local coordination/bootstrap tests and 10 Windows lock/replacement failure regressions**. Tested environment: Windows, Node.js 24.11.1 and Git 2.45.2.windows.1. Passing tests supports these specific checks, not universal platform compatibility.
+No npm install, model call, remote participant, hosted CI or service is needed. Adopters may skip this. Maintainers run it before release when Node is available. Do not install Node so an adopter can run it, and do not make it an adopter gate. The suites contain **112 top-level tests: 15 original receipt/snapshot tests, 84 local coordination/bootstrap tests, 10 Windows lock/replacement failure regressions and 3 onboarding documentation/manifest checks**. Tested environment: Windows, Node.js 24.11.1 and Git 2.45.2.windows.1. Passing tests supports these specific checks, not universal platform compatibility.
+
+The added distribution checks run the extracted initializer, exact receipt replay and snapshot generation/check, reject each missing workflow dependency before creating the extraction directory, accept regular executable Git files while rejecting links/special modes, and require portable path casing. Documentation checks keep account/destination inspection before handoff writes and push, preserve the optional runtime boundary, and detect stale file manifests. POSIX executable mode assertions run only on POSIX; Windows byte/extraction checks do not establish Unix mode behavior. The Minimal extraction regression also copies the real protocol and filled coordination template into a synthetic ledger and verifies their bytes after a fresh Git clone. These tests are not a new fresh-agent or live GitHub onboarding trial.
 
 The optional synthetic demo copies fixtures into a directory that does not yet exist. Do not `mkdir` that destination first: on Node.js 24.14 and later, `fs.cp` with `errorOnExist: true` then fails with `ERR_FS_CP_EEXIST`.
 
