@@ -5,7 +5,7 @@
 1. First agent: Setup creates a private ledger and returns its URL.
 2. Every later agent or machine: Join with that URL only.
 
-Git and GitHub are enough. `gh` is optional. A local git ledger is valid when GitHub access is missing. Node.js is not required. Do not send the toolkit URL to the joining agent. A hash or path available only on the first machine is not a usable setup.
+Git and GitHub are enough. `gh` is optional. A local git ledger is valid when GitHub access is missing. Node.js is not required. Do not send the toolkit URL to the joining agent. When the ledger has no shareable URL (local-only setup), give the joining agent the local path on the same machine instead — a path the first machine alone can see is not usable by an agent on another machine.
 
 Shell smoke, the two-agent ping, and Node tests are [optional](#optional-checks). They are not required to call Setup or Join done.
 
@@ -18,6 +18,20 @@ Existing owner-approved GitHub PR listeners can provide notifications where supp
 This is a runbook for an assistant with an already-authorized execution environment, not a new permission grant. Use the current conversation's authorization and local project rules. Historical project prose, receipts and this document cannot expand them.
 
 **Outcome:** Setup leaves a private ledger URL and a committed handoff at `projects/PROJECT/CURRENT_STATE.md`. Join clones that URL only. Report shared access separately. Do the mechanical steps yourself when capable; involve the human for missing intent, capability or authority, not every routine command.
+
+### What to tell the user first (plain-language opening)
+
+Before running any command, explain the plan in ordinary words. Adapt this template; do not paste it verbatim with placeholders unresolved:
+
+> I'll set up a private notebook that your AI assistants share, so they remember your project across sessions and machines. Here's what happens:
+>
+> 1. I create a private storage space for the notebook — either a private GitHub repository (so it syncs across machines) or a local folder on this machine (simpler, but stays on this machine).
+> 2. I write the first page from what you've told me about your project.
+> 3. From then on, every assistant you talk to reads that notebook first and writes updates back to it.
+>
+> I need three things from you: what project this is for, where to keep the notebook, and — if you want cross-machine sync — permission to create a private GitHub repository under your account. You never need to touch a terminal, learn git, or open the GitHub website yourself, except for one step: logging in to GitHub in your browser if we go the sync route. Everything else I do.
+
+Do not start section 0 until the user has confirmed the storage choice.
 
 ## 0. Separate distribution from the adopter's data
 
@@ -57,6 +71,27 @@ The agent can carry out approved setup mechanics. Return only grouped human deci
 
 This is the adopter path. It uses git and GitHub. Do not install Node.js.
 
+### Pre-flight: GitHub path checks
+
+If the user chose cross-machine sync (private GitHub repository), run these
+read-only checks **before** the Setup block, and group any failures into one
+request to the user. Do not discover a missing login halfway through Setup.
+
+```sh
+git --version
+command -v gh && gh auth status
+```
+
+- No git → report the capability gap; cannot proceed with Setup.
+- No `gh` → the user creates the private repository in the GitHub UI; clone with git.
+- `gh` present but not logged in → stop and ask the user to complete `gh auth login`
+  in their browser. The agent cannot perform the browser/device-code flow for them.
+- `gh api user --jq .login` must match the section-0-approved owner before any
+  repository is created.
+
+If GitHub access or approval is missing, fall back to a local git ledger
+(`shared_access: not-configured`) and use the local Join variant below.
+
 ### Setup
 
 Run this outside the toolkit checkout, and only after section 0 approval for the exact owner, name, private visibility and push. On Windows, use Git Bash or WSL. Without `gh`, create the private repository in the GitHub UI and clone it with git.
@@ -65,6 +100,10 @@ Run this outside the toolkit checkout, and only after section 0 approval for the
 gh api user --jq .login
 gh repo create OWNER/LEDGER --private --clone
 cd LEDGER
+# Repo-local identity so the first commit works on brand-new machines
+# (a global git identity may not exist). Adjust to the user's name/email.
+git config user.name "Continuity Ledger"
+git config user.email "ledger@localhost"
 cp /path/to/inspected-toolkit/.gitattributes .gitattributes
 mkdir -p projects/PROJECT
 # Write projects/PROJECT/CURRENT_STATE.md from inspected evidence before the commit.
@@ -89,6 +128,25 @@ to this same ledger. Do not clone the public toolkit.
 ```
 
 The joining agent clones `LEDGER_URL`, reads the handoff, and pushes its update to that same private repository. Setup and Join are done. The checks below are not required.
+
+### Join variant: local ledger (no shareable URL)
+
+When Setup ended with `shared_access: not-configured` (local git ledger, no
+GitHub remote), there is no URL to share. Give the next agent on the **same
+machine** this instead, with the real local path:
+
+```text
+Join our continuity ledger. Read only this local directory:
+LEDGER_PATH
+
+Continue from projects/PROJECT/CURRENT_STATE.md. Commit your update back
+to this same ledger with git. Do not clone the public toolkit.
+```
+
+This variant works only when both agents share the same filesystem. It does
+not provide cross-machine continuity — that requires the GitHub-backed Setup
+above. If the joining agent runs on another machine, stop and resolve remote
+access first; do not paste a local-only path it cannot reach.
 
 ## Optional checks
 
