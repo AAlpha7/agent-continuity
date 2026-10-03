@@ -21,8 +21,8 @@
     },
     {
       "path": "History/2026-10-01-minimal-setup-join-reverify.md",
-      "bytes": 1118,
-      "sha256": "e01ac295917d6296b17730f326d3cb9995258d86af68d310670441e6339d37ec"
+      "bytes": 1062,
+      "sha256": "29ddfcc76cdd545812bdb9787912b096ee941c6af52bb03f9e6cfa70172bb7e5"
     },
     {
       "path": "History/2026-10-01-minimal-vs-optional.md",
@@ -41,8 +41,8 @@
     },
     {
       "path": "ONBOARDING.md",
-      "bytes": 26693,
-      "sha256": "b810d30c9271bbb7f32d4c823b26b99f939c0e983bbd9aca9e5f7e2284d98fc6"
+      "bytes": 29967,
+      "sha256": "2a8f047ecf47bc5aca77bc379de4b3fd57e0cfee51896a920404317767040649"
     },
     {
       "path": "PROTOCOL.md",
@@ -86,8 +86,8 @@
     },
     {
       "path": "TESTING.md",
-      "bytes": 15202,
-      "sha256": "6cee6619572edc4824d9a391871a03f2845a700e31b8a48d58808999d480c21b"
+      "bytes": 15087,
+      "sha256": "1adab05a4b752eb9ba1777103a44446464fca894e94c22e7db54463f96b0b5bc"
     },
     {
       "path": "docs/NOTIFICATIONS.md",
@@ -131,8 +131,8 @@
     },
     {
       "path": "docs/design/realtime-bidirectional-channel-draft.md",
-      "bytes": 7108,
-      "sha256": "5d20813f4fe4fad8031588f6971c934a3e4c437c8cef6892fc1021fb1f79ba58"
+      "bytes": 7180,
+      "sha256": "fc8f4cc0c65c03e6b154edc8d981b6017285906ea8c27d26541097c2e9c9affe"
     },
     {
       "path": "examples/init-project.mjs",
@@ -346,8 +346,8 @@
     },
     {
       "path": "test/onboarding-docs.test.mjs",
-      "bytes": 2642,
-      "sha256": "2e9d357c6b1251a2215dbc2cc6c6259af070e54c25f0e97b259d1245b1cee725"
+      "bytes": 3367,
+      "sha256": "d4d8dfd717e6fc7033638a664c6fe4eb39408a03463a6635ef490173ef4c9e7c"
     },
     {
       "path": "test/receipts-snapshot.test.mjs",

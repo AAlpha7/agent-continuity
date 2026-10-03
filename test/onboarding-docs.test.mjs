@@ -32,6 +32,18 @@ test('Minimal onboarding keeps Node and distribution outside completion requirem
   assert.match(onboarding,/Node\.js is not required\./);
   assert.doesNotMatch(onboarding,/Use the inspected `v0\.1\.0-rc\.3` release/);
   assert.match(onboarding,/exact toolkit commit you inspected/);
+  const joinBlocks=[...minimal.matchAll(/```text\r?\n([\s\S]*?)```/g)].map(m=>m[1]).filter(b=>b.startsWith('Join our continuity ledger.'));
+  assert.equal(joinBlocks.length,2,'Minimal onboarding must provide remote and local Join prompts');
+  for(const block of joinBlocks) {
+    const handoff=block.indexOf('projects/PROJECT/CURRENT_STATE.md');
+    assert.ok(handoff>=0,'Join must identify the project handoff');
+    for(const path of ['docs/HOW_WE_COORDINATE.md','docs/PROTOCOL.md']) {
+      const at=block.indexOf(path);
+      assert.ok(at>=0&&at<handoff,`Join must read ${path} before the handoff`);
+    }
+    assert.match(block,/Follow that protocol\./);
+    assert.match(block,/Do not clone the public toolkit\./);
+  }
   const distribution=await read('r2/DISTRIBUTION.md');
   assert.match(distribution,/\*\*Optional tooling only\.\*\*/);
   assert.doesNotMatch(distribution,/Before calling an adopter ledger ready/);

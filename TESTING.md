@@ -28,15 +28,15 @@ Users do not run this checklist.
 
 Brand-new agents in brand-new environments:
 
-- Agent A Setup: `bc-35d362fd-92fb-5db4-977a-c9afb2fb95f5`
-- Agent B Join: `bc-d8cd3d33-cf74-5e40-8800-64355d877a22`
+- Agent A Setup: `[private trial agent ID omitted]`
+- Agent B Join: `[private trial agent ID omitted]`
 
-New private ledger (`private: true`; not a toolkit fork): https://github.com/AAlpha7/ac-fresh-setup-20261001-f40a68
+New private ledger (`private: true`; not a toolkit fork): [private trial ledger URL omitted]
 
-Project handoff: `projects/fresh-verify/CURRENT_STATE.md`
+Project handoff: `projects/PROJECT/CURRENT_STATE.md`
 
-- Setup local status: `partial`. The Cursor App/`gh` bot could not push the private repo. The AAlpha7 user integration created the repo and wrote the handoff. Remote `main` tip after Setup: `12875ad7076211910be0b464f20215423c2005f3`.
-- Join local status: `ready`. Join commit `90fee23281646f870b78e01058a1caefef755e66` on `main`, via the AAlpha7 user integration Contents API, after `git clone` with App credentials failed (repository not found).
+- Setup local status: `partial`. The Cursor App/`gh` bot could not push the private repo. The AAlpha7 user integration created the repo and wrote the handoff. Remote `main` tip after Setup: `[private trial commit ID omitted]`.
+- Join local status: `ready`. Join commit `[private trial commit ID omitted]` on `main`, via the AAlpha7 user integration Contents API, after `git clone` with App credentials failed (repository not found).
 - Optional checks: not run. This run was a Minimal-only re-verify after the paste change.
 
 Result: Minimal Setup→Join PASS, with a credential quirk (App credentials versus the AAlpha7 user integration).
@@ -49,16 +49,16 @@ That run predates the ledger-local protocol copy. Do not treat the run above as 
 
 Brand-new agents:
 
-- Agent A Setup: `bc-251285cd-7ef4-5770-b346-f9f5e2055210`
-- Agent B Join: `bc-8aee6c2f-7abc-54e2-a735-5a68dd60ea6f`
+- Agent A Setup: `[private trial agent ID omitted]`
+- Agent B Join: `[private trial agent ID omitted]`
 
-New private ledger (private; not a fork): https://github.com/AAlpha7/ac-fresh-setup-20261001-protocol-6379
+New private ledger (private; not a fork): [private trial ledger URL omitted]
 
-Project handoff: `projects/protocol-verify/CURRENT_STATE.md`
+Project handoff: `projects/PROJECT/CURRENT_STATE.md`
 
-- Setup left `docs/PROTOCOL.md` (byte match SHA-256 `bd34e245aa82cdf42ac1e190ec330c601d66318ac967bf7461f89305b12ef225`), `docs/HOW_WE_COORDINATE.md`, `.gitattributes`, and `CURRENT_STATE`. Tip after Setup cleanup: `65661bb30c815573f3c13f6ebc0f15dbb441d900`.
-- Join commit `f3507489b009534cf43ea7775635fb5c79d80b1d` via `git push`. Join used the ledger `PROTOCOL` and `HOW_WE_COORDINATE`, and did not clone the public toolkit.
-- Smoke on the PR branch (Themis box): `ledger-smoke: ok` and `minimal-ledger: docs/PROTOCOL.md byte match`.
+- Setup left `docs/PROTOCOL.md` (byte match SHA-256 `bd34e245aa82cdf42ac1e190ec330c601d66318ac967bf7461f89305b12ef225`), `docs/HOW_WE_COORDINATE.md`, `.gitattributes`, and `CURRENT_STATE`. Tip after Setup cleanup: `[private trial commit ID omitted]`.
+- Join commit `[private trial commit ID omitted]` via `git push`. Join used the ledger `PROTOCOL` and `HOW_WE_COORDINATE`, and did not clone the public toolkit.
+- Smoke on the PR branch (trial environment): `ledger-smoke: ok` and `minimal-ledger: docs/PROTOCOL.md byte match`.
 
 Result: Minimal Setup→Join + cold Join literacy PASS.
 
