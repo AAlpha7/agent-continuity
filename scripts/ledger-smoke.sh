@@ -63,9 +63,9 @@ is_sha256() {
 # 0 when ledger/docs/PROTOCOL.md is a byte copy of toolkit PROTOCOL.md.
 # A missing file and a paraphrase both fail. Not a Node check.
 protocol_bytes_match() {
-  ledger=$1
-  [ -f "$ledger/docs/PROTOCOL.md" ] || return 1
-  cmp -s "$toolkit/PROTOCOL.md" "$ledger/docs/PROTOCOL.md"
+  protocol_ledger=$1
+  [ -f "$protocol_ledger/docs/PROTOCOL.md" ] || return 1
+  cmp -s "$toolkit/PROTOCOL.md" "$protocol_ledger/docs/PROTOCOL.md"
 }
 
 command -v git >/dev/null 2>&1 || die "git is required"
