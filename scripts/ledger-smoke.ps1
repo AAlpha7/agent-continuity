@@ -11,6 +11,8 @@
 # clone, and the single-writer lock shape. POSIX mode 0600 is asserted
 # only when $env:OS is not Windows_NT. On Windows the lock check is
 # the empty exclusive-create sentinel (a second create must fail).
+# It then requires a synthetic Minimal ledger to contain docs/PROTOCOL.md
+# byte-matching toolkit PROTOCOL.md. Node.js is not required.
 
 $ErrorActionPreference = 'Stop'
 # PowerShell 7 can turn git's stderr and non-zero exits into terminating
@@ -66,6 +68,18 @@ function Assert-NoCr([string]$Path) {
   }
 }
 
+function Test-ProtocolBytesMatch([string]$LedgerRoot, [string]$ToolkitProtocol) {
+  $copy = Join-Path (Join-Path $LedgerRoot 'docs') 'PROTOCOL.md'
+  if (-not (Test-Path -LiteralPath $copy)) { return $false }
+  $a = [System.IO.File]::ReadAllBytes($ToolkitProtocol)
+  $b = [System.IO.File]::ReadAllBytes($copy)
+  if ($a.Length -ne $b.Length) { return $false }
+  for ($i = 0; $i -lt $a.Length; $i++) {
+    if ($a[$i] -ne $b[$i]) { return $false }
+  }
+  return $true
+}
+
 function Assert-SameFile([string]$Left, [string]$Right, [string]$Label) {
   $a = [System.IO.File]::ReadAllBytes($Left)
   $b = [System.IO.File]::ReadAllBytes($Right)
@@ -98,7 +112,9 @@ try {
   $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
   $toolkit = Split-Path -Parent $scriptDir
   $attributes = Join-Path $toolkit '.gitattributes'
+  $toolkitProtocol = Join-Path $toolkit 'PROTOCOL.md'
   if (-not (Test-Path -LiteralPath $attributes)) { Fail "missing $attributes" }
+  if (-not (Test-Path -LiteralPath $toolkitProtocol)) { Fail "missing $toolkitProtocol" }
 
   $script:Work = Join-Path ([System.IO.Path]::GetTempPath()) ("ledger-smoke-" + [guid]::NewGuid().ToString('n'))
   $hooks = Join-Path $script:Work 'empty-hooks'
@@ -302,6 +318,21 @@ try {
   $receiptSha = Get-Sha256Lower $receipt
   if ($receiptSha -notmatch '^[a-f0-9]{64}$') { Fail 'receipt hash is not 64 lowercase hex' }
   if ((Get-Sha256Lower $cloneReceipt) -cne $receiptSha) { Fail 'clone receipt hash mismatch' }
+
+  # Current documented Minimal Setup copies only .gitattributes and the
+  # handoff. That ledger has no byte copy of PROTOCOL.md.
+  Write-Output 'ledger-smoke: prior checks passed; checking Minimal protocol bytes'
+  $gap = Join-Path $script:Work 'minimal-gap'
+  New-Item -ItemType Directory -Path (Join-Path (Join-Path $gap 'projects') 'PROJECT') -Force | Out-Null
+  [System.IO.File]::Copy($attributes, (Join-Path $gap '.gitattributes'))
+  Write-Lf (Join-Path (Join-Path (Join-Path $gap 'projects') 'PROJECT') 'CURRENT_STATE.md') @(
+    '# Synthetic Minimal handoff',
+    'Goal: current Minimal file set, with no protocol copy.'
+  )
+  if (Test-ProtocolBytesMatch $gap $toolkitProtocol) {
+    Fail 'gap ledger byte-matched PROTOCOL.md; the missing-copy case was not exercised'
+  }
+  Fail 'minimal ledger lacks docs/PROTOCOL.md byte-matching the toolkit'
 
   $revArgs = $script:GitPrefix + @('-C', $ledger, 'rev-parse', 'HEAD')
   $commit = (& git @revArgs)

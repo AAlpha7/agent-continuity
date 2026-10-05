@@ -9,8 +9,11 @@
 # The script writes a temporary ledger, commits it, and clones with
 # core.autocrlf=true. It checks the sample receipt, handoff bytes,
 # history SHA-256, and the single-writer lock shape documented in
-# r2/WIRE.md and r2/ONBOARDING.md. It does not create a remote.
-# This is not a CI adopter gate.
+# r2/WIRE.md and r2/ONBOARDING.md. It then builds a synthetic Minimal
+# ledger in the current documented shape (attributes and handoff only)
+# and requires docs/PROTOCOL.md to byte-match toolkit PROTOCOL.md.
+# It does not create a remote.
+# This is not a CI adopter gate. Node.js is not required.
 
 set -eu
 
@@ -57,12 +60,21 @@ is_sha256() {
   printf '%s\n' "$1" | awk 'BEGIN { ok = 0 } /^[a-f0-9]{64}$/ { ok = 1 } END { exit ok ? 0 : 1 }'
 }
 
+# 0 when ledger/docs/PROTOCOL.md is a byte copy of toolkit PROTOCOL.md.
+# A missing file and a paraphrase both fail. Not a Node check.
+protocol_bytes_match() {
+  ledger=$1
+  [ -f "$ledger/docs/PROTOCOL.md" ] || return 1
+  cmp -s "$toolkit/PROTOCOL.md" "$ledger/docs/PROTOCOL.md"
+}
+
 command -v git >/dev/null 2>&1 || die "git is required"
 command -v mktemp >/dev/null 2>&1 || die "mktemp is required"
 
 script_dir=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
 toolkit=$(CDPATH= cd -- "$script_dir/.." && pwd)
 [ -f "$toolkit/.gitattributes" ] || die "missing $toolkit/.gitattributes"
+[ -f "$toolkit/PROTOCOL.md" ] || die "missing $toolkit/PROTOCOL.md"
 
 work=$(mktemp -d "${TMPDIR:-/tmp}/ledger-smoke.XXXXXX")
 hooks=$work/empty-hooks
@@ -250,6 +262,22 @@ receipt_sha=$(hash_file "$receipt")
 is_sha256 "$receipt_sha" || die "receipt hash is not 64 lowercase hex"
 clone_receipt=$(hash_file "$clone/projects/smoke-project/receipts/smoke-receipt-0001.json")
 [ "$clone_receipt" = "$receipt_sha" ] || die "clone receipt hash mismatch"
+
+# Current documented Minimal Setup copies only .gitattributes and the
+# handoff. That ledger has no byte copy of PROTOCOL.md. This check must
+# fail until Setup puts one there. A successful clone above is not enough.
+printf '%s\n' "ledger-smoke: prior checks passed; checking Minimal protocol bytes"
+gap=$work/minimal-gap
+mkdir -m 700 -p "$gap/projects/PROJECT"
+cp "$toolkit/.gitattributes" "$gap/.gitattributes"
+printf '%s\n' \
+  '# Synthetic Minimal handoff' \
+  'Goal: current Minimal file set, with no protocol copy.' \
+  > "$gap/projects/PROJECT/CURRENT_STATE.md"
+if protocol_bytes_match "$gap"; then
+  die "gap ledger byte-matched PROTOCOL.md; the missing-copy case was not exercised"
+fi
+die "minimal ledger lacks docs/PROTOCOL.md byte-matching the toolkit"
 
 commit=$(gitc -C "$ledger" rev-parse HEAD)
 printf '%s\n' \
