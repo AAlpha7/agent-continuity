@@ -12,6 +12,10 @@
 # r2/WIRE.md and r2/ONBOARDING.md. It also rejects a synthetic Minimal
 # ledger that lacks docs/PROTOCOL.md byte-matching toolkit PROTOCOL.md,
 # including a paraphrase, and accepts one that has that byte copy.
+# The recorded toolkit revision must be the commit those bytes came
+# from (git rev-parse HEAD in this checkout, matching git show
+# HEAD:PROTOCOL.md). Relative markdown links in the copied files must
+# resolve inside the synthetic ledger.
 # It does not create a remote.
 # This is not a CI adopter gate. Node.js is not required.
 
@@ -66,6 +70,82 @@ protocol_bytes_match() {
   protocol_ledger=$1
   [ -f "$protocol_ledger/docs/PROTOCOL.md" ] || return 1
   cmp -s "$toolkit/PROTOCOL.md" "$protocol_ledger/docs/PROTOCOL.md"
+}
+
+# Relative markdown links in a file Setup copied must resolve to a file
+# inside the ledger. http(s), mailto, and other schemes, plus #anchors,
+# are not ledger-relative. $1 is the ledger root, $2 is the path inside it.
+copied_markdown_links_resolve() {
+  ledger_root=$1
+  rel=$2
+  dir=$(dirname "$rel")
+  awk -v dir="$dir" '
+    function resolve(base, relpath,   n, i, parts, out, k, seg, built) {
+      k = 0
+      n = split(base, parts, "/")
+      for (i = 1; i <= n; i++) {
+        if (parts[i] == "" || parts[i] == ".") continue
+        k++
+        out[k] = parts[i]
+      }
+      n = split(relpath, parts, "/")
+      for (i = 1; i <= n; i++) {
+        seg = parts[i]
+        if (seg == "" || seg == ".") continue
+        if (seg == "..") {
+          if (k <= 0) return ""
+          k--
+          continue
+        }
+        k++
+        out[k] = seg
+      }
+      built = ""
+      for (i = 1; i <= k; i++) {
+        if (i > 1) built = built "/"
+        built = built out[i]
+      }
+      return built
+    }
+    function consider(target) {
+      sub(/[[:space:]].*/, "", target)
+      if (target ~ /^[A-Za-z][A-Za-z0-9+.-]*:/) return
+      if (target ~ /^#/) return
+      sub(/[#?].*/, "", target)
+      if (target == "") return
+      print resolve(dir, target)
+    }
+    {
+      line = $0
+      while (match(line, /\]\([^)]*\)/)) {
+        target = substr(line, RSTART + 2, RLENGTH - 3)
+        consider(target)
+        line = substr(line, RSTART + RLENGTH)
+      }
+      if (match($0, /^\[[^]]+\]:[[:space:]]+/)) {
+        target = $0
+        sub(/^\[[^]]+\]:[[:space:]]+/, "", target)
+        consider(target)
+      }
+    }
+  ' "$ledger_root/$rel" > "$work/link-targets"
+  link_error=
+  while IFS= read -r resolved; do
+    if [ -z "$resolved" ]; then
+      link_error="relative link in $rel escapes the ledger"
+      return 1
+    fi
+    if [ ! -f "$ledger_root/$resolved" ]; then
+      link_error="relative link in $rel dangles: $resolved"
+      return 1
+    fi
+  done < "$work/link-targets"
+}
+
+require_copied_links() {
+  if ! copied_markdown_links_resolve "$1" "$2"; then
+    die "$link_error"
+  fi
 }
 
 command -v git >/dev/null 2>&1 || die "git is required"
@@ -270,8 +350,13 @@ clone_receipt=$(hash_file "$clone/projects/smoke-project/receipts/smoke-receipt-
 printf '%s\n' "ledger-smoke: prior checks passed; checking Minimal protocol bytes"
 [ -f "$toolkit/templates/HOW_WE_COORDINATE.md" ] || die "missing $toolkit/templates/HOW_WE_COORDINATE.md"
 grep -F '<commit or unset>' "$toolkit/templates/HOW_WE_COORDINATE.md" >/dev/null || die "template missing revision token"
+grep -F 'git rev-parse HEAD' "$toolkit/templates/HOW_WE_COORDINATE.md" >/dev/null || die "template does not name git rev-parse HEAD"
+grep -F 'byte-copied' "$toolkit/templates/HOW_WE_COORDINATE.md" >/dev/null || die "template does not say the revision is the byte-copied commit"
 grep -F 'docs/PROTOCOL.md' "$toolkit/templates/HOW_WE_COORDINATE.md" >/dev/null || die "template does not name docs/PROTOCOL.md"
 grep -F 'CURRENT_STATE.md' "$toolkit/templates/HOW_WE_COORDINATE.md" >/dev/null || die "template does not name CURRENT_STATE.md"
+for setup_doc in README.md ONBOARDING.md README.zh-CN.md; do
+  grep -F 'git rev-parse HEAD' "$toolkit/$setup_doc" >/dev/null || die "$setup_doc does not name git rev-parse HEAD"
+done
 if cmp -s "$toolkit/PROTOCOL.md" "$toolkit/templates/HOW_WE_COORDINATE.md"; then
   die "short entry is a byte copy of PROTOCOL.md"
 fi
@@ -302,12 +387,35 @@ minimal_clone=$work/minimal-clone
 mkdir -m 700 -p "$minimal/docs" "$minimal/projects/PROJECT"
 cp "$toolkit/.gitattributes" "$minimal/.gitattributes"
 cp "$toolkit/PROTOCOL.md" "$minimal/docs/PROTOCOL.md"
-sed 's/<commit or unset>/unset/' "$toolkit/templates/HOW_WE_COORDINATE.md" > "$minimal/docs/HOW_WE_COORDINATE.md"
+# The revision is the commit in this checkout whose PROTOCOL.md blob was copied.
+source_commit=$(git -C "$toolkit" rev-parse HEAD)
+case $source_commit in
+  ????????????????????????????????????????) ;;
+  *) die "toolkit HEAD is not a full commit id: $source_commit" ;;
+esac
+printf '%s\n' "$source_commit" | awk 'BEGIN { ok = 0 } /^[0-9a-f]{40}$/ { ok = 1 } END { exit ok ? 0 : 1 }' || die "toolkit HEAD is not 40 lowercase hex: $source_commit"
+git -C "$toolkit" -c core.autocrlf=false show "${source_commit}:PROTOCOL.md" > "$work/protocol-from-commit" || die "could not read PROTOCOL.md at toolkit HEAD $source_commit"
+cmp -s "$work/protocol-from-commit" "$minimal/docs/PROTOCOL.md" || die "copied PROTOCOL.md is not the blob at toolkit HEAD $source_commit"
+sed "s/<commit or unset>/$source_commit/" "$toolkit/templates/HOW_WE_COORDINATE.md" > "$minimal/docs/HOW_WE_COORDINATE.md"
 cmp -s "$toolkit/PROTOCOL.md" "$minimal/docs/PROTOCOL.md" || die "docs/PROTOCOL.md is not a byte copy of toolkit PROTOCOL.md"
 if grep -F '<commit or unset>' "$minimal/docs/HOW_WE_COORDINATE.md" >/dev/null; then
   die "HOW_WE_COORDINATE still has the unfilled revision token"
 fi
-grep -F 'Toolkit docs revision (optional): unset' "$minimal/docs/HOW_WE_COORDINATE.md" >/dev/null || die "HOW_WE_COORDINATE revision line was not filled"
+recorded=$(sed -n 's/^Toolkit docs revision (optional): //p' "$minimal/docs/HOW_WE_COORDINATE.md")
+[ "$recorded" = "$source_commit" ] || die "recorded toolkit revision '$recorded' != copy commit $source_commit"
+if grep -F 'Toolkit docs revision (optional): unset' "$minimal/docs/HOW_WE_COORDINATE.md" >/dev/null; then
+  die "recorded unset even though the copy commit resolved"
+fi
+require_copied_links "$minimal" .gitattributes
+require_copied_links "$minimal" docs/PROTOCOL.md
+require_copied_links "$minimal" docs/HOW_WE_COORDINATE.md
+dangle=$work/dangle-ledger
+mkdir -m 700 -p "$dangle/docs"
+cp "$minimal/docs/PROTOCOL.md" "$dangle/docs/PROTOCOL.md"
+printf '\n%s\n' 'See the [wire](r2/WIRE.md).' >> "$dangle/docs/PROTOCOL.md"
+if copied_markdown_links_resolve "$dangle" docs/PROTOCOL.md; then
+  die "dangling r2/WIRE.md link was accepted"
+fi
 printf '%s\n' \
   '# Synthetic minimal handoff' \
   'Goal: exercise Minimal ledger shape only.' \
@@ -366,6 +474,10 @@ while IFS= read -r rel; do
   cmp -s "$minimal/$rel" "$minimal_clone/$rel" || die "minimal clone byte mismatch: $rel"
 done < "$work/minimal-files"
 cmp -s "$toolkit/PROTOCOL.md" "$minimal_clone/docs/PROTOCOL.md" || die "cloned docs/PROTOCOL.md does not byte-match toolkit PROTOCOL.md"
+clone_recorded=$(sed -n 's/^Toolkit docs revision (optional): //p' "$minimal_clone/docs/HOW_WE_COORDINATE.md")
+[ "$clone_recorded" = "$source_commit" ] || die "cloned toolkit revision '$clone_recorded' != copy commit $source_commit"
+require_copied_links "$minimal_clone" docs/PROTOCOL.md
+require_copied_links "$minimal_clone" docs/HOW_WE_COORDINATE.md
 
 commit=$(gitc -C "$ledger" rev-parse HEAD)
 printf '%s\n' \
@@ -377,4 +489,5 @@ printf '%s\n' \
   "writer.lock: empty exclusive sentinel mode 0600; not committed" \
   "minimal-gap: rejected (docs/PROTOCOL.md missing)" \
   "minimal-paraphrase: rejected (bytes differ)" \
-  "minimal-ledger: docs/PROTOCOL.md byte match"
+  "minimal-ledger: docs/PROTOCOL.md byte match" \
+  "minimal-revision: $source_commit matches copied PROTOCOL.md"

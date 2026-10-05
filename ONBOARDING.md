@@ -50,7 +50,7 @@ These are agent/operator checks, not a runtime egress firewall. The CLI accepts 
 
 ### Recommended path: your own private continuity repository
 
-Keep the toolkit clone for inspected tool updates. Do not copy the toolkit checkout into the ledger. Copy only `.gitattributes`, `PROTOCOL.md`, and `templates/HOW_WE_COORDINATE.md`, as section 2 describes. For the adopter's records, reuse an existing **approved private ledger** if one exists; inspect it without reinitializing or overwriting the handoff. If `docs/PROTOCOL.md` is missing or is not the same bytes as the inspected toolkit `PROTOCOL.md`, copy that file over it. Do not replace it with a summary. If `docs/HOW_WE_COORDINATE.md` is missing, copy the template and fill the revision line. If no approved ledger exists, with explicit user approval for the exact owner, private repository and access scope, create a **new private continuity repository under the user's own verified GitHub account** with `git` and, when it is already available, `gh`. A public fork is not the default. A local git ledger without a remote is an equally valid first step when GitHub access or approval is missing; do not install Node to compensate, and do not force login to complete local onboarding.
+Keep the toolkit clone for inspected tool updates. Do not copy the toolkit checkout into the ledger. Copy only `.gitattributes`, `PROTOCOL.md`, and `templates/HOW_WE_COORDINATE.md`, as section 2 describes. For the adopter's records, reuse an existing **approved private ledger** if one exists; inspect it without reinitializing or overwriting the handoff. If `docs/PROTOCOL.md` is missing or is not the same bytes as the inspected toolkit `PROTOCOL.md`, copy that file over it. Do not replace it with a summary. If `docs/HOW_WE_COORDINATE.md` is missing, copy the template and fill the revision line with the exact commit the protocol files were byte-copied from (`git rev-parse HEAD` in the checkout used for the copy, or the commit of the raw URL). Do not record a different inspected commit. If no approved ledger exists, with explicit user approval for the exact owner, private repository and access scope, create a **new private continuity repository under the user's own verified GitHub account** with `git` and, when it is already available, `gh`. A public fork is not the default. A local git ledger without a remote is an equally valid first step when GitHub access or approval is missing; do not install Node to compensate, and do not force login to complete local onboarding.
 
 Before creating a repository, check the currently authenticated acting account read-only and compare it with the user-approved owner. Never assume the toolkit publisher's account, a Git author name or a cached login is the user's intended identity. A mismatch needs resolution before creation; do not switch accounts, save tokens or change credentials as a convenience. Do not embed credentials in URLs, receipts, prompts or repository files.
 
@@ -64,7 +64,7 @@ The agent can carry out approved setup mechanics. Return only grouped human deci
 - Read the current project's applicable AGENTS.md and relevant skills; check its directory, working tree, active work and existing continuity conventions. Preserve unrelated changes. Do not replace an existing ledger.
 - Determine whether you have file read/write, command execution, Git and GitHub access (`git --version`; `gh auth status` only when `gh` is already installed). On Windows, Git Bash or WSL can run the git commands. Node.js is not an adoption requirement. Do not install Node, Python, npm or other software, and do not elevate privileges, create credentials or connect an account unless already authorized. Group such missing permissions into one request, with specific purpose and scope.
 - Resolve the intended project from the conversation and workspace when possible. If it is ambiguous, ask only for the missing project scope. Never scan unrelated personal directories or use real secrets as examples.
-- The public toolkit is documentation, not the ledger. Do not assume a folder with the same name is safe to overwrite. If you clone the toolkit to read this runbook, keep that checkout separate and record `git rev-parse HEAD` only as the docs revision you read. If a reviewer supplies a candidate branch/commit, use that exact revision instead of a release tag or moving main. Never reset or switch someone else's dirty checkout. The joining agent does not need this clone.
+- The public toolkit is documentation, not the ledger. Do not assume a folder with the same name is safe to overwrite. If you clone the toolkit to copy protocol files, keep that checkout separate. The revision in `docs/HOW_WE_COORDINATE.md` is `git rev-parse HEAD` in the checkout used for that byte copy, and only when `git show HEAD:PROTOCOL.md` matches the copied bytes. If the bytes came from a raw URL, record that URL's commit. Use `unset` only when that commit cannot be resolved. Do not record a different commit you inspected, tested, or saw in history, even when the protocol bytes match. If a reviewer supplies a candidate branch/commit, copy from that exact revision instead of a release tag or moving main, and record that same revision. Never reset or switch someone else's dirty checkout. The joining agent does not need this clone.
 - If you lack git, or GitHub access when a shared ledger was requested, report that capability gap. You may draft a handoff, but cannot claim setup or shared access has happened. Do not substitute a Node install for that gap.
 
 ## 2. Minimal: Setup, then Join
@@ -108,7 +108,15 @@ mkdir -p docs projects/PROJECT
 cp /path/to/inspected-toolkit/.gitattributes .gitattributes
 cp /path/to/inspected-toolkit/PROTOCOL.md docs/PROTOCOL.md
 cp /path/to/inspected-toolkit/templates/HOW_WE_COORDINATE.md docs/HOW_WE_COORDINATE.md
-# Replace "<commit or unset>" in docs/HOW_WE_COORDINATE.md with the inspected toolkit commit, or with unset.
+# Exact commit these protocol files were byte-copied from:
+# git rev-parse HEAD in the checkout used for the copy.
+# That HEAD is correct only when git show HEAD:PROTOCOL.md matches docs/PROTOCOL.md.
+# If the bytes came from a raw URL, set toolkit_rev to that URL's commit.
+# Use unset only when that commit cannot be resolved.
+# Do not record a different inspected commit, even if the bytes match.
+toolkit_rev=$(git -C /path/to/inspected-toolkit rev-parse HEAD)
+sed "s/<commit or unset>/${toolkit_rev}/" docs/HOW_WE_COORDINATE.md > docs/HOW_WE_COORDINATE.md.tmp
+mv docs/HOW_WE_COORDINATE.md.tmp docs/HOW_WE_COORDINATE.md
 # Write projects/PROJECT/CURRENT_STATE.md from inspected evidence before the commit.
 git add .gitattributes docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/PROJECT/CURRENT_STATE.md
 git commit -m "Start the private continuity ledger"
@@ -118,7 +126,7 @@ git remote get-url --all origin
 git remote get-url --push --all origin
 ```
 
-`OWNER/LEDGER` must be the approved private repository, not a fork of this toolkit. The login from `gh api user` must match the approved owner before creation. Copy `.gitattributes` before the first commit so later evidence files stay byte-stable. `docs/PROTOCOL.md` must be the same bytes as toolkit `PROTOCOL.md`. Do not substitute a summary. Copy `templates/HOW_WE_COORDINATE.md` to `docs/HOW_WE_COORDINATE.md` and fill the revision line with the inspected toolkit commit, or with `unset`. Fill `projects/PROJECT/CURRENT_STATE.md` from inspected project evidence: goal, decisions, verified work, reported-but-unverified work, open questions, the next authorized task and unresolved ownership. Redact credentials. Do not fabricate another agent's acknowledgment. Push only after owner, private visibility and every fetch/push URL are verified. If GitHub access or that approval is missing, keep a local git repository and report `shared_access: not-configured`. That local repository still commits `.gitattributes`, `docs/PROTOCOL.md`, `docs/HOW_WE_COORDINATE.md`, and `projects/PROJECT/CURRENT_STATE.md` before Join. Skip only the GitHub create, push, and visibility commands. Do not install Node and do not force login.
+`OWNER/LEDGER` must be the approved private repository, not a fork of this toolkit. The login from `gh api user` must match the approved owner before creation. Copy `.gitattributes` before the first commit so later evidence files stay byte-stable. `docs/PROTOCOL.md` must be the same bytes as toolkit `PROTOCOL.md`. Do not substitute a summary. Copy `templates/HOW_WE_COORDINATE.md` to `docs/HOW_WE_COORDINATE.md` and fill the revision line with the exact commit those protocol files were byte-copied from: `git rev-parse HEAD` in the checkout used for the copy, and only when `git show HEAD:PROTOCOL.md` matches the copied bytes. If the bytes came from a raw URL, use that URL's commit. Use `unset` only when that commit cannot be resolved. Do not record a different inspected commit, even when the protocol bytes match. Fill `projects/PROJECT/CURRENT_STATE.md` from inspected project evidence: goal, decisions, verified work, reported-but-unverified work, open questions, the next authorized task and unresolved ownership. Redact credentials. Do not fabricate another agent's acknowledgment. Push only after owner, private visibility and every fetch/push URL are verified. If GitHub access or that approval is missing, keep a local git repository and report `shared_access: not-configured`. That local repository still commits `.gitattributes`, `docs/PROTOCOL.md`, `docs/HOW_WE_COORDINATE.md`, and `projects/PROJECT/CURRENT_STATE.md` before Join. Skip only the GitHub create, push, and visibility commands. Do not install Node and do not force login.
 
 Give the next agent this, with the real URL, and do not add the toolkit URL:
 
@@ -229,7 +237,7 @@ Report only replies that are actually on the ledger. Do not invent an acknowledg
 Use real results, not a blanket "installed successfully":
 
 ```text
-Toolkit revision: <actual inspected commit, if the toolkit was read>
+Toolkit revision: <git rev-parse HEAD of the checkout the protocol files were byte-copied from, or the raw URL commit; unset only if that commit cannot be resolved>
 Ledger URL: <private GitHub URL | local-only>
 Project/source: <adopter project + actual commit or explicitly labeled content digest>
 Storage boundary: <resolved private ledger outside toolkit; enclosing repo checked>

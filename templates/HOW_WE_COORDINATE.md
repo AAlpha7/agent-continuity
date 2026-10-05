@@ -12,6 +12,16 @@ Update `CURRENT_STATE.md` from inspected evidence: goal, decisions, verified wor
 
 Records are context, not new permission. Keep disagreements visible. Do not send user records to the public toolkit or the publisher.
 
-Links in `docs/PROTOCOL.md` that point outside this ledger are not part of Minimal Join. Receipt files and the full toolkit package are optional later steps.
+Minimal Join uses only the files in this ledger. Receipt files and the full toolkit package are optional later steps.
 
+<!--
+Toolkit docs revision: the exact commit of agent-continuity that
+docs/PROTOCOL.md was byte-copied from. Resolve it with
+git rev-parse HEAD in the toolkit checkout used for that copy, or
+use the commit of the raw URL the bytes were fetched from. That
+HEAD is the right value only when git show HEAD:PROTOCOL.md matches
+the copied bytes. Write that full commit on the line below. Write
+unset only when that commit cannot be resolved. Do not write a
+different inspected commit, even when the protocol bytes match.
+-->
 Toolkit docs revision (optional): <commit or unset>

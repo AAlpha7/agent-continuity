@@ -13,7 +13,11 @@
 # the empty exclusive-create sentinel (a second create must fail).
 # It rejects a synthetic Minimal ledger that lacks docs/PROTOCOL.md
 # byte-matching toolkit PROTOCOL.md, including a paraphrase, and accepts
-# one that has that byte copy. Node.js is not required.
+# one that has that byte copy. The recorded toolkit revision must be
+# the commit those bytes came from (git rev-parse HEAD in this checkout,
+# matching git show HEAD:PROTOCOL.md). Relative markdown links in the
+# copied files must resolve inside the synthetic ledger.
+# Node.js is not required.
 
 $ErrorActionPreference = 'Stop'
 # PowerShell 7 can turn git's stderr and non-zero exits into terminating
@@ -67,6 +71,75 @@ function Assert-NoCr([string]$Path) {
   foreach ($byte in [System.IO.File]::ReadAllBytes($Path)) {
     if ($byte -eq 13) { Fail "CR found in $Path" }
   }
+}
+
+function Resolve-LedgerRelative([string]$BaseDir, [string]$RelPath) {
+  $parts = New-Object System.Collections.Generic.List[string]
+  foreach ($seg in ($BaseDir -split '/')) {
+    if ($seg -and $seg -ne '.') { $parts.Add($seg) }
+  }
+  foreach ($seg in ($RelPath -split '/')) {
+    if (-not $seg -or $seg -eq '.') { continue }
+    if ($seg -eq '..') {
+      if ($parts.Count -eq 0) { return '' }
+      $parts.RemoveAt($parts.Count - 1)
+      continue
+    }
+    $parts.Add($seg)
+  }
+  return ($parts -join '/')
+}
+
+function Assert-CopiedLinksResolve([string]$LedgerRoot, [string]$Rel, [switch]$Quiet) {
+  $file = Join-Path $LedgerRoot ($Rel -replace '/', [IO.Path]::DirectorySeparatorChar)
+  $text = [IO.File]::ReadAllText($file, $script:Utf8)
+  $dir = [IO.Path]::GetDirectoryName(($Rel -replace '\\', '/'))
+  if (-not $dir -or $dir -eq '.') { $dir = '' }
+  $dir = ($dir -replace '\\', '/')
+  foreach ($m in [regex]::Matches($text, '\]\(([^)]*)\)')) {
+    $target = $m.Groups[1].Value
+    $space = $target.IndexOf(' ')
+    if ($space -ge 0) { $target = $target.Substring(0, $space) }
+    if ($target -match '^[A-Za-z][A-Za-z0-9+.-]*:') { continue }
+    if ($target.StartsWith('#')) { continue }
+    $cut = $target.IndexOfAny([char[]]@('#', '?'))
+    if ($cut -ge 0) { $target = $target.Substring(0, $cut) }
+    if ($target -eq '') { continue }
+    $resolved = Resolve-LedgerRelative $dir $target
+    if (-not $resolved) {
+      if ($Quiet) { return $false }
+      Fail "relative link in $Rel escapes the ledger"
+    }
+    $full = Join-Path $LedgerRoot ($resolved -replace '/', [IO.Path]::DirectorySeparatorChar)
+    if (-not (Test-Path -LiteralPath $full -PathType Leaf)) {
+      if ($Quiet) { return $false }
+      Fail "relative link in $Rel dangles: $resolved"
+    }
+  }
+  return $true
+}
+
+function Save-GitShow([string]$Dest, [string]$Object) {
+  $pieces = @()
+  foreach ($item in ($script:GitPrefix + @('-C', $toolkit, '-c', 'core.autocrlf=false', 'show', $Object))) {
+    if ($item -match '[\s"]') { $pieces += '"' + $item.Replace('"', '\"') + '"' }
+    else { $pieces += $item }
+  }
+  $psi = New-Object System.Diagnostics.ProcessStartInfo
+  $psi.FileName = 'git'
+  $psi.Arguments = ($pieces -join ' ')
+  $psi.UseShellExecute = $false
+  $psi.RedirectStandardOutput = $true
+  $psi.RedirectStandardError = $true
+  $psi.CreateNoWindow = $true
+  $proc = New-Object System.Diagnostics.Process
+  $proc.StartInfo = $psi
+  [void]$proc.Start()
+  $out = [System.IO.File]::Create($Dest)
+  try { $proc.StandardOutput.BaseStream.CopyTo($out) } finally { $out.Dispose() }
+  $err = $proc.StandardError.ReadToEnd()
+  $proc.WaitForExit()
+  if ($proc.ExitCode -ne 0) { Fail "git show ${Object} failed: $err" }
 }
 
 function Test-ProtocolBytesMatch([string]$LedgerRoot, [string]$ToolkitProtocol) {
@@ -327,7 +400,14 @@ try {
   if (-not (Test-Path -LiteralPath $templatePath)) { Fail "missing $templatePath" }
   $templateText = [System.IO.File]::ReadAllText($templatePath, $script:Utf8)
   if (-not $templateText.Contains('<commit or unset>')) { Fail 'template missing revision token' }
+  if (-not $templateText.Contains('git rev-parse HEAD')) { Fail 'template does not name git rev-parse HEAD' }
+  if (-not $templateText.Contains('byte-copied')) { Fail 'template does not say the revision is the byte-copied commit' }
   if (-not $templateText.Contains('docs/PROTOCOL.md')) { Fail 'template does not name docs/PROTOCOL.md' }
+  foreach ($setupDoc in @('README.md', 'ONBOARDING.md', 'README.zh-CN.md')) {
+    $docPath = Join-Path $toolkit $setupDoc
+    $docText = [System.IO.File]::ReadAllText($docPath, $script:Utf8)
+    if (-not $docText.Contains('git rev-parse HEAD')) { Fail "$setupDoc does not name git rev-parse HEAD" }
+  }
   if (-not $templateText.Contains('CURRENT_STATE.md')) { Fail 'template does not name CURRENT_STATE.md' }
   $protocolText = [System.IO.File]::ReadAllText($toolkitProtocol, $script:Utf8)
   if ($templateText -ceq $protocolText) { Fail 'short entry is a byte copy of PROTOCOL.md' }
@@ -361,12 +441,34 @@ try {
   New-Item -ItemType Directory -Path $minimalProject -Force | Out-Null
   [System.IO.File]::Copy($attributes, (Join-Path $minimal '.gitattributes'))
   [System.IO.File]::Copy($toolkitProtocol, (Join-Path $minimalDocs 'PROTOCOL.md'))
-  $filled = $templateText.Replace('<commit or unset>', 'unset')
+  $revOut = & git @($script:GitPrefix + @('-C', $toolkit, 'rev-parse', 'HEAD'))
+  if ($LASTEXITCODE -ne 0) { Fail 'git rev-parse HEAD failed' }
+  $sourceCommit = "$revOut".Trim()
+  if ($sourceCommit -notmatch '^[0-9a-f]{40}$') { Fail "toolkit HEAD is not 40 lowercase hex: $sourceCommit" }
+  $blob = Join-Path $script:Work 'protocol-from-commit'
+  Save-GitShow $blob "${sourceCommit}:PROTOCOL.md"
+  Assert-SameFile $blob (Join-Path $minimalDocs 'PROTOCOL.md') 'PROTOCOL.md at toolkit HEAD'
+  $filled = $templateText.Replace('<commit or unset>', $sourceCommit)
   if ($filled.Contains('<commit or unset>')) { Fail 'HOW_WE_COORDINATE still has the unfilled revision token' }
-  if (-not $filled.Contains('Toolkit docs revision (optional): unset')) {
-    Fail 'HOW_WE_COORDINATE revision line was not filled'
+  if ($filled.Contains('Toolkit docs revision (optional): unset')) {
+    Fail 'recorded unset even though the copy commit resolved'
+  }
+  if (-not $filled.Contains("Toolkit docs revision (optional): $sourceCommit")) {
+    Fail "recorded toolkit revision != copy commit $sourceCommit"
   }
   Write-Utf8Text (Join-Path $minimalDocs 'HOW_WE_COORDINATE.md') $filled
+  if (-not (Assert-CopiedLinksResolve $minimal '.gitattributes')) { Fail 'copied .gitattributes links do not resolve' }
+  if (-not (Assert-CopiedLinksResolve $minimal 'docs/PROTOCOL.md')) { Fail 'copied PROTOCOL.md links do not resolve' }
+  if (-not (Assert-CopiedLinksResolve $minimal 'docs/HOW_WE_COORDINATE.md')) { Fail 'copied HOW_WE_COORDINATE.md links do not resolve' }
+  $dangle = Join-Path $script:Work 'dangle-ledger'
+  $dangleDocs = Join-Path $dangle 'docs'
+  New-Item -ItemType Directory -Path $dangleDocs -Force | Out-Null
+  $dangleProtocol = Join-Path $dangleDocs 'PROTOCOL.md'
+  [System.IO.File]::Copy((Join-Path $minimalDocs 'PROTOCOL.md'), $dangleProtocol)
+  [System.IO.File]::AppendAllText($dangleProtocol, "`nSee the [wire](r2/WIRE.md).`n", $script:Utf8)
+  if (Assert-CopiedLinksResolve $dangle 'docs/PROTOCOL.md' -Quiet) {
+    Fail 'dangling r2/WIRE.md link was accepted'
+  }
   Write-Lf (Join-Path $minimalProject 'CURRENT_STATE.md') @(
     '# Synthetic minimal handoff',
     'Goal: exercise Minimal ledger shape only.',
@@ -412,6 +514,12 @@ try {
     Assert-SameFile (Join-Path $minimal $rel) (Join-Path $minimalClone $rel) "minimal $rel"
   }
   Assert-SameFile $toolkitProtocol (Join-Path (Join-Path $minimalClone 'docs') 'PROTOCOL.md') 'cloned docs/PROTOCOL.md'
+  $cloneEntry = [System.IO.File]::ReadAllText((Join-Path (Join-Path $minimalClone 'docs') 'HOW_WE_COORDINATE.md'), $script:Utf8)
+  if (-not $cloneEntry.Contains("Toolkit docs revision (optional): $sourceCommit")) {
+    Fail "cloned toolkit revision != copy commit $sourceCommit"
+  }
+  if (-not (Assert-CopiedLinksResolve $minimalClone 'docs/PROTOCOL.md')) { Fail 'cloned PROTOCOL.md links do not resolve' }
+  if (-not (Assert-CopiedLinksResolve $minimalClone 'docs/HOW_WE_COORDINATE.md')) { Fail 'cloned HOW_WE_COORDINATE.md links do not resolve' }
 
   $revArgs = $script:GitPrefix + @('-C', $ledger, 'rev-parse', 'HEAD')
   $commit = (& git @revArgs)
@@ -427,6 +535,7 @@ try {
   Write-Output 'minimal-gap: rejected (docs/PROTOCOL.md missing)'
   Write-Output 'minimal-paraphrase: rejected (bytes differ)'
   Write-Output 'minimal-ledger: docs/PROTOCOL.md byte match'
+  Write-Output "minimal-revision: $sourceCommit matches copied PROTOCOL.md"
   $script:Failed = $false
 } finally {
   if ($script:Work -and (Test-Path -LiteralPath $script:Work)) {
