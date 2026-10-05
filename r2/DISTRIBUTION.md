@@ -1,10 +1,12 @@
 # A new recipient must be able to obtain the toolkit
 
-A commit string is not a distribution. Before calling an adopter ledger ready for another agent, its root README must identify an **accessible exact toolkit source**, the supported workflow and all commands/docs required to finish it. A path on the first agent's machine, a commit absent from the named repository, or "ask the coordinator for the tools" does not meet this contract.
+Minimal Setup copies toolkit `PROTOCOL.md` into the private ledger as `docs/PROTOCOL.md`, and copies `templates/HOW_WE_COORDINATE.md` to `docs/HOW_WE_COORDINATE.md`. That byte copy is how a Join with only the ledger URL learns the coordination rules. This page is the optional path for a full toolkit and receipt bootstrap. It is not part of Minimal, and a summary is not a substitute for the byte copy.
 
-## Required ledger-side entry
+A commit string is not a distribution. Before calling an adopter ledger ready for this optional full toolkit workflow, its root README must identify an **accessible exact toolkit source**, the supported workflow and all commands/docs required to finish it. A path on the first agent's machine, a commit absent from the named repository, or "ask the coordinator for the tools" does not meet this contract.
 
-The adopter's approved ledger records:
+## Required ledger-side entry for the optional toolkit
+
+For this optional path, the adopter's approved ledger records:
 
 1. Exact toolkit source commit and immutable accessible distribution location; never silently fall back to a different public version.
 2. Package SHA-256 and the standalone bootstrap script's SHA-256, the inspected ledger checkpoint and provenance/trust limitations. Hashes verify bytes; an attacker able to rewrite the ledger can rewrite its manifest too. Use the user-approved repository/access/source boundary, not a self-declared identity in a package.

@@ -9,10 +9,10 @@ Adopters finish at Minimal Setup, then Join ([ONBOARDING.md](ONBOARDING.md)). No
 Before each release or deploy, maintainers run **all** paths, including the optional ones:
 
 1. Two-agent ping, using the prompt below: A writes for B and B replies; then B writes for A and A replies.
-2. Shell smoke: `sh scripts/ledger-smoke.sh`. On Windows, Git Bash or WSL. `scripts/ledger-smoke.ps1` is the native twin.
+2. Shell smoke: `sh scripts/ledger-smoke.sh`. On Windows, Git Bash or WSL. `scripts/ledger-smoke.ps1` is the native twin. The smoke must reject a synthetic Minimal ledger that lacks `docs/PROTOCOL.md` byte-matching toolkit `PROTOCOL.md`, and accept one that has that byte copy. Node.js is not required. This smoke is not a brand-new independent agent Setup then cold Join.
 3. Node suite, when Node.js 24+ is available: the command under [Optional Node suite](#optional-node-suite).
 
-If the Setup/Join paste blocks changed, also re-verify Minimal Setup and Join with brand-new agents in brand-new environments. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record that result with the optional-path runs.
+If the Setup/Join paste blocks changed, also re-verify Minimal Setup and Join with brand-new agents in brand-new environments. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record that result with the optional-path runs. A passing shell smoke does not satisfy that live trial.
 
 Users do not run this checklist.
 
@@ -34,6 +34,27 @@ Project handoff: `projects/fresh-verify/CURRENT_STATE.md`
 - Optional checks: not run. This run was a Minimal-only re-verify after the paste change.
 
 Result: Minimal Setup→Join PASS, with a credential quirk (App credentials versus the AAlpha7 user integration).
+
+### Recorded run: 2026-10-05 protocol bytes in the Minimal ledger
+
+This run started from `main` at `fdef9d3c59d3720751493a13a8c37c329ad6dfbc`. It did not deploy, and it did not edit pull requests #7 or #8.
+
+What the files showed before the fix: Minimal Setup committed `.gitattributes` and `projects/PROJECT/CURRENT_STATE.md` only. The Join paste told the recipient not to clone the public toolkit. `PROTOCOL.md` still told every fresh recipient to obtain a pinned toolkit, and `r2/DISTRIBUTION.md` still required that pin before calling a ledger ready for another agent. A cold Join with only the ledger URL therefore had no byte copy of the coordination protocol.
+
+Failing check, commit `500a50c5563a09641b35e326280560ef0c2ee5e1`, command `sh scripts/ledger-smoke.sh` (POSIX `sh`, git, `sha256sum`; no Node.js). Exit status 1:
+
+```text
+ledger-smoke: prior checks passed; checking Minimal protocol bytes
+ledger-smoke: minimal ledger lacks docs/PROTOCOL.md byte-matching the toolkit
+```
+
+The synthetic gap ledger contained only `.gitattributes` and `projects/PROJECT/CURRENT_STATE.md`.
+
+The product fix copies toolkit `PROTOCOL.md` to ledger `docs/PROTOCOL.md` and adds the short entry `docs/HOW_WE_COORDINATE.md`. The public protocol text was not given private-ledger operating instructions. The sentence that required a pinned toolkit was removed from `PROTOCOL.md`. Distribution stays the optional full-toolkit path.
+
+Passing check: not yet run against the fixed script in this commit. The next recorded run on this branch must show exit status 0, `minimal-gap: rejected (docs/PROTOCOL.md missing)`, `minimal-paraphrase: rejected (bytes differ)`, and `minimal-ledger: docs/PROTOCOL.md byte match`.
+
+What this run did not prove: a brand-new independent agent doing Setup, then a different agent doing cold Join with only the private ledger URL. The shell smoke builds synthetic ledgers on this machine. It is not that live trial. `scripts/ledger-smoke.ps1` was updated to the same checks and was not executed here (no PowerShell on this machine).
 
 ## Optional quick protocol check
 
@@ -66,6 +87,8 @@ Expect `ledger-smoke: ok`. The script:
 - writes a canonical sample `agent-receipt` and the same handoff bytes at `CURRENT_STATE.md` and `history/original.md`
 - records `history_sha256` and `source_revision` as the SHA-256 of those bytes, and checks both after a `core.autocrlf=true` clone
 - commits `.gitattributes`, the handoff, `snapshot-input.json`, the receipt, and the v2 `.gitattributes` / `.gitignore`
+- rejects a synthetic Minimal ledger that has no `docs/PROTOCOL.md`, and rejects one whose `docs/PROTOCOL.md` is a paraphrase rather than a byte copy of toolkit `PROTOCOL.md`
+- accepts a synthetic Minimal ledger that commits `.gitattributes`, `docs/PROTOCOL.md` (those same bytes), `docs/HOW_WE_COORDINATE.md`, and `projects/PROJECT/CURRENT_STATE.md`, including after a `core.autocrlf=true` clone
 - checks the single-writer lock documented in [r2/WIRE.md](r2/WIRE.md) and [r2/ONBOARDING.md](r2/ONBOARDING.md): an empty exclusive-create sentinel at `projects/<project>/coordination-v2/writer.lock`, with no PID or age payload; the POSIX script also requires mode `0600` and link count 1; a second create must fail; `.gitignore` is exactly `writer.lock` and `.pending-*`; the lock is not in the commit or the clone
 
 The PowerShell twin performs the same file, hash, ignore and clone checks. It asserts mode `0600` only when `$env:OS` is not `Windows_NT`, because Windows has no POSIX mode bits. Exclusive create and the empty sentinel are checked on Windows too.

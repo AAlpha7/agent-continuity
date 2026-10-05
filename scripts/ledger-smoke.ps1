@@ -11,8 +11,9 @@
 # clone, and the single-writer lock shape. POSIX mode 0600 is asserted
 # only when $env:OS is not Windows_NT. On Windows the lock check is
 # the empty exclusive-create sentinel (a second create must fail).
-# It then requires a synthetic Minimal ledger to contain docs/PROTOCOL.md
-# byte-matching toolkit PROTOCOL.md. Node.js is not required.
+# It rejects a synthetic Minimal ledger that lacks docs/PROTOCOL.md
+# byte-matching toolkit PROTOCOL.md, including a paraphrase, and accepts
+# one that has that byte copy. Node.js is not required.
 
 $ErrorActionPreference = 'Stop'
 # PowerShell 7 can turn git's stderr and non-zero exits into terminating
@@ -319,20 +320,98 @@ try {
   if ($receiptSha -notmatch '^[a-f0-9]{64}$') { Fail 'receipt hash is not 64 lowercase hex' }
   if ((Get-Sha256Lower $cloneReceipt) -cne $receiptSha) { Fail 'clone receipt hash mismatch' }
 
-  # Current documented Minimal Setup copies only .gitattributes and the
-  # handoff. That ledger has no byte copy of PROTOCOL.md.
+  # Minimal shape. Missing bytes and a paraphrase must fail.
+  # A byte copy must pass, including after clone.
   Write-Output 'ledger-smoke: prior checks passed; checking Minimal protocol bytes'
+  $templatePath = Join-Path (Join-Path $toolkit 'templates') 'HOW_WE_COORDINATE.md'
+  if (-not (Test-Path -LiteralPath $templatePath)) { Fail "missing $templatePath" }
+  $templateText = [System.IO.File]::ReadAllText($templatePath, $script:Utf8)
+  if (-not $templateText.Contains('<commit or unset>')) { Fail 'template missing revision token' }
+  if (-not $templateText.Contains('docs/PROTOCOL.md')) { Fail 'template does not name docs/PROTOCOL.md' }
+  if (-not $templateText.Contains('CURRENT_STATE.md')) { Fail 'template does not name CURRENT_STATE.md' }
+  $protocolText = [System.IO.File]::ReadAllText($toolkitProtocol, $script:Utf8)
+  if ($templateText -ceq $protocolText) { Fail 'short entry is a byte copy of PROTOCOL.md' }
+
   $gap = Join-Path $script:Work 'minimal-gap'
   New-Item -ItemType Directory -Path (Join-Path (Join-Path $gap 'projects') 'PROJECT') -Force | Out-Null
   [System.IO.File]::Copy($attributes, (Join-Path $gap '.gitattributes'))
   Write-Lf (Join-Path (Join-Path (Join-Path $gap 'projects') 'PROJECT') 'CURRENT_STATE.md') @(
     '# Synthetic Minimal handoff',
-    'Goal: current Minimal file set, with no protocol copy.'
+    'Goal: old Minimal file set, with no protocol copy.'
   )
   if (Test-ProtocolBytesMatch $gap $toolkitProtocol) {
     Fail 'gap ledger byte-matched PROTOCOL.md; the missing-copy case was not exercised'
   }
-  Fail 'minimal ledger lacks docs/PROTOCOL.md byte-matching the toolkit'
+
+  $paraphrase = Join-Path $script:Work 'minimal-paraphrase'
+  New-Item -ItemType Directory -Path (Join-Path $paraphrase 'docs') -Force | Out-Null
+  Write-Lf (Join-Path (Join-Path $paraphrase 'docs') 'PROTOCOL.md') @(
+    '# Coordination',
+    'Follow the protocol. Keep a shared record. Do not clone the toolkit.'
+  )
+  if (Test-ProtocolBytesMatch $paraphrase $toolkitProtocol) {
+    Fail 'paraphrase byte-matched toolkit PROTOCOL.md'
+  }
+
+  $minimal = Join-Path $script:Work 'minimal'
+  $minimalClone = Join-Path $script:Work 'minimal-clone'
+  $minimalDocs = Join-Path $minimal 'docs'
+  $minimalProject = Join-Path (Join-Path $minimal 'projects') 'PROJECT'
+  New-Item -ItemType Directory -Path $minimalDocs -Force | Out-Null
+  New-Item -ItemType Directory -Path $minimalProject -Force | Out-Null
+  [System.IO.File]::Copy($attributes, (Join-Path $minimal '.gitattributes'))
+  [System.IO.File]::Copy($toolkitProtocol, (Join-Path $minimalDocs 'PROTOCOL.md'))
+  $filled = $templateText.Replace('<commit or unset>', 'unset')
+  if ($filled.Contains('<commit or unset>')) { Fail 'HOW_WE_COORDINATE still has the unfilled revision token' }
+  if (-not $filled.Contains('Toolkit docs revision (optional): unset')) {
+    Fail 'HOW_WE_COORDINATE revision line was not filled'
+  }
+  Write-Utf8Text (Join-Path $minimalDocs 'HOW_WE_COORDINATE.md') $filled
+  Write-Lf (Join-Path $minimalProject 'CURRENT_STATE.md') @(
+    '# Synthetic minimal handoff',
+    'Goal: exercise Minimal ledger shape only.',
+    'Decisions: none.',
+    'Verified work: none. This file is synthetic.',
+    'Reported but unverified: none.',
+    'Open questions: none.',
+    'Next authorized task: none. Shape check only.',
+    'Unresolved ownership: none.'
+  )
+  foreach ($field in @('Goal', 'Decisions', 'Verified work', 'Reported but unverified', 'Open questions', 'Next authorized task', 'Unresolved ownership')) {
+    $handoffText = [System.IO.File]::ReadAllText((Join-Path $minimalProject 'CURRENT_STATE.md'), $script:Utf8)
+    if (-not $handoffText.Contains($field)) { Fail "CURRENT_STATE missing $field" }
+  }
+  if (-not (Test-ProtocolBytesMatch $minimal $toolkitProtocol)) {
+    Fail 'minimal ledger lacks docs/PROTOCOL.md byte-matching the toolkit'
+  }
+  Invoke-GitQuiet -C $minimal init '--template='
+  Invoke-Git -C $minimal add -- .gitattributes docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/PROJECT/CURRENT_STATE.md
+  Invoke-GitQuiet -C $minimal commit -m 'Synthetic minimal ledger'
+  $minimalListArgs = $script:GitPrefix + @('-C', $minimal, 'ls-files')
+  $rawMinimal = & git @minimalListArgs
+  if ($LASTEXITCODE -ne 0) { Fail 'minimal git ls-files failed' }
+  $minimalListed = @($rawMinimal | ForEach-Object { "$_".Trim() } | Where-Object { $_ -ne '' })
+  $minimalExpected = @(
+    '.gitattributes',
+    'docs/HOW_WE_COORDINATE.md',
+    'docs/PROTOCOL.md',
+    'projects/PROJECT/CURRENT_STATE.md'
+  )
+  if ($minimalListed.Count -ne $minimalExpected.Count) {
+    Fail "minimal committed file count $($minimalListed.Count) != $($minimalExpected.Count)"
+  }
+  foreach ($rel in $minimalExpected) {
+    $found = $false
+    foreach ($item in $minimalListed) {
+      if ($item -ceq $rel) { $found = $true }
+    }
+    if (-not $found) { Fail "missing minimal committed file: $rel" }
+  }
+  Invoke-GitQuiet clone --no-local --config core.autocrlf=true $minimal $minimalClone
+  foreach ($rel in $minimalExpected) {
+    Assert-SameFile (Join-Path $minimal $rel) (Join-Path $minimalClone $rel) "minimal $rel"
+  }
+  Assert-SameFile $toolkitProtocol (Join-Path (Join-Path $minimalClone 'docs') 'PROTOCOL.md') 'cloned docs/PROTOCOL.md'
 
   $revArgs = $script:GitPrefix + @('-C', $ledger, 'rev-parse', 'HEAD')
   $commit = (& git @revArgs)
@@ -345,6 +424,9 @@ try {
   Write-Output "commit: $commit"
   Write-Output 'clone: core.autocrlf=true byte match'
   Write-Output $lockLine
+  Write-Output 'minimal-gap: rejected (docs/PROTOCOL.md missing)'
+  Write-Output 'minimal-paraphrase: rejected (bytes differ)'
+  Write-Output 'minimal-ledger: docs/PROTOCOL.md byte match'
   $script:Failed = $false
 } finally {
   if ($script:Work -and (Test-Path -LiteralPath $script:Work)) {

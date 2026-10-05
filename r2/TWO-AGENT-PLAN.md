@@ -13,6 +13,8 @@ Do not gate the first useful trial on implementing the second as a remote servic
 
 ## 2. Give the next agent an accessible pinned distribution
 
+This section is the optional full toolkit trial. Minimal Join does not use it. Minimal Setup puts a byte copy of `PROTOCOL.md` in the ledger, and the Join paste does not include the toolkit URL.
+
 Pin an inspected public `v0.1.0-rc.3` commit or an independently approved source-only package. The ordinary receipt/snapshot workflow and local R2 preview are separate modes. A public source URL works only if it actually contains the requested revision; do not ask an agent to guess a missing private checkout.
 
 The ledger must itself resolve the tools and required docs through the [delivery contract](DISTRIBUTION.md). An approved package includes exact-byte hashes, a standalone bootstrap and complete commands. Extract it outside the ledger. A source commit string alone, the prior agent's local path or hidden chat hints are insufficient. Preserve first-run failures; fix the visible entry before restarting with a fresh participant.
