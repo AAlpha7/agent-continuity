@@ -17,7 +17,8 @@
 # the commit those bytes came from (git rev-parse HEAD in this checkout,
 # matching git show HEAD:PROTOCOL.md). Relative markdown links in the
 # copied files must resolve inside the synthetic ledger.
-# Node.js is not required.
+# Each MANIFEST.json size and SHA-256 must match the blob at HEAD
+# (git cat-file). Node.js is not required.
 
 $ErrorActionPreference = 'Stop'
 # PowerShell 7 can turn git's stderr and non-zero exits into terminating
@@ -119,6 +120,59 @@ function Assert-CopiedLinksResolve([string]$LedgerRoot, [string]$Rel, [switch]$Q
   return $true
 }
 
+function Save-GitBlob([string]$Dest, [string]$Object) {
+  $pieces = @()
+  foreach ($item in ($script:GitPrefix + @('-C', $toolkit, 'cat-file', 'blob', $Object))) {
+    if ($item -match '[\s"]') { $pieces += '"' + $item.Replace('"', '\"') + '"' }
+    else { $pieces += $item }
+  }
+  $psi = New-Object System.Diagnostics.ProcessStartInfo
+  $psi.FileName = 'git'
+  $psi.Arguments = ($pieces -join ' ')
+  $psi.UseShellExecute = $false
+  $psi.RedirectStandardOutput = $true
+  $psi.RedirectStandardError = $true
+  $psi.CreateNoWindow = $true
+  $proc = New-Object System.Diagnostics.Process
+  $proc.StartInfo = $psi
+  [void]$proc.Start()
+  $out = [System.IO.File]::Create($Dest)
+  try { $proc.StandardOutput.BaseStream.CopyTo($out) } finally { $out.Dispose() }
+  $err = $proc.StandardError.ReadToEnd()
+  $proc.WaitForExit()
+  if ($proc.ExitCode -ne 0) { Fail "git cat-file blob ${Object} failed: $err" }
+}
+
+function Assert-ManifestMatchesHead {
+  $manifestPath = Join-Path $script:Work 'manifest.json'
+  Save-GitBlob $manifestPath 'HEAD:MANIFEST.json'
+  $text = [System.IO.File]::ReadAllText($manifestPath, $script:Utf8)
+  if (-not $text.Contains('"algorithm": "sha256"')) { Fail 'MANIFEST algorithm is not sha256' }
+  $rows = [regex]::Matches($text, '"path":\s*"([^"]+)"\s*,\s*"bytes":\s*(\d+)\s*,\s*"sha256":\s*"([0-9a-f]{64})"')
+  $pathCount = [regex]::Matches($text, '"path"').Count
+  if ($rows.Count -lt 1 -or $rows.Count -ne $pathCount) {
+    Fail "MANIFEST path count $pathCount != parsed rows $($rows.Count)"
+  }
+  $blob = Join-Path $script:Work 'manifest-blob'
+  foreach ($row in $rows) {
+    $path = $row.Groups[1].Value
+    $bytes = $row.Groups[2].Value
+    $sha = $row.Groups[3].Value
+    if ($path.StartsWith('/') -or $path.Contains('..') -or $path.Contains('\') -or $path -notmatch '^[A-Za-z0-9._/-]+$') {
+      Fail "MANIFEST path is not a safe relative path: $path"
+    }
+    $sizeArgs = $script:GitPrefix + @('-C', $toolkit, 'cat-file', '-s', "HEAD:$path")
+    $gotSize = & git @sizeArgs
+    if ($LASTEXITCODE -ne 0) { Fail "MANIFEST path is not in HEAD: $path" }
+    $gotSize = "$gotSize".Trim()
+    if ($gotSize -cne $bytes) { Fail "MANIFEST bytes $bytes != HEAD blob $gotSize for $path" }
+    Save-GitBlob $blob "HEAD:$path"
+    $gotSha = Get-Sha256Lower $blob
+    if ($gotSha -cne $sha) { Fail "MANIFEST sha256 mismatch for $path" }
+  }
+  $script:ManifestListed = $rows.Count
+}
+
 function Save-GitShow([string]$Dest, [string]$Object) {
   $pieces = @()
   foreach ($item in ($script:GitPrefix + @('-C', $toolkit, '-c', 'core.autocrlf=false', 'show', $Object))) {
@@ -212,6 +266,8 @@ try {
     '-c', 'user.email=smoke@invalid',
     '-c', 'commit.gpgsign=false'
   )
+
+  Assert-ManifestMatchesHead
 
   New-Item -ItemType Directory -Path (Join-Path $project 'history') | Out-Null
   New-Item -ItemType Directory -Path (Join-Path $project 'receipts') | Out-Null
@@ -536,6 +592,7 @@ try {
   Write-Output 'minimal-paraphrase: rejected (bytes differ)'
   Write-Output 'minimal-ledger: docs/PROTOCOL.md byte match'
   Write-Output "minimal-revision: $sourceCommit matches copied PROTOCOL.md"
+  Write-Output "manifest: $script:ManifestListed HEAD blobs match MANIFEST.json"
   $script:Failed = $false
 } finally {
   if ($script:Work -and (Test-Path -LiteralPath $script:Work)) {

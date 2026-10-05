@@ -16,7 +16,8 @@
 # from (git rev-parse HEAD in this checkout, matching git show
 # HEAD:PROTOCOL.md). Relative markdown links in the copied files must
 # resolve inside the synthetic ledger.
-# It does not create a remote.
+# Each MANIFEST.json size and SHA-256 must match the blob at HEAD
+# (git cat-file). It does not create a remote.
 # This is not a CI adopter gate. Node.js is not required.
 
 set -eu
@@ -148,6 +149,65 @@ require_copied_links() {
   fi
 }
 
+# Each listed MANIFEST.json size and SHA-256 must match the blob at HEAD.
+# Reads the committed manifest, not a dirty working-tree copy.
+manifest_matches_head() {
+  git -C "$toolkit" cat-file blob HEAD:MANIFEST.json > "$work/manifest.json" || die "could not read HEAD:MANIFEST.json"
+  grep -F '"algorithm": "sha256"' "$work/manifest.json" >/dev/null || die "MANIFEST algorithm is not sha256"
+  if ! awk '
+    function unquote(s) {
+      sub(/^[^:]*:[[:space:]]*"/, "", s)
+      sub(/",?[[:space:]]*$/, "", s)
+      return s
+    }
+    /"path"[[:space:]]*:/ {
+      path = unquote($0)
+      next
+    }
+    /"bytes"[[:space:]]*:/ {
+      bytes = $0
+      sub(/^[^:]*:[[:space:]]*/, "", bytes)
+      sub(/,?[[:space:]]*$/, "", bytes)
+      next
+    }
+    /"sha256"[[:space:]]*:/ {
+      sha = unquote($0)
+      if (path == "" || bytes == "" || sha == "") exit 2
+      printf "%s\t%s\t%s\n", path, bytes, sha
+      path = ""
+      bytes = ""
+      sha = ""
+    }
+  ' "$work/manifest.json" > "$work/manifest-rows"; then
+    die "could not parse MANIFEST.json"
+  fi
+  path_count=$(grep -c '"path"' "$work/manifest.json" || true)
+  manifest_listed=$(awk 'NF { n++ } END { print n + 0 }' "$work/manifest-rows")
+  [ "$path_count" = "$manifest_listed" ] || die "MANIFEST path count $path_count != parsed rows $manifest_listed"
+  [ "$manifest_listed" -gt 0 ] || die "MANIFEST lists no files"
+  while IFS=$(printf '\t') read -r path bytes sha; do
+    [ -n "$path" ] || continue
+    case $path in
+      /*|*'..'*|*'\\'*) die "MANIFEST path is not a safe relative path: $path" ;;
+    esac
+    case $path in
+      *[!A-Za-z0-9._/-]*) die "MANIFEST path is not a safe relative path: $path" ;;
+    esac
+    is_sha256 "$sha" || die "MANIFEST sha256 is not 64 lowercase hex for $path"
+    case $bytes in
+      ''|*[!0-9]*) die "MANIFEST bytes is not a number for $path" ;;
+    esac
+    if ! git -C "$toolkit" cat-file -e "HEAD:$path" >/dev/null 2>&1; then
+      die "MANIFEST path is not in HEAD: $path"
+    fi
+    got_size=$(git -C "$toolkit" cat-file -s "HEAD:$path") || die "could not size HEAD:$path"
+    [ "$got_size" = "$bytes" ] || die "MANIFEST bytes $bytes != HEAD blob $got_size for $path"
+    git -C "$toolkit" cat-file blob "HEAD:$path" > "$work/manifest-blob" || die "could not read HEAD:$path"
+    got_sha=$(hash_file "$work/manifest-blob")
+    [ "$got_sha" = "$sha" ] || die "MANIFEST sha256 mismatch for $path"
+  done < "$work/manifest-rows"
+}
+
 command -v git >/dev/null 2>&1 || die "git is required"
 command -v mktemp >/dev/null 2>&1 || die "mktemp is required"
 
@@ -169,6 +229,8 @@ mkdir -m 700 "$hooks"
 
 export GIT_CONFIG_NOSYSTEM=1
 export GIT_CONFIG_GLOBAL=$emptycfg
+
+manifest_matches_head
 
 gitc() {
   git \
@@ -490,4 +552,5 @@ printf '%s\n' \
   "minimal-gap: rejected (docs/PROTOCOL.md missing)" \
   "minimal-paraphrase: rejected (bytes differ)" \
   "minimal-ledger: docs/PROTOCOL.md byte match" \
-  "minimal-revision: $source_commit matches copied PROTOCOL.md"
+  "minimal-revision: $source_commit matches copied PROTOCOL.md" \
+  "manifest: $manifest_listed HEAD blobs match MANIFEST.json"

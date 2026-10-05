@@ -106,6 +106,7 @@ Expect `ledger-smoke: ok`. The script:
 - accepts a synthetic Minimal ledger that commits `.gitattributes`, `docs/PROTOCOL.md` (those same bytes), `docs/HOW_WE_COORDINATE.md`, and `projects/PROJECT/CURRENT_STATE.md`, including after a `core.autocrlf=true` clone
 - records `Toolkit docs revision` as `git rev-parse HEAD` in that toolkit checkout, and checks the copied `docs/PROTOCOL.md` against `git show HEAD:PROTOCOL.md` from the same commit. It does not pin a SHA-256 or byte size for `PROTOCOL.md`
 - rejects a relative markdown link in those copied files when the target is not a file inside the synthetic ledger
+- checks each size and SHA-256 in `MANIFEST.json` against the blob at `HEAD` (`git cat-file`), including `PROTOCOL.md`
 - checks the single-writer lock documented in [r2/WIRE.md](r2/WIRE.md) and [r2/ONBOARDING.md](r2/ONBOARDING.md): an empty exclusive-create sentinel at `projects/<project>/coordination-v2/writer.lock`, with no PID or age payload; the POSIX script also requires mode `0600` and link count 1; a second create must fail; `.gitignore` is exactly `writer.lock` and `.pending-*`; the lock is not in the commit or the clone
 
 The PowerShell twin performs the same file, hash, ignore and clone checks. It asserts mode `0600` only when `$env:OS` is not `Windows_NT`, because Windows has no POSIX mode bits. Exclusive create and the empty sentinel are checked on Windows too.
