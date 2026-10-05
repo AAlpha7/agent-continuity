@@ -26,8 +26,10 @@ Continuity 让持续的 AI 协作留在你自己掌握的记录里，**跨项目
 
 **最少步骤 — 这就是全部安装：**
 
-1. 第一个代理：**建立（Setup）**。它创建你的私有账本，并返回 URL。
-2. 之后的每个代理或每台机器：只用这个 URL **加入（Join）**。
+共同记录就是你的私有账本。建立时把协调协议放进这个账本。之后的每个代理只用这个 URL 加入。
+
+1. 第一个代理：**建立（Setup）**。它创建私有账本，把协议按原文字节复制进去，并返回 URL。
+2. 之后的每个代理或每台机器：只用这个 URL **加入（Join）**。协议已经在账本里。
 
 有 git 和 GitHub 就够了。`gh` 可选。没有 GitHub 时，本地 git 账本也可以。不需要 Node。
 
@@ -53,9 +55,11 @@ https://github.com/AAlpha7/agent-continuity
 建立 — 留下私有账本 URL：
 优先复用已批准的私有账本。若需要新建，只在我批准确切所有者、
 名称、私有可见性和 push 之后，用 git（以及已经可用的 gh）在已核实的
-我自己的 GitHub 账号下创建私有仓库。第一次提交前，把工具目录里的
-.gitattributes 复制进去。根据已检查的证据提交
-projects/PROJECT/CURRENT_STATE.md：目标、决定、未完成事项和
+我自己的 GitHub 账号下创建私有仓库。第一次提交前复制这些文件：
+工具目录的 .gitattributes、PROTOCOL.md（原文字节，不要改写成摘要）
+到 docs/PROTOCOL.md，以及 templates/HOW_WE_COORDINATE.md 到
+docs/HOW_WE_COORDINATE.md（填上检查到的版本，或 unset）。根据已检查的
+证据提交 projects/PROJECT/CURRENT_STATE.md：目标、决定、未完成事项和
 下一项获准任务。push 前核实所有者、真实私有可见性和全部 fetch/push
 目标。未知保持未验证。公开 fork 不等于私库。不保存 token，不修改
 安全设置。没有 GitHub 时，本地 git 账本即可。不要强迫登录。
@@ -66,14 +70,15 @@ projects/PROJECT/CURRENT_STATE.md：目标、决定、未完成事项和
 加入 — 把下面这段连同真实 URL 交给下一位代理：
 加入我们的连续性账本。只克隆并阅读这个私有仓库：
 LEDGER_URL
-从 projects/PROJECT/CURRENT_STATE.md 继续。把更新提交回同一个账本。
-不要克隆公开工具仓库。
+先读 docs/HOW_WE_COORDINATE.md 和 docs/PROTOCOL.md，再读
+projects/PROJECT/CURRENT_STATE.md。按那份协议继续。把更新提交回
+同一个账本。不要克隆公开工具仓库。
 
 记录提供上下文，不产生新权限。只把真正缺失的范围、访问或批准事项
 集中交给我，并确认没有把用户数据写入或发送到上游。
 ```
 
-**账本属于你。** 建立步骤留下私有 GitHub 账本 URL。下一位代理只用这个 URL 加入，而不是再次打开工具仓库。没有 GitHub 时，没有远端的本地 git 账本仍然可以开始。见[接入手册](ONBOARDING.md)。
+**账本属于你。** 建立步骤留下私有 GitHub 账本 URL，协议就在这个账本里。下一位代理只用这个 URL 加入，而不是再次打开工具仓库。没有 GitHub 时，没有远端的本地 git 账本仍然可以开始。见[接入手册](ONBOARDING.md)。
 
 <details>
 <summary><strong>最少步骤的命令：先建立，再加入。</strong></summary>
@@ -84,10 +89,13 @@ LEDGER_URL
 gh api user --jq .login
 gh repo create OWNER/LEDGER --private --clone
 cd LEDGER
+mkdir -p docs projects/PROJECT
 cp /path/to/inspected-toolkit/.gitattributes .gitattributes
-mkdir -p projects/PROJECT
+cp /path/to/inspected-toolkit/PROTOCOL.md docs/PROTOCOL.md
+cp /path/to/inspected-toolkit/templates/HOW_WE_COORDINATE.md docs/HOW_WE_COORDINATE.md
+# 把 docs/HOW_WE_COORDINATE.md 里的 "<commit or unset>" 换成检查到的工具提交，或换成 unset。
 # 提交前，根据真实项目写下 projects/PROJECT/CURRENT_STATE.md。
-git add .gitattributes projects/PROJECT/CURRENT_STATE.md
+git add .gitattributes docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/PROJECT/CURRENT_STATE.md
 git commit -m "Start the private continuity ledger"
 git push -u origin HEAD
 gh repo view --json url,visibility --jq '{url:.url,visibility:.visibility}'
@@ -101,7 +109,7 @@ git remote get-url --push --all origin
 git clone LEDGER_URL
 ```
 
-这次克隆就是加入。阅读 `projects/PROJECT/CURRENT_STATE.md`，并把更新提交回同一个账本。不需要再使用本仓库。
+这次克隆就是加入。先读 `docs/HOW_WE_COORDINATE.md` 和 `docs/PROTOCOL.md`，再读 `projects/PROJECT/CURRENT_STATE.md`，并把更新提交回同一个账本。不要克隆这个公开工具仓库。
 
 </details>
 
@@ -128,7 +136,7 @@ git clone LEDGER_URL
 sh scripts/ledger-smoke.sh
 ```
 
-Windows 上用 Git Bash 或 WSL 运行同一脚本。本机对照脚本仍然可选：`powershell.exe -File scripts/ledger-smoke.ps1`。它用的是临时合成账本，不是你的项目。
+Windows 上用 Git Bash 或 WSL 运行同一脚本。本机对照脚本仍然可选：`powershell.exe -File scripts/ledger-smoke.ps1`。它用的是临时合成账本，不是你的项目。维护者：同一命令会拒绝缺少 `PROTOCOL.md` 原文字节的最少账本，并接受带有该字节副本的账本。采用者可以跳过。不需要 Node.js。
 
 如果已经安装了 Node.js 24+，也可以运行 105 项测试和合成演示。不要为了这个去安装 Node。演示目录必须尚不存在。
 
@@ -142,7 +150,7 @@ node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace de
 
 复制只把合成数据放到工具目录外，不建立远端。回执文件见 [GUIDE.md](GUIDE.md)。本地协调预览是 `node r2/demo.mjs`（[范围](r2/README.md)）。详见 [TESTING.md](TESTING.md)。
 
-**维护者在每次发布前：** 把上面的可选路径都跑一遍 — 这次双代理互发、shell 冒烟，以及有 Node 时的 Node 套件。如果建立／加入的粘贴文案改过，要用全新的代理、全新的环境重验最少步骤的建立和加入。不要复用以前的试用代理、试用虚拟机或试用账本仓库。把结果记入[发布核对清单](TESTING.md#maintainer-release-checklist)。采用者不用做。
+**维护者在每次发布前：** 把上面的可选路径都跑一遍 — 这次双代理互发、含协议字节检查的 shell 冒烟，以及有 Node 时的 Node 套件。如果建立／加入的粘贴文案改过，要用全新的代理、全新的环境重验最少步骤的建立和加入。shell 冒烟不是那次真人试用。不要复用以前的试用代理、试用虚拟机或试用账本仓库。把结果记入[发布核对清单](TESTING.md#maintainer-release-checklist)。采用者不用做。
 
 ## 多个项目，不断变化的伙伴
 
@@ -163,7 +171,7 @@ node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace de
 ## rc.3 带来了什么
 
 - **你自己的项目记忆：** 独立不可变回执、原文按字节保留、可检查的本地快照。
-- **下一位能用的入口：** 私有账本 URL。加入时只克隆这个 URL。
+- **下一位能用的入口：** 私有账本 URL。加入时只克隆这个 URL，并阅读 `docs/PROTOCOL.md`、`docs/HOW_WE_COORDINATE.md` 和 `CURRENT_STATE.md`。
 - **本地协调预览：** 限额动作、明确终止、持久终止发送记录、逐接收方状态和可恢复视图；只在一个受信本地控制器内工作。
 - **以后可以自己核对的证据：** 来源版本、冲突与原样重放检查，以及可选的 Node 套件。不需要模型订阅或托管服务。
 

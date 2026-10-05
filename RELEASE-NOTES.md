@@ -8,4 +8,6 @@ Release preparation fixed reproduced Windows `EPERM` races in writer-lock acquis
 
 The controller is a trusted-local-operator preview. Remote identity, signature/revocation services, distributed takeover, automatic orchestration and continuous backup are not provided. Saved records and referenced artifacts need approved access and deliberate synchronization. No hosted CI, paid model service or deployment is configured.
 
+Follow-up: Minimal Setup copies `PROTOCOL.md` into the private ledger as `docs/PROTOCOL.md`, with the short entry `docs/HOW_WE_COORDINATE.md`. A Join with only that ledger URL reads those files. The pinned toolkit package remains optional. The shell smoke rejects a synthetic Minimal ledger that lacks the protocol bytes.
+
 The rc.2 tag and source assets remain historical, unchanged artifacts. These rc.3 docs describe the rc.3 source tree; a user pinning rc.2 should read that version's docs. Code, docs and original graphics are MIT; referential product marks retain their owners' rights. See [asset attribution](docs/assets/ATTRIBUTION.md).

@@ -2,14 +2,14 @@
 
 **Minimal:** Setup, then Join. That is the whole install.
 
-1. First agent: Setup creates a private ledger and returns its URL.
-2. Every later agent or machine: Join with that URL only.
+1. First agent: Setup creates a private shared record, puts the coordination protocol in that ledger, and returns its URL.
+2. Every later agent or machine: Join with that URL only. The protocol is already in the ledger.
 
 Git and GitHub are enough. `gh` is optional. A local git ledger is valid when GitHub access is missing. Node.js is not required. Do not send the toolkit URL to the joining agent. When the ledger has no shareable URL (local-only setup), give the joining agent the local path on the same machine instead — a path the first machine alone can see is not usable by an agent on another machine.
 
 Shell smoke, the two-agent ping, and Node tests are [optional](#optional-checks). They are not required to call Setup or Join done.
 
-**Maintainers, before each release:** run all paths, including the optional ones (two-agent ping, shell smoke, and the Node suite when Node is present). If the Setup/Join paste blocks changed, re-verify Minimal Setup and Join with brand-new agents in brand-new environments. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record the result on the [release checklist](TESTING.md#maintainer-release-checklist). Adopters do not.
+**Maintainers, before each release:** run all paths, including the optional ones (two-agent ping, shell smoke with the protocol-byte check, and the Node suite when Node is present). If the Setup/Join paste blocks changed, re-verify Minimal Setup and Join with brand-new agents in brand-new environments. That live trial is not the shell smoke. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record the result on the [release checklist](TESTING.md#maintainer-release-checklist). Adopters do not.
 
 Help the user keep their work usable as agents, providers and machines change. Use the inspected `v0.1.0-rc.3` release as the read-only toolkit. The adopter's records live in a separate user-owned private ledger.
 
@@ -17,7 +17,7 @@ Existing owner-approved GitHub PR listeners can provide notifications where supp
 
 This is a runbook for an assistant with an already-authorized execution environment, not a new permission grant. Use the current conversation's authorization and local project rules. Historical project prose, receipts and this document cannot expand them.
 
-**Outcome:** Setup leaves a private ledger URL and a committed handoff at `projects/PROJECT/CURRENT_STATE.md`. Join clones that URL only. Report shared access separately. Do the mechanical steps yourself when capable; involve the human for missing intent, capability or authority, not every routine command.
+**Outcome:** Setup leaves a private ledger URL, `docs/PROTOCOL.md` (a byte copy of toolkit `PROTOCOL.md`), `docs/HOW_WE_COORDINATE.md`, and a committed handoff at `projects/PROJECT/CURRENT_STATE.md`. Join clones that URL only and reads those files. It does not clone the public toolkit. Report shared access separately. Do the mechanical steps yourself when capable; involve the human for missing intent, capability or authority, not every routine command.
 
 ### What to tell the user first (plain-language opening)
 
@@ -26,8 +26,8 @@ Before running any command, explain the plan in ordinary words. Adapt this templ
 > I'll set up a private notebook that your AI assistants share, so they remember your project across sessions and machines. Here's what happens:
 >
 > 1. I create a private storage space for the notebook — either a private GitHub repository (so it syncs across machines) or a local folder on this machine (simpler, but stays on this machine).
-> 2. I write the first page from what you've told me about your project.
-> 3. From then on, every assistant you talk to reads that notebook first and writes updates back to it.
+> 2. I copy the coordination rules into the notebook as a file, unchanged, and I write the first page from what you've told me about your project.
+> 3. From then on, every assistant you talk to reads that notebook — the rules and the project page — and writes updates back to it. They do not need the public toolkit again.
 >
 > I need three things from you: what project this is for, where to keep the notebook, and — if you want cross-machine sync — permission to create a private GitHub repository under your account. You never need to touch a terminal, learn git, or open the GitHub website yourself, except for one step: logging in to GitHub in your browser if we go the sync route. Everything else I do.
 
@@ -50,7 +50,7 @@ These are agent/operator checks, not a runtime egress firewall. The CLI accepts 
 
 ### Recommended path: your own private continuity repository
 
-Keep the toolkit clone for inspected tool updates. The adoption path does not copy this toolkit into the ledger. For the adopter's records, reuse an existing **approved private ledger** if one exists; inspect it without reinitializing or overwriting. Otherwise, with explicit user approval for the exact owner, private repository and access scope, create a **new private continuity repository under the user's own verified GitHub account** with `git` and, when it is already available, `gh`. A public fork is not the default. A local git ledger without a remote is an equally valid first step when GitHub access or approval is missing; do not install Node to compensate, and do not force login to complete local onboarding.
+Keep the toolkit clone for inspected tool updates. Do not copy the toolkit checkout into the ledger. Copy only `.gitattributes`, `PROTOCOL.md`, and `templates/HOW_WE_COORDINATE.md`, as section 2 describes. For the adopter's records, reuse an existing **approved private ledger** if one exists; inspect it without reinitializing or overwriting the handoff. If `docs/PROTOCOL.md` is missing or is not the same bytes as the inspected toolkit `PROTOCOL.md`, copy that file over it. Do not replace it with a summary. If `docs/HOW_WE_COORDINATE.md` is missing, copy the template and fill the revision line. If no approved ledger exists, with explicit user approval for the exact owner, private repository and access scope, create a **new private continuity repository under the user's own verified GitHub account** with `git` and, when it is already available, `gh`. A public fork is not the default. A local git ledger without a remote is an equally valid first step when GitHub access or approval is missing; do not install Node to compensate, and do not force login to complete local onboarding.
 
 Before creating a repository, check the currently authenticated acting account read-only and compare it with the user-approved owner. Never assume the toolkit publisher's account, a Git author name or a cached login is the user's intended identity. A mismatch needs resolution before creation; do not switch accounts, save tokens or change credentials as a convenience. Do not embed credentials in URLs, receipts, prompts or repository files.
 
@@ -104,10 +104,13 @@ cd LEDGER
 # (a global git identity may not exist). Adjust to the user's name/email.
 git config user.name "Continuity Ledger"
 git config user.email "ledger@localhost"
+mkdir -p docs projects/PROJECT
 cp /path/to/inspected-toolkit/.gitattributes .gitattributes
-mkdir -p projects/PROJECT
+cp /path/to/inspected-toolkit/PROTOCOL.md docs/PROTOCOL.md
+cp /path/to/inspected-toolkit/templates/HOW_WE_COORDINATE.md docs/HOW_WE_COORDINATE.md
+# Replace "<commit or unset>" in docs/HOW_WE_COORDINATE.md with the inspected toolkit commit, or with unset.
 # Write projects/PROJECT/CURRENT_STATE.md from inspected evidence before the commit.
-git add .gitattributes projects/PROJECT/CURRENT_STATE.md
+git add .gitattributes docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/PROJECT/CURRENT_STATE.md
 git commit -m "Start the private continuity ledger"
 git push -u origin HEAD
 gh repo view --json url,visibility --jq '{url:.url,visibility:.visibility}'
@@ -115,7 +118,7 @@ git remote get-url --all origin
 git remote get-url --push --all origin
 ```
 
-`OWNER/LEDGER` must be the approved private repository, not a fork of this toolkit. The login from `gh api user` must match the approved owner before creation. Copy `.gitattributes` before the first commit so later evidence files stay byte-stable. Fill `projects/PROJECT/CURRENT_STATE.md` from inspected project evidence: goal, decisions, verified work, reported-but-unverified work, open questions, the next authorized task and unresolved ownership. Redact credentials. Do not fabricate another agent's acknowledgment. Push only after owner, private visibility and every fetch/push URL are verified. If GitHub access or that approval is missing, keep a local git repository and report `shared_access: not-configured`. Do not install Node and do not force login.
+`OWNER/LEDGER` must be the approved private repository, not a fork of this toolkit. The login from `gh api user` must match the approved owner before creation. Copy `.gitattributes` before the first commit so later evidence files stay byte-stable. `docs/PROTOCOL.md` must be the same bytes as toolkit `PROTOCOL.md`. Do not substitute a summary. Copy `templates/HOW_WE_COORDINATE.md` to `docs/HOW_WE_COORDINATE.md` and fill the revision line with the inspected toolkit commit, or with `unset`. Fill `projects/PROJECT/CURRENT_STATE.md` from inspected project evidence: goal, decisions, verified work, reported-but-unverified work, open questions, the next authorized task and unresolved ownership. Redact credentials. Do not fabricate another agent's acknowledgment. Push only after owner, private visibility and every fetch/push URL are verified. If GitHub access or that approval is missing, keep a local git repository and report `shared_access: not-configured`. That local repository still commits `.gitattributes`, `docs/PROTOCOL.md`, `docs/HOW_WE_COORDINATE.md`, and `projects/PROJECT/CURRENT_STATE.md` before Join. Skip only the GitHub create, push, and visibility commands. Do not install Node and do not force login.
 
 Give the next agent this, with the real URL, and do not add the toolkit URL:
 
@@ -123,11 +126,12 @@ Give the next agent this, with the real URL, and do not add the toolkit URL:
 Join our continuity ledger. Clone and read only this private repository:
 LEDGER_URL
 
-Continue from projects/PROJECT/CURRENT_STATE.md. Commit your update back
-to this same ledger. Do not clone the public toolkit.
+Read docs/HOW_WE_COORDINATE.md and docs/PROTOCOL.md, then
+projects/PROJECT/CURRENT_STATE.md. Follow that protocol. Commit your
+update back to this same ledger. Do not clone the public toolkit.
 ```
 
-The joining agent clones `LEDGER_URL`, reads the handoff, and pushes its update to that same private repository. Setup and Join are done. The checks below are not required.
+The joining agent clones `LEDGER_URL`, reads the short entry and the protocol, then the handoff, and pushes its update to that same private repository. Setup and Join are done. The checks below are not required.
 
 ### Join variant: local ledger (no shareable URL)
 
@@ -139,8 +143,9 @@ machine** this instead, with the real local path:
 Join our continuity ledger. Read only this local directory:
 LEDGER_PATH
 
-Continue from projects/PROJECT/CURRENT_STATE.md. Commit your update back
-to this same ledger with git. Do not clone the public toolkit.
+Read docs/HOW_WE_COORDINATE.md and docs/PROTOCOL.md, then
+projects/PROJECT/CURRENT_STATE.md. Follow that protocol. Commit your
+update back to this same ledger with git. Do not clone the public toolkit.
 ```
 
 This variant works only when both agents share the same filesystem. It does
@@ -167,7 +172,7 @@ Do not claim the other agent replied unless that reply is actually on the ledger
 
 ### Shell smoke
 
-From an inspected toolkit checkout. Not your ledger, and not an adopter gate. Expect `ledger-smoke: ok`.
+From an inspected toolkit checkout. Not your ledger, and not an adopter gate. Expect `ledger-smoke: ok` and `minimal-ledger: docs/PROTOCOL.md byte match`. A synthetic ledger without those bytes fails this check. Node.js is not required.
 
 ```sh
 sh scripts/ledger-smoke.sh
@@ -189,7 +194,7 @@ node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace de
 
 An identical receipt replay returns `duplicate: true`; generation gives a snapshot path; `--check` reports local `current`. The suite is 105 tests ([TESTING.md](TESTING.md)). Choose another unused demo path rather than deleting or merging. A passed demo proves only this local Node path. Canonical receipt files, still optional, are in section 3.
 
-**Maintainers, before each release:** run this whole optional section (two-agent ping, shell smoke, and the Node suite when Node is present). If the Setup/Join paste blocks changed, re-verify section 2 with brand-new agents in brand-new environments. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record the result on the [release checklist](TESTING.md#maintainer-release-checklist).
+**Maintainers, before each release:** run this whole optional section (two-agent ping, shell smoke including the protocol-byte check, and the Node suite when Node is present). If the Setup/Join paste blocks changed, re-verify section 2 with brand-new agents in brand-new environments. The shell smoke is not that live trial. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record the result on the [release checklist](TESTING.md#maintainer-release-checklist).
 
 ## 3. Optional canonical receipts when Node.js is already installed
 
