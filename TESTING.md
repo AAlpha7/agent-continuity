@@ -41,20 +41,35 @@ This run started from `main` at `fdef9d3c59d3720751493a13a8c37c329ad6dfbc`. It d
 
 What the files showed before the fix: Minimal Setup committed `.gitattributes` and `projects/PROJECT/CURRENT_STATE.md` only. The Join paste told the recipient not to clone the public toolkit. `PROTOCOL.md` still told every fresh recipient to obtain a pinned toolkit, and `r2/DISTRIBUTION.md` still required that pin before calling a ledger ready for another agent. A cold Join with only the ledger URL therefore had no byte copy of the coordination protocol.
 
-Failing check, commit `500a50c5563a09641b35e326280560ef0c2ee5e1`, command `sh scripts/ledger-smoke.sh` (POSIX `sh`, git, `sha256sum`; no Node.js). Exit status 1:
+Failing check: `scripts/ledger-smoke.sh` at commit `500a50c5563a09641b35e326280560ef0c2ee5e1`, executed with POSIX `sh` (git and `sha256sum`; no Node.js). Exit status 1:
 
 ```text
 ledger-smoke: prior checks passed; checking Minimal protocol bytes
 ledger-smoke: minimal ledger lacks docs/PROTOCOL.md byte-matching the toolkit
 ```
 
-The synthetic gap ledger contained only `.gitattributes` and `projects/PROJECT/CURRENT_STATE.md`.
+The synthetic gap ledger contained only `.gitattributes` and `projects/PROJECT/CURRENT_STATE.md`. That re-run used the script blob from `500a50c` and the toolkit tree at `7177d12`. The failure does not depend on the later protocol wording: the gap ledger has no `docs/PROTOCOL.md` at all.
 
-The product fix copies toolkit `PROTOCOL.md` to ledger `docs/PROTOCOL.md` and adds the short entry `docs/HOW_WE_COORDINATE.md`. The public protocol text was not given private-ledger operating instructions. The sentence that required a pinned toolkit was removed from `PROTOCOL.md`. Distribution stays the optional full-toolkit path.
+The product fix, commit `7177d125fab1b6d5a6e13d1189a92508c1b0267d`, copies toolkit `PROTOCOL.md` to ledger `docs/PROTOCOL.md` and adds the short entry `docs/HOW_WE_COORDINATE.md`. The public protocol text was not given private-ledger operating instructions. The sentence that required a pinned toolkit was removed from `PROTOCOL.md`. Distribution stays the optional full-toolkit path.
 
-Passing check: not yet run against the fixed script in this commit. The next recorded run on this branch must show exit status 0, `minimal-gap: rejected (docs/PROTOCOL.md missing)`, `minimal-paraphrase: rejected (bytes differ)`, and `minimal-ledger: docs/PROTOCOL.md byte match`.
+Passing check, same command, against `scripts/ledger-smoke.sh` at `1e36bece47cac8ed263c0316a17f3794123f95dd`. Exit status 0:
 
-What this run did not prove: a brand-new independent agent doing Setup, then a different agent doing cold Join with only the private ledger URL. The shell smoke builds synthetic ledgers on this machine. It is not that live trial. `scripts/ledger-smoke.ps1` was updated to the same checks and was not executed here (no PowerShell on this machine).
+```text
+ledger-smoke: prior checks passed; checking Minimal protocol bytes
+ledger-smoke: ok
+history_sha256: c1241852b88771d80759238de9459a822a3705802195e04dfa9d8efbb49dccf8
+receipt_sha256: d0b46ee37c13cd9aee79f57db5e2c100b9a09661af4670213b6d2f94a3dcc8af
+commit: 8e394890e5e78a43e868516c65c46ef2e48d666a
+clone: core.autocrlf=true byte match
+writer.lock: empty exclusive sentinel mode 0600; not committed
+minimal-gap: rejected (docs/PROTOCOL.md missing)
+minimal-paraphrase: rejected (bytes differ)
+minimal-ledger: docs/PROTOCOL.md byte match
+```
+
+`commit:` above is the synthetic receipt ledger inside the smoke's temporary directory, not this repository. On that run it matched `git rev-parse HEAD` in the receipt ledger and did not match the Minimal ledger. The rejection lines are printed only after `protocol_bytes_match` returns non-zero for the gap ledger and for a paraphrase file. The byte-match line is printed only after the cloned `docs/PROTOCOL.md` compares equal to toolkit `PROTOCOL.md`. `1e36bec` only stops that helper from reusing the receipt ledger's variable; the byte checks are the ones added in `7177d12`.
+
+What this run did not prove: a brand-new independent agent doing Setup, then a different agent doing cold Join with only the private ledger URL. The shell smoke builds synthetic ledgers on this machine. It is not that live trial. `scripts/ledger-smoke.ps1` was updated to the same checks and was not executed here (no PowerShell on this machine). Recording this paragraph does not change the smoke script.
 
 ## Optional quick protocol check
 
