@@ -16,6 +16,10 @@
 # from (git rev-parse HEAD in this checkout, matching git show
 # HEAD:PROTOCOL.md). Relative markdown links in the copied files must
 # resolve inside the synthetic ledger.
+# docs/COORDINATION_PATTERNS.md is an optional appendix, not part of
+# Minimal Setup. The byte-match helper rejects a missing file and a
+# paraphrase. A Minimal ledger may omit it. When the file is present
+# it must be a byte copy, including after a core.autocrlf=true clone.
 # Each MANIFEST.json size and SHA-256 must match the blob at HEAD
 # (git cat-file). It does not create a remote.
 # This is not a CI adopter gate. Node.js is not required.
@@ -71,6 +75,16 @@ protocol_bytes_match() {
   protocol_ledger=$1
   [ -f "$protocol_ledger/docs/PROTOCOL.md" ] || return 1
   cmp -s "$toolkit/PROTOCOL.md" "$protocol_ledger/docs/PROTOCOL.md"
+}
+
+# 0 when ledger/docs/COORDINATION_PATTERNS.md is a byte copy of the
+# toolkit appendix. A missing file and a paraphrase both fail.
+# Minimal Setup may omit the file. Callers that require the copy use
+# this helper. Not a Node check.
+patterns_bytes_match() {
+  patterns_ledger=$1
+  [ -f "$patterns_ledger/docs/COORDINATION_PATTERNS.md" ] || return 1
+  cmp -s "$toolkit/docs/COORDINATION_PATTERNS.md" "$patterns_ledger/docs/COORDINATION_PATTERNS.md"
 }
 
 # Relative markdown links in a file Setup copied must resolve to a file
@@ -215,6 +229,11 @@ script_dir=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
 toolkit=$(CDPATH= cd -- "$script_dir/.." && pwd)
 [ -f "$toolkit/.gitattributes" ] || die "missing $toolkit/.gitattributes"
 [ -f "$toolkit/PROTOCOL.md" ] || die "missing $toolkit/PROTOCOL.md"
+[ -f "$toolkit/docs/COORDINATION_PATTERNS.md" ] || die "missing $toolkit/docs/COORDINATION_PATTERNS.md"
+grep -F 'Optional appendix; not part of Minimal Setup/Join.' "$toolkit/docs/COORDINATION_PATTERNS.md" >/dev/null || die "patterns appendix is not marked optional"
+if grep -F '](' "$toolkit/docs/COORDINATION_PATTERNS.md" >/dev/null; then
+  die "patterns appendix contains a markdown link"
+fi
 
 work=$(mktemp -d "${TMPDIR:-/tmp}/ledger-smoke.XXXXXX")
 hooks=$work/empty-hooks
@@ -541,6 +560,92 @@ clone_recorded=$(sed -n 's/^Toolkit docs revision (optional): //p' "$minimal_clo
 require_copied_links "$minimal_clone" docs/PROTOCOL.md
 require_copied_links "$minimal_clone" docs/HOW_WE_COORDINATE.md
 
+# Optional appendix. The Minimal ledger above omits it and still passes.
+# The helper rejects missing and paraphrase. A separate ledger that
+# byte-copies the appendix must pass, including after clone.
+printf '%s\n' "ledger-smoke: checking optional coordination patterns"
+[ ! -f "$minimal/docs/COORDINATION_PATTERNS.md" ] || die "minimal ledger includes the optional appendix"
+if patterns_bytes_match "$minimal"; then
+  die "omitted appendix byte-matched; the missing-when-required case was not exercised"
+fi
+
+patterns_gap=$work/patterns-gap
+mkdir -m 700 -p "$patterns_gap/docs"
+if patterns_bytes_match "$patterns_gap"; then
+  die "patterns gap byte-matched; missing-when-required was not exercised"
+fi
+
+patterns_para=$work/patterns-paraphrase
+mkdir -m 700 -p "$patterns_para/docs"
+printf '%s\n' \
+  '# Coordination patterns' \
+  'Optional habits. Keep a shared record. Summarize the patterns.' \
+  > "$patterns_para/docs/COORDINATION_PATTERNS.md"
+if patterns_bytes_match "$patterns_para"; then
+  die "patterns paraphrase byte-matched the toolkit appendix"
+fi
+
+patterns=$work/patterns
+patterns_clone=$work/patterns-clone
+mkdir -m 700 -p "$patterns/docs"
+cp "$toolkit/.gitattributes" "$patterns/.gitattributes"
+cp "$toolkit/docs/COORDINATION_PATTERNS.md" "$patterns/docs/COORDINATION_PATTERNS.md"
+git -C "$toolkit" -c core.autocrlf=false show "${source_commit}:docs/COORDINATION_PATTERNS.md" > "$work/patterns-from-commit" || die "could not read docs/COORDINATION_PATTERNS.md at toolkit HEAD $source_commit"
+cmp -s "$work/patterns-from-commit" "$patterns/docs/COORDINATION_PATTERNS.md" || die "copied patterns file is not the blob at toolkit HEAD $source_commit"
+if ! patterns_bytes_match "$patterns"; then
+  die "patterns ledger lacks a byte copy of the appendix"
+fi
+require_copied_links "$patterns" docs/COORDINATION_PATTERNS.md
+patterns_dangle=$work/patterns-dangle
+mkdir -m 700 -p "$patterns_dangle/docs"
+cp "$patterns/docs/COORDINATION_PATTERNS.md" "$patterns_dangle/docs/COORDINATION_PATTERNS.md"
+printf '\n%s\n' 'See the [wire](r2/WIRE.md).' >> "$patterns_dangle/docs/COORDINATION_PATTERNS.md"
+if copied_markdown_links_resolve "$patterns_dangle" docs/COORDINATION_PATTERNS.md; then
+  die "dangling link in the patterns appendix was accepted"
+fi
+if ! gitc -C "$patterns" init --template= >"$work/git-out" 2>&1; then
+  cat "$work/git-out" >&2
+  die "patterns git init failed"
+fi
+if ! gitc -C "$patterns" add -- \
+  .gitattributes \
+  docs/COORDINATION_PATTERNS.md \
+  >"$work/git-out" 2>&1; then
+  cat "$work/git-out" >&2
+  die "patterns git add failed"
+fi
+if ! gitc -C "$patterns" commit -m "Synthetic patterns ledger" >"$work/git-out" 2>&1; then
+  cat "$work/git-out" >&2
+  die "patterns git commit failed"
+fi
+gitc -C "$patterns" ls-files > "$work/patterns-files"
+cat > "$work/expected-patterns" <<'EOF'
+.gitattributes
+docs/COORDINATION_PATTERNS.md
+EOF
+while IFS= read -r rel; do
+  [ -n "$rel" ] || continue
+  if ! grep -F -x "$rel" "$work/patterns-files" >/dev/null; then
+    die "missing patterns committed file: $rel"
+  fi
+done < "$work/expected-patterns"
+patterns_count=$(awk 'NF { n++ } END { print n + 0 }' "$work/patterns-files")
+patterns_expected=$(awk 'NF { n++ } END { print n + 0 }' "$work/expected-patterns")
+[ "$patterns_count" = "$patterns_expected" ] || die "patterns committed file count $patterns_count != $patterns_expected"
+if ! gitc clone --no-local --config core.autocrlf=true "$patterns" "$patterns_clone" >"$work/git-out" 2>&1; then
+  cat "$work/git-out" >&2
+  die "patterns git clone failed"
+fi
+while IFS= read -r rel; do
+  [ -n "$rel" ] || continue
+  cmp -s "$patterns/$rel" "$patterns_clone/$rel" || die "patterns clone byte mismatch: $rel"
+done < "$work/patterns-files"
+cmp -s "$toolkit/docs/COORDINATION_PATTERNS.md" "$patterns_clone/docs/COORDINATION_PATTERNS.md" || die "cloned docs/COORDINATION_PATTERNS.md does not byte-match the toolkit appendix"
+if ! patterns_bytes_match "$patterns_clone"; then
+  die "cloned patterns ledger failed the byte copy check"
+fi
+require_copied_links "$patterns_clone" docs/COORDINATION_PATTERNS.md
+
 commit=$(gitc -C "$ledger" rev-parse HEAD)
 printf '%s\n' \
   "ledger-smoke: ok" \
@@ -553,4 +658,9 @@ printf '%s\n' \
   "minimal-paraphrase: rejected (bytes differ)" \
   "minimal-ledger: docs/PROTOCOL.md byte match" \
   "minimal-revision: $source_commit matches copied PROTOCOL.md" \
+  "patterns-omitted: accepted (not part of Minimal Setup)" \
+  "patterns-missing: rejected when a byte copy is required" \
+  "patterns-paraphrase: rejected (bytes differ)" \
+  "patterns-ledger: docs/COORDINATION_PATTERNS.md byte match" \
+  "patterns-clone: core.autocrlf=true byte match" \
   "manifest: $manifest_listed HEAD blobs match MANIFEST.json"

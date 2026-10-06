@@ -17,6 +17,10 @@
 # the commit those bytes came from (git rev-parse HEAD in this checkout,
 # matching git show HEAD:PROTOCOL.md). Relative markdown links in the
 # copied files must resolve inside the synthetic ledger.
+# docs/COORDINATION_PATTERNS.md is an optional appendix, not part of
+# Minimal Setup. The byte-match helper rejects a missing file and a
+# paraphrase. A Minimal ledger may omit it. When the file is present
+# it must be a byte copy, including after a core.autocrlf=true clone.
 # Each MANIFEST.json size and SHA-256 must match the blob at HEAD
 # (git cat-file). Node.js is not required.
 
@@ -208,6 +212,18 @@ function Test-ProtocolBytesMatch([string]$LedgerRoot, [string]$ToolkitProtocol) 
   return $true
 }
 
+function Test-PatternsBytesMatch([string]$LedgerRoot, [string]$ToolkitPatterns) {
+  $copy = Join-Path (Join-Path $LedgerRoot 'docs') 'COORDINATION_PATTERNS.md'
+  if (-not (Test-Path -LiteralPath $copy)) { return $false }
+  $a = [System.IO.File]::ReadAllBytes($ToolkitPatterns)
+  $b = [System.IO.File]::ReadAllBytes($copy)
+  if ($a.Length -ne $b.Length) { return $false }
+  for ($i = 0; $i -lt $a.Length; $i++) {
+    if ($a[$i] -ne $b[$i]) { return $false }
+  }
+  return $true
+}
+
 function Assert-SameFile([string]$Left, [string]$Right, [string]$Label) {
   $a = [System.IO.File]::ReadAllBytes($Left)
   $b = [System.IO.File]::ReadAllBytes($Right)
@@ -241,8 +257,15 @@ try {
   $toolkit = Split-Path -Parent $scriptDir
   $attributes = Join-Path $toolkit '.gitattributes'
   $toolkitProtocol = Join-Path $toolkit 'PROTOCOL.md'
+  $toolkitPatterns = Join-Path (Join-Path $toolkit 'docs') 'COORDINATION_PATTERNS.md'
   if (-not (Test-Path -LiteralPath $attributes)) { Fail "missing $attributes" }
   if (-not (Test-Path -LiteralPath $toolkitProtocol)) { Fail "missing $toolkitProtocol" }
+  if (-not (Test-Path -LiteralPath $toolkitPatterns)) { Fail "missing $toolkitPatterns" }
+  $patternsText = [System.IO.File]::ReadAllText($toolkitPatterns, $script:Utf8)
+  if (-not $patternsText.Contains('Optional appendix; not part of Minimal Setup/Join.')) {
+    Fail 'patterns appendix is not marked optional'
+  }
+  if ($patternsText.Contains('](')) { Fail 'patterns appendix contains a markdown link' }
 
   $script:Work = Join-Path ([System.IO.Path]::GetTempPath()) ("ledger-smoke-" + [guid]::NewGuid().ToString('n'))
   $hooks = Join-Path $script:Work 'empty-hooks'
@@ -577,6 +600,90 @@ try {
   if (-not (Assert-CopiedLinksResolve $minimalClone 'docs/PROTOCOL.md')) { Fail 'cloned PROTOCOL.md links do not resolve' }
   if (-not (Assert-CopiedLinksResolve $minimalClone 'docs/HOW_WE_COORDINATE.md')) { Fail 'cloned HOW_WE_COORDINATE.md links do not resolve' }
 
+  # Optional appendix. The Minimal ledger above omits it and still passes.
+  # The helper rejects missing and paraphrase. A separate ledger that
+  # byte-copies the appendix must pass, including after clone.
+  Write-Output 'ledger-smoke: checking optional coordination patterns'
+  $minimalPatterns = Join-Path $minimalDocs 'COORDINATION_PATTERNS.md'
+  if (Test-Path -LiteralPath $minimalPatterns) { Fail 'minimal ledger includes the optional appendix' }
+  if (Test-PatternsBytesMatch $minimal $toolkitPatterns) {
+    Fail 'omitted appendix byte-matched; the missing-when-required case was not exercised'
+  }
+
+  $patternsGap = Join-Path $script:Work 'patterns-gap'
+  New-Item -ItemType Directory -Path (Join-Path $patternsGap 'docs') -Force | Out-Null
+  if (Test-PatternsBytesMatch $patternsGap $toolkitPatterns) {
+    Fail 'patterns gap byte-matched; missing-when-required was not exercised'
+  }
+
+  $patternsPara = Join-Path $script:Work 'patterns-paraphrase'
+  New-Item -ItemType Directory -Path (Join-Path $patternsPara 'docs') -Force | Out-Null
+  Write-Lf (Join-Path (Join-Path $patternsPara 'docs') 'COORDINATION_PATTERNS.md') @(
+    '# Coordination patterns',
+    'Optional habits. Keep a shared record. Summarize the patterns.'
+  )
+  if (Test-PatternsBytesMatch $patternsPara $toolkitPatterns) {
+    Fail 'patterns paraphrase byte-matched the toolkit appendix'
+  }
+
+  $patterns = Join-Path $script:Work 'patterns'
+  $patternsClone = Join-Path $script:Work 'patterns-clone'
+  $patternsDocs = Join-Path $patterns 'docs'
+  New-Item -ItemType Directory -Path $patternsDocs -Force | Out-Null
+  [System.IO.File]::Copy($attributes, (Join-Path $patterns '.gitattributes'))
+  [System.IO.File]::Copy($toolkitPatterns, (Join-Path $patternsDocs 'COORDINATION_PATTERNS.md'))
+  $patternsBlob = Join-Path $script:Work 'patterns-from-commit'
+  Save-GitShow $patternsBlob "${sourceCommit}:docs/COORDINATION_PATTERNS.md"
+  Assert-SameFile $patternsBlob (Join-Path $patternsDocs 'COORDINATION_PATTERNS.md') 'COORDINATION_PATTERNS.md at toolkit HEAD'
+  if (-not (Test-PatternsBytesMatch $patterns $toolkitPatterns)) {
+    Fail 'patterns ledger lacks a byte copy of the appendix'
+  }
+  if (-not (Assert-CopiedLinksResolve $patterns 'docs/COORDINATION_PATTERNS.md')) {
+    Fail 'copied COORDINATION_PATTERNS.md links do not resolve'
+  }
+  $patternsDangle = Join-Path $script:Work 'patterns-dangle'
+  $patternsDangleDocs = Join-Path $patternsDangle 'docs'
+  New-Item -ItemType Directory -Path $patternsDangleDocs -Force | Out-Null
+  $danglePatterns = Join-Path $patternsDangleDocs 'COORDINATION_PATTERNS.md'
+  [System.IO.File]::Copy((Join-Path $patternsDocs 'COORDINATION_PATTERNS.md'), $danglePatterns)
+  [System.IO.File]::AppendAllText($danglePatterns, "`nSee the [wire](r2/WIRE.md).`n", $script:Utf8)
+  if (Assert-CopiedLinksResolve $patternsDangle 'docs/COORDINATION_PATTERNS.md' -Quiet) {
+    Fail 'dangling link in the patterns appendix was accepted'
+  }
+  Invoke-GitQuiet -C $patterns init '--template='
+  Invoke-Git -C $patterns add -- .gitattributes docs/COORDINATION_PATTERNS.md
+  Invoke-GitQuiet -C $patterns commit -m 'Synthetic patterns ledger'
+  $patternsListArgs = $script:GitPrefix + @('-C', $patterns, 'ls-files')
+  $rawPatterns = & git @patternsListArgs
+  if ($LASTEXITCODE -ne 0) { Fail 'patterns git ls-files failed' }
+  $patternsListed = @($rawPatterns | ForEach-Object { "$_".Trim() } | Where-Object { $_ -ne '' })
+  $patternsExpected = @(
+    '.gitattributes',
+    'docs/COORDINATION_PATTERNS.md'
+  )
+  if ($patternsListed.Count -ne $patternsExpected.Count) {
+    Fail "patterns committed file count $($patternsListed.Count) != $($patternsExpected.Count)"
+  }
+  foreach ($rel in $patternsExpected) {
+    $found = $false
+    foreach ($item in $patternsListed) {
+      if ($item -ceq $rel) { $found = $true }
+    }
+    if (-not $found) { Fail "missing patterns committed file: $rel" }
+  }
+  Invoke-GitQuiet clone --no-local --config core.autocrlf=true $patterns $patternsClone
+  foreach ($rel in $patternsExpected) {
+    $relPath = $rel -replace '/', [IO.Path]::DirectorySeparatorChar
+    Assert-SameFile (Join-Path $patterns $relPath) (Join-Path $patternsClone $relPath) "patterns $rel"
+  }
+  Assert-SameFile $toolkitPatterns (Join-Path $patternsClone ((Join-Path 'docs' 'COORDINATION_PATTERNS.md'))) 'cloned docs/COORDINATION_PATTERNS.md'
+  if (-not (Test-PatternsBytesMatch $patternsClone $toolkitPatterns)) {
+    Fail 'cloned patterns ledger failed the byte copy check'
+  }
+  if (-not (Assert-CopiedLinksResolve $patternsClone 'docs/COORDINATION_PATTERNS.md')) {
+    Fail 'cloned COORDINATION_PATTERNS.md links do not resolve'
+  }
+
   $revArgs = $script:GitPrefix + @('-C', $ledger, 'rev-parse', 'HEAD')
   $commit = (& git @revArgs)
   if ($LASTEXITCODE -ne 0) { Fail 'git rev-parse failed' }
@@ -592,6 +699,11 @@ try {
   Write-Output 'minimal-paraphrase: rejected (bytes differ)'
   Write-Output 'minimal-ledger: docs/PROTOCOL.md byte match'
   Write-Output "minimal-revision: $sourceCommit matches copied PROTOCOL.md"
+  Write-Output 'patterns-omitted: accepted (not part of Minimal Setup)'
+  Write-Output 'patterns-missing: rejected when a byte copy is required'
+  Write-Output 'patterns-paraphrase: rejected (bytes differ)'
+  Write-Output 'patterns-ledger: docs/COORDINATION_PATTERNS.md byte match'
+  Write-Output 'patterns-clone: core.autocrlf=true byte match'
   Write-Output "manifest: $script:ManifestListed HEAD blobs match MANIFEST.json"
   $script:Failed = $false
 } finally {

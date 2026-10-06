@@ -26,13 +26,13 @@
     },
     {
       "path": "ONBOARDING.md",
-      "bytes": 31771,
-      "sha256": "7c43a97c61061d0519839909c8eb59dedb9149e34966ad817a1f114681c94253"
+      "bytes": 32694,
+      "sha256": "9b052a10eda051276aeecda3aa954fdc3bfeb3db74155adf689c4bd8407188fc"
     },
     {
       "path": "PROTOCOL.md",
-      "bytes": 2354,
-      "sha256": "a4949df8316ce62360a456b8a25a98260f75de7ebc9b09eadd8448fef2e88d3b"
+      "bytes": 2541,
+      "sha256": "67aa9918d654742b252c45ec362e744cc345ac94e85e150d49b7077a06dc55c8"
     },
     {
       "path": "PROVENANCE.json",
@@ -41,13 +41,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 15898,
-      "sha256": "1596e74e4c27abc27505c15d23d4850fe87266324ca6c54d976470d72e89a00a"
+      "bytes": 17002,
+      "sha256": "e4254c7e021770e9d9d77ed21ef40dde7457c8cb3f9cfa8738518303817385b0"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 14885,
-      "sha256": "1b26b558674b56576ab1c39fb32ece81bed8d6c04ed6a1de7193610bb159b53e"
+      "bytes": 15849,
+      "sha256": "409926562471d3b709d53c4c64f64739f235d752e8299993b3c76e9984279923"
     },
     {
       "path": "RECEIPT-SCHEMA.md",
@@ -71,8 +71,13 @@
     },
     {
       "path": "TESTING.md",
-      "bytes": 16065,
-      "sha256": "5ec972dd0c145ce0ff5a09dc3572df3748dd2cedc511e45966a57ea45fb1df3e"
+      "bytes": 17488,
+      "sha256": "068d112aa6d18f2f209d8d95cc9b9190680a9aa76a3f57e5faa4041c0e786786"
+    },
+    {
+      "path": "docs/COORDINATION_PATTERNS.md",
+      "bytes": 8585,
+      "sha256": "20d68ca4c2a0c6738f12f7fffe0848cb02edbceb0cac41ff136dc5cf70e9e35e"
     },
     {
       "path": "docs/NOTIFICATIONS.md",
@@ -81,8 +86,8 @@
     },
     {
       "path": "docs/STATUS.md",
-      "bytes": 1559,
-      "sha256": "97feb6aa44e69064df46f78bf8a5c5cab2a232ae50dedd88d796aa48a696e3f2"
+      "bytes": 1750,
+      "sha256": "112d54c56f4947c56f83972140ee952b071be7855c43cbc0cecc64d61cc21466"
     },
     {
       "path": "docs/assets/ATTRIBUTION.md",
@@ -291,13 +296,13 @@
     },
     {
       "path": "scripts/ledger-smoke.ps1",
-      "bytes": 27574,
-      "sha256": "bb4e5d53c943d739c945ba595203783dd883579b5a539f7ff61d926472777c9a"
+      "bytes": 33807,
+      "sha256": "520592bfdfced7e50c4ec8ed8d518967edd4f30f1b6cc1199def99012e0d205e"
     },
     {
       "path": "scripts/ledger-smoke.sh",
-      "bytes": 22366,
-      "sha256": "d585366a4c911208d0b6e7ea4d946f4eedaaf0d723e717b555d4f9b044df6e35"
+      "bytes": 27845,
+      "sha256": "9d515560b411a41cf90eb5d1c75b06c95b08abd6bdb034222024ac4d16731d1d"
     },
     {
       "path": "test/extraction-boundaries.test.mjs",
