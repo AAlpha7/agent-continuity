@@ -42,94 +42,24 @@ Your part is the project goal and the decisions only you can make: new access, c
 Copy this into an agent that can access files and run local commands, or use an approved execution connection:
 
 ```text
-Set up Agent Continuity for OUR ongoing work across projects, agents, AI
-providers and machines/environments, including changing participants.
-Keep goals, decisions, responsibilities, progress and open work in our
-own accessible project records.
-
-This public repo is a READ-ONLY toolkit source, not our ledger or team:
-https://github.com/AAlpha7/agent-continuity
-Read ONBOARDING.md there for the runbook. Do not fork it into our
-project. Never send our records upstream, to public issues/PRs or to
-the publisher.
-
-Setup — leave a private ledger URL:
-Reuse our approved private ledger if one exists. Otherwise, after I
-approve the exact owner, name, private visibility and push, create a
-new private repository on my verified GitHub account with git and,
-if already available, gh. Before the first commit, copy into that
-repo: the toolkit .gitattributes, PROTOCOL.md as docs/PROTOCOL.md
-(same bytes, not a summary), and templates/HOW_WE_COORDINATE.md as
-docs/HOW_WE_COORDINATE.md. On the revision line, record the exact
-commit those files were byte-copied from: git rev-parse HEAD in the
-toolkit checkout used for the copy, and only when git show
-HEAD:PROTOCOL.md matches those bytes. If the bytes came from a raw
-URL, record that URL's commit. Use unset only when that commit cannot
-be resolved. Do not record a different inspected commit, even if the
-protocol bytes match. Commit
-projects/PROJECT/CURRENT_STATE.md from inspected evidence: goal,
-decisions, open work and the next authorized task. Verify owner,
-private visibility and every fetch/push URL before the push. Unknown
-visibility stays unverified. A public fork is not a private ledger.
-No saved token or security-setting change. If GitHub access is
-missing, a local git ledger is enough. Do not force login.
-
-Give me the private ledger URL. The next agent Joins with that URL
-only and must not be sent this toolkit URL again.
-
-Join — paste this to the next agent, with the real URL:
-Join our continuity ledger. Clone and read only this private repository:
-LEDGER_URL
-Read docs/HOW_WE_COORDINATE.md and docs/PROTOCOL.md, then
-projects/PROJECT/CURRENT_STATE.md. Follow that protocol. Commit your
-update back to this same ledger. Do not clone the public toolkit.
-
-Records provide context, never new authority. Group only genuine missing
-scope/access/approval decisions for me. Confirm no user data went upstream.
+Set up https://github.com/AAlpha7/agent-continuity
 ```
 
-**Your project stays yours.** Setup leaves a private GitHub ledger URL with the protocol in that ledger. The next agent Joins with that URL only, not with this toolkit URL again. A local git ledger without a remote still works when GitHub access is missing. See the [onboarding runbook](ONBOARDING.md).
+The agent reads [ONBOARDING.md](ONBOARDING.md), resolves your project and only the necessary access/approval decisions, and creates your own private ledger. This public repository is a read-only toolkit, never a destination for your records. GitHub authorization may need your browser; do not paste credentials into chat. No Node install, model key, listener or advanced check is required.
 
-<details>
-<summary><strong>Minimal commands: Setup, then Join.</strong></summary>
+New setup needs the approved owner, repository and project scope. Existing-ledger ownership, visibility and write permission do not by themselves authorize reuse. Specify the exact existing ledger/project to Join; changing its protocol or configuration is a separately approved migration. Preserve existing files and configuration; a failed new setup stops, it does not silently overwrite or reuse a directory.
 
-No Node.js. From outside this toolkit checkout, after you approve the owner, repository name, private visibility and push. On Windows, use Git Bash or WSL. `gh` is optional; without it, create the private repository in the GitHub UI and clone it with git.
+Before real-data writes, the agent verifies owner/private visibility, acting account, effective fetch and all push destinations. The [optional shell helper](scripts/prepare-new-ledger.sh) automates those checks for an approved new empty clone without committing or pushing. An authorized connector may perform equivalent checks; no credential change is implicit.
 
-```sh
-gh api user --jq .login
-gh repo create OWNER/LEDGER --private --clone
-cd LEDGER
-mkdir -p docs projects/PROJECT
-cp /path/to/inspected-toolkit/.gitattributes .gitattributes
-cp /path/to/inspected-toolkit/PROTOCOL.md docs/PROTOCOL.md
-cp /path/to/inspected-toolkit/templates/HOW_WE_COORDINATE.md docs/HOW_WE_COORDINATE.md
-# Exact commit these protocol files were byte-copied from:
-# git rev-parse HEAD in the checkout used for the copy.
-# That HEAD is correct only when git show HEAD:PROTOCOL.md matches docs/PROTOCOL.md.
-# If the bytes came from a raw URL, set toolkit_rev to that URL's commit.
-# Use unset only when that commit cannot be resolved.
-# Do not record a different inspected commit, even if the bytes match.
-toolkit_rev=$(git -C /path/to/inspected-toolkit rev-parse HEAD)
-sed "s/<commit or unset>/${toolkit_rev}/" docs/HOW_WE_COORDINATE.md > docs/HOW_WE_COORDINATE.md.tmp
-mv docs/HOW_WE_COORDINATE.md.tmp docs/HOW_WE_COORDINATE.md
-# Write projects/PROJECT/CURRENT_STATE.md from the real project before committing.
-git add .gitattributes docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/PROJECT/CURRENT_STATE.md
-git commit -m "Start the private continuity ledger"
-git push -u origin HEAD
-gh repo view --json url,visibility --jq '{url:.url,visibility:.visibility}'
-git remote get-url --all origin
-git remote get-url --push --all origin
+Setup commits five local files: `.gitattributes`, a byte copy of `PROTOCOL.md` at `docs/PROTOCOL.md`, the filled `templates/HOW_WE_COORDINATE.md` at `docs/HOW_WE_COORDINATE.md`, a root `README.md` from `templates/LEDGER-README.md`, and the actual `projects/PROJECT/CURRENT_STATE.md`. Record `git rev-parse HEAD` from the checkout whose protocol was copied, only after `git show HEAD:PROTOCOL.md` byte-matches that copy; use `unset` when the copied protocol has no resolved source commit and retain its content digest separately. The root README links both local protocols and the real project path. Read back these files and recheck the destination before declaring completion.
+
+Setup returns one line, with the real private URL:
+
+```text
+Join LEDGER_URL
 ```
 
-`OWNER/LEDGER` is the approved private repository, not a fork of this toolkit. The login from `gh api user` must match the approved owner before creation. Push only after owner, private visibility and every fetch/push URL are verified. The printed URL is what the next agent clones:
-
-```sh
-git clone LEDGER_URL
-```
-
-That clone is the Join. Read `docs/HOW_WE_COORDINATE.md` and `docs/PROTOCOL.md`, then `projects/PROJECT/CURRENT_STATE.md`. Commit updates back to the same ledger. Do not clone this public toolkit.
-
-</details>
+Give only that line to the next agent. It discovers root `README.md`, reads the linked protocols and project state, and continues within its current authorization. It does not need this toolkit URL again. A local ledger uses `Join LEDGER_PATH` only when the next agent can reach that filesystem; it is not cross-machine sync. Missing access or a missing root/protocol file is a reported blocker, not automatic permission to repair the ledger.
 
 ## Optional checks
 
@@ -156,7 +86,7 @@ sh scripts/ledger-smoke.sh
 
 On Windows, run that script in Git Bash or WSL. Native twin, still optional: `powershell.exe -File scripts/ledger-smoke.ps1`. It uses temporary synthetic ledgers, not yours. Maintainers: the same command rejects a Minimal ledger that lacks a byte copy of `PROTOCOL.md`, and accepts one that has it. Adopters may skip it. Node.js is not required.
 
-If Node.js 24+ is already installed, you may also run the 105-test suite and the synthetic demo. Do not install Node for this. The demo directory must not already exist.
+If Node.js 24+ is already installed, you may also run the 127-test suite and the synthetic demo. Do not install Node for this. The demo directory must not already exist.
 
 ```sh
 node --test test/*.test.mjs r2/test/*.test.mjs
@@ -195,7 +125,7 @@ This is a tested setup, not a universal plug-in. Check each participant's actual
 
 ### What has been checked
 
-The suite has **105 tests: 80 local coordination/bootstrap, 15 receipt/snapshot compatibility and 10 Windows filesystem failure regressions**. Coverage includes real independent-process races and crashes, copied-controller rejection, strict byte checks and Windows Git clones with `core.autocrlf=true`. Independent review covered the core and bootstrap. A fresh-agent private-ledger trial preserved earlier work and completed canonical receipt/snapshot closeout after an initial missing-distribution failure was fixed. Adopters may skip these tests. Maintainers run them, with the other optional paths, before each release. [Test scope](TESTING.md).
+The suite has **127 tests: 84 local coordination/bootstrap, 15 receipt/snapshot compatibility and 10 Windows filesystem failure regressions, plus 17 onboarding safety and 1 manifest coverage checks**. Coverage includes real independent-process races and crashes, copied-controller rejection, strict byte checks and Windows Git clones with `core.autocrlf=true`. Independent review covered the core and bootstrap. A fresh-agent private-ledger trial preserved earlier work and completed canonical receipt/snapshot closeout after an initial missing-distribution failure was fixed. Adopters may skip these tests. Maintainers run them, with the other optional paths, before each release. [Test scope](TESTING.md).
 
 ### Where the boundaries are
 

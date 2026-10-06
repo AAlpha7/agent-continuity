@@ -22,12 +22,16 @@ export function verifyPackage(bytes,expectedSha256) {
     const parts=row.path.split('/');
     check(parts.every(s=>s!==''&&s!=='.'&&s!=='..'&&!s.endsWith('.')&&!/^\.git$/i.test(s)&&!/^(?:con|prn|aux|nul|com[0-9]|lpt[0-9])(?:\.|$)/i.test(s)),'PATH','Unsafe/reserved package path');
     const lower=row.path.toLowerCase();check(!seen.has(lower),'PATH','Duplicate/case-colliding package path');seen.add(lower);
-    check(row.mode==='100644'&&Number.isSafeInteger(row.bytes)&&row.bytes>=0&&row.bytes<=2*1024*1024&&typeof row.base64==='string','PACKAGE','Only bounded regular source files supported');
+    check(['100644','100755'].includes(row.mode)&&Number.isSafeInteger(row.bytes)&&row.bytes>=0&&row.bytes<=2*1024*1024&&typeof row.base64==='string','PACKAGE','Only bounded regular source files supported');
     const b=Buffer.from(row.base64,'base64');check(b.toString('base64')===row.base64&&b.length===row.bytes&&digest('sha256',b)===row.sha256&&digest('sha1',Buffer.concat([Buffer.from(`blob ${b.length}\0`),b]))===row.git_blob_sha,'DIGEST','Source file bytes differ from manifest');
-    files.push({path:row.path,bytes:b});
+    files.push({path:row.path,mode:row.mode,bytes:b});
   }
   for(const f of files)for(const part of f.path.split('/').slice(0,-1).map((_,i)=>f.path.split('/').slice(0,i+1).join('/').toLowerCase()))check(!seen.has(part),'PATH','File/directory collision');
-  for(const required of ['LICENSE','package.json','ONBOARDING.md','GUIDE.md','RECEIPT-SCHEMA.md','PROTOCOL.md','scripts/agent-receipt.mjs','scripts/build-continuity-snapshot.mjs'])check(seen.has(required.toLowerCase()),'PACKAGE',`Missing onboarding dependency: ${required}`);
+  // Require the complete documented v1 workflow, including imported helpers and
+  // initializer data. Exact spelling matters on case-sensitive recipient hosts.
+  for(const required of ['LICENSE','package.json','ONBOARDING.md','GUIDE.md','RECEIPT-SCHEMA.md','PROTOCOL.md',
+    '.gitattributes','templates/HOW_WE_COORDINATE.md','examples/init-project.mjs','lib/safe-files.mjs','lib/ledger-write.mjs',
+    'scripts/agent-receipt.mjs','scripts/build-continuity-snapshot.mjs'])check(files.some(f=>f.path===required),'PACKAGE',`Missing onboarding dependency: ${required}`);
   return {source_commit:p.source_commit,source_tree:p.source_tree,files};
 }
 export async function bootstrap(ledgerRoot,newToolkitRoot,expectedSha256) {
@@ -44,7 +48,9 @@ export async function bootstrap(ledgerRoot,newToolkitRoot,expectedSha256) {
   await mkdir(dest,{mode:0o700});
   for(const file of verified.files) {
     const target=join(dest,...file.path.split('/'));await mkdir(dirname(target),{recursive:true});
-    await writeFile(target,file.bytes,{flag:'wx',mode:0o600});
+    // Keep execution eligibility for regular executable sources, owner-only on
+    // POSIX. Never apply symlink, gitlink or special permission bits from a pack.
+    await writeFile(target,file.bytes,{flag:'wx',mode:file.mode==='100755'?0o700:0o600});
     check((await readFile(target)).equals(file.bytes),'VERIFY','Extracted file readback differs');
   }
   return {toolkit_root:dest,source_commit:verified.source_commit,source_tree:verified.source_tree,files_verified:verified.files.length,package_sha256:expectedSha256,

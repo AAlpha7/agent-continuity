@@ -14,6 +14,8 @@ Before each release or deploy, maintainers run **all** paths, including the opti
 
 If the Setup/Join paste blocks changed, also re-verify Minimal Setup and Join with brand-new agents in brand-new environments. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record that result with the optional-path runs. A passing shell smoke does not satisfy that live trial.
 
+Freeze the complete final candidate (commit or full-file digest inventory) before live acceptance. Each protocol change requires a new clean cloud Setup environment, a new private synthetic ledger, and a separately fresh Join agent given only `Join LEDGER_URL`. Do not reuse an earlier main trial, ledger or environment. Disclose preinstalled tools, authorization, transport and every human-assisted step. Any corrective edit invalidates that run for the new tree: freeze again and restart from Setup. Unit tests and synthetic shape checks are not this acceptance. Public push/merge comes only after that acceptance and a separate publication decision.
+
 Users do not run this checklist.
 
 ### Recorded run: 2026-10-01 Minimal Setup→Join re-verify
@@ -22,15 +24,15 @@ Users do not run this checklist.
 
 Brand-new agents in brand-new environments:
 
-- Agent A Setup: `bc-35d362fd-92fb-5db4-977a-c9afb2fb95f5`
-- Agent B Join: `bc-d8cd3d33-cf74-5e40-8800-64355d877a22`
+- Agent A Setup: `[private trial agent ID omitted]`
+- Agent B Join: `[private trial agent ID omitted]`
 
-New private ledger (`private: true`; not a toolkit fork): https://github.com/AAlpha7/ac-fresh-setup-20261001-f40a68
+New private ledger (`private: true`; not a toolkit fork): [private trial ledger URL omitted]
 
 Project handoff: `projects/fresh-verify/CURRENT_STATE.md`
 
-- Setup local status: `partial`. The Cursor App/`gh` bot could not push the private repo. The AAlpha7 user integration created the repo and wrote the handoff. Remote `main` tip after Setup: `12875ad7076211910be0b464f20215423c2005f3`.
-- Join local status: `ready`. Join commit `90fee23281646f870b78e01058a1caefef755e66` on `main`, via the AAlpha7 user integration Contents API, after `git clone` with App credentials failed (repository not found).
+- Setup local status: `partial`. The Cursor App/`gh` bot could not push the private repo. The AAlpha7 user integration created the repo and wrote the handoff. Remote `main` tip after Setup: `[private trial commit ID omitted]`.
+- Join local status: `ready`. Join commit `[private trial commit ID omitted]` on `main`, via the AAlpha7 user integration Contents API, after `git clone` with App credentials failed (repository not found).
 - Optional checks: not run. This run was a Minimal-only re-verify after the paste change.
 
 Result: Minimal Setup→Join PASS, with a credential quirk (App credentials versus the AAlpha7 user integration).
@@ -123,7 +125,7 @@ Run from an inspected checkout when Node.js 24+ and Git are already installed:
 node --test test/*.test.mjs r2/test/*.test.mjs
 ```
 
-No npm install, model call, remote participant, hosted CI or service is needed. Adopters may skip this. Maintainers run it before release when Node is available. Do not install Node so an adopter can run it, and do not make it an adopter gate. The suites contain **105 top-level tests: 15 original receipt/snapshot tests, 80 local coordination/bootstrap tests and 10 Windows lock/replacement failure regressions**. Tested environment: Windows, Node.js 24.11.1 and Git 2.45.2.windows.1. Passing tests supports these specific checks, not universal platform compatibility.
+No npm install, model call, remote participant, hosted CI or service is needed. Adopters may skip this. Maintainers run it before release when Node is available. Do not install Node so an adopter can run it, and do not make it an adopter gate. The suites contain **127 top-level tests: 15 original receipt/snapshot tests, 84 local coordination/bootstrap tests and 10 Windows lock/replacement failure regressions, plus 17 onboarding safety and 1 manifest coverage checks**. Historical core profile: Windows, Node.js 24.11.1 and Git 2.45.2.windows.1. The new shell safety fixtures run on POSIX; Windows explicitly skips those fixtures and needs Git Bash/WSL or the native smoke for its own validation. No current Windows run is claimed. Passing tests supports these specific checks, not universal platform compatibility.
 
 The optional synthetic demo copies fixtures into a directory that does not yet exist. Do not `mkdir` that destination first: on Node.js 24.14 and later, `fs.cp` with `errorOnExist: true` then fails with `ERR_FS_CP_EEXIST`.
 
