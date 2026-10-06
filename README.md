@@ -60,7 +60,13 @@ new private repository on my verified GitHub account with git and,
 if already available, gh. Before the first commit, copy into that
 repo: the toolkit .gitattributes, PROTOCOL.md as docs/PROTOCOL.md
 (same bytes, not a summary), and templates/HOW_WE_COORDINATE.md as
-docs/HOW_WE_COORDINATE.md (fill the revision line, or unset). Commit
+docs/HOW_WE_COORDINATE.md. On the revision line, record the exact
+commit those files were byte-copied from: git rev-parse HEAD in the
+toolkit checkout used for the copy, and only when git show
+HEAD:PROTOCOL.md matches those bytes. If the bytes came from a raw
+URL, record that URL's commit. Use unset only when that commit cannot
+be resolved. Do not record a different inspected commit, even if the
+protocol bytes match. Commit
 projects/PROJECT/CURRENT_STATE.md from inspected evidence: goal,
 decisions, open work and the next authorized task. Verify owner,
 private visibility and every fetch/push URL before the push. Unknown
@@ -97,7 +103,15 @@ mkdir -p docs projects/PROJECT
 cp /path/to/inspected-toolkit/.gitattributes .gitattributes
 cp /path/to/inspected-toolkit/PROTOCOL.md docs/PROTOCOL.md
 cp /path/to/inspected-toolkit/templates/HOW_WE_COORDINATE.md docs/HOW_WE_COORDINATE.md
-# Replace "<commit or unset>" in docs/HOW_WE_COORDINATE.md with the inspected toolkit commit, or with unset.
+# Exact commit these protocol files were byte-copied from:
+# git rev-parse HEAD in the checkout used for the copy.
+# That HEAD is correct only when git show HEAD:PROTOCOL.md matches docs/PROTOCOL.md.
+# If the bytes came from a raw URL, set toolkit_rev to that URL's commit.
+# Use unset only when that commit cannot be resolved.
+# Do not record a different inspected commit, even if the bytes match.
+toolkit_rev=$(git -C /path/to/inspected-toolkit rev-parse HEAD)
+sed "s/<commit or unset>/${toolkit_rev}/" docs/HOW_WE_COORDINATE.md > docs/HOW_WE_COORDINATE.md.tmp
+mv docs/HOW_WE_COORDINATE.md.tmp docs/HOW_WE_COORDINATE.md
 # Write projects/PROJECT/CURRENT_STATE.md from the real project before committing.
 git add .gitattributes docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/PROJECT/CURRENT_STATE.md
 git commit -m "Start the private continuity ledger"

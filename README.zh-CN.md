@@ -58,7 +58,11 @@ https://github.com/AAlpha7/agent-continuity
 我自己的 GitHub 账号下创建私有仓库。第一次提交前复制这些文件：
 工具目录的 .gitattributes、PROTOCOL.md（原文字节，不要改写成摘要）
 到 docs/PROTOCOL.md，以及 templates/HOW_WE_COORDINATE.md 到
-docs/HOW_WE_COORDINATE.md（填上检查到的版本，或 unset）。根据已检查的
+docs/HOW_WE_COORDINATE.md。修订行必须是这些文件被按字节复制时的那个
+确切提交：在用于复制的工具检出里运行 git rev-parse HEAD，并且仅当
+git show HEAD:PROTOCOL.md 与复制出的字节一致时才使用它。如果字节来自
+raw URL，就记录该 URL 的提交。只有无法解析该提交时才写 unset。不要改记
+成另一个检查过的提交，即使协议字节碰巧相同。根据已检查的
 证据提交 projects/PROJECT/CURRENT_STATE.md：目标、决定、未完成事项和
 下一项获准任务。push 前核实所有者、真实私有可见性和全部 fetch/push
 目标。未知保持未验证。公开 fork 不等于私库。不保存 token，不修改
@@ -93,7 +97,15 @@ mkdir -p docs projects/PROJECT
 cp /path/to/inspected-toolkit/.gitattributes .gitattributes
 cp /path/to/inspected-toolkit/PROTOCOL.md docs/PROTOCOL.md
 cp /path/to/inspected-toolkit/templates/HOW_WE_COORDINATE.md docs/HOW_WE_COORDINATE.md
-# 把 docs/HOW_WE_COORDINATE.md 里的 "<commit or unset>" 换成检查到的工具提交，或换成 unset。
+# 修订行必须是这些协议文件被按字节复制时的那个提交：
+# 在用于复制的工具检出里运行 git rev-parse HEAD。
+# 仅当 git show HEAD:PROTOCOL.md 与 docs/PROTOCOL.md 字节一致时，这个 HEAD 才正确。
+# 如果字节来自 raw URL，把 toolkit_rev 设为该 URL 的提交。
+# 只有无法解析该提交时才使用 unset。
+# 不要改记成另一个检查过的提交，即使字节碰巧相同。
+toolkit_rev=$(git -C /path/to/inspected-toolkit rev-parse HEAD)
+sed "s/<commit or unset>/${toolkit_rev}/" docs/HOW_WE_COORDINATE.md > docs/HOW_WE_COORDINATE.md.tmp
+mv docs/HOW_WE_COORDINATE.md.tmp docs/HOW_WE_COORDINATE.md
 # 提交前，根据真实项目写下 projects/PROJECT/CURRENT_STATE.md。
 git add .gitattributes docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/PROJECT/CURRENT_STATE.md
 git commit -m "Start the private continuity ledger"

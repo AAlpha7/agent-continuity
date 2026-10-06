@@ -11,8 +11,8 @@
     },
     {
       "path": "GUIDE.md",
-      "bytes": 6908,
-      "sha256": "48d8bbb6f9a5e6483164ce5a3bc3ac65786006abf50dd10c94df8bf3771fdb89"
+      "bytes": 6841,
+      "sha256": "ea30f779e77081240f82e821c21261abec5f4e2d5c759a55255919c3608ad99d"
     },
     {
       "path": "History/2026-10-01-shell-git-smoke.md",
@@ -26,13 +26,13 @@
     },
     {
       "path": "ONBOARDING.md",
-      "bytes": 26427,
-      "sha256": "479b8085e6da06438425c2f3aef03373f6e567e0592e0fb15514312851265d06"
+      "bytes": 31771,
+      "sha256": "7c43a97c61061d0519839909c8eb59dedb9149e34966ad817a1f114681c94253"
     },
     {
       "path": "PROTOCOL.md",
-      "bytes": 2465,
-      "sha256": "9cbd2b082e6bab5454c9c89372d961f1c02cda5a8f5802a593a9feaa1690262a"
+      "bytes": 2354,
+      "sha256": "a4949df8316ce62360a456b8a25a98260f75de7ebc9b09eadd8448fef2e88d3b"
     },
     {
       "path": "PROVENANCE.json",
@@ -41,13 +41,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 14582,
-      "sha256": "f0452c3f8b2fde16787661ce7c8dc11096a093d89004e70e3b0de85daa60ea84"
+      "bytes": 15898,
+      "sha256": "1596e74e4c27abc27505c15d23d4850fe87266324ca6c54d976470d72e89a00a"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 13405,
-      "sha256": "7314b2abc2f02ab9fa27af24dfc12b235ec3d272af8b0d6582d33717771ecdc5"
+      "bytes": 14885,
+      "sha256": "1b26b558674b56576ab1c39fb32ece81bed8d6c04ed6a1de7193610bb159b53e"
     },
     {
       "path": "RECEIPT-SCHEMA.md",
@@ -56,8 +56,8 @@
     },
     {
       "path": "RELEASE-NOTES.md",
-      "bytes": 1795,
-      "sha256": "307ef22bdaa5936f43ae2907bf626477ea69764d9cf53081ae074abbd0b5f516"
+      "bytes": 2118,
+      "sha256": "7abcba0d2823d90c5d473d8005ecd7cec470e97d5819f0a4bc6db3c263dd4f39"
     },
     {
       "path": "RIGHTS-AND-DEPENDENCIES.md",
@@ -71,8 +71,8 @@
     },
     {
       "path": "TESTING.md",
-      "bytes": 8568,
-      "sha256": "ab30acce131e3bfd6d7a1de2c77996407f2621ed723e05973f06f645638fa0d9"
+      "bytes": 16065,
+      "sha256": "5ec972dd0c145ce0ff5a09dc3572df3748dd2cedc511e45966a57ea45fb1df3e"
     },
     {
       "path": "docs/NOTIFICATIONS.md",
@@ -81,8 +81,8 @@
     },
     {
       "path": "docs/STATUS.md",
-      "bytes": 749,
-      "sha256": "6d20bf73659fc701c3487b2be88856cf21af48f07d4ca592fcc383ae58d96056"
+      "bytes": 1559,
+      "sha256": "97feb6aa44e69064df46f78bf8a5c5cab2a232ae50dedd88d796aa48a696e3f2"
     },
     {
       "path": "docs/assets/ATTRIBUTION.md",
@@ -176,8 +176,8 @@
     },
     {
       "path": "r2/DISTRIBUTION.md",
-      "bytes": 6157,
-      "sha256": "c3db78883d543d3afb22c648c3b6ef542c26330e3b6c27f9257b660109201c63"
+      "bytes": 6633,
+      "sha256": "e16ca2c0adbb03bf405fd772d390a356f489b02ebd695ca1d16047b1a25842a3"
     },
     {
       "path": "r2/MANIFEST.json",
@@ -186,8 +186,8 @@
     },
     {
       "path": "r2/ONBOARDING.md",
-      "bytes": 12943,
-      "sha256": "3af8bdb4bb64dbdb4b7eece29a78c1b347f8ad2a0dbf937124ba888443192a6c"
+      "bytes": 13068,
+      "sha256": "8f8a76bd133c2e6e4e8f2f2be6d01cbdc21b48da60798ff9cf6efb49c8c76b7e"
     },
     {
       "path": "r2/README.md",
@@ -196,8 +196,8 @@
     },
     {
       "path": "r2/TWO-AGENT-PLAN.md",
-      "bytes": 9590,
-      "sha256": "dae84aba5c2361d75143943c55304e03edd283068a1282c859fae79b5bf77176"
+      "bytes": 9786,
+      "sha256": "f0878129a06b32a98b2bdb45c29cbfb062bce1a9ff5f4a86992c0c8aeee83b9d"
     },
     {
       "path": "r2/VALIDATION.json",
@@ -291,13 +291,13 @@
     },
     {
       "path": "scripts/ledger-smoke.ps1",
-      "bytes": 13291,
-      "sha256": "45c2319cf0a5fb79c1f3fbd7d442c969d08df80ca02ab2bd8e1033a6021e925b"
+      "bytes": 27574,
+      "sha256": "bb4e5d53c943d739c945ba595203783dd883579b5a539f7ff61d926472777c9a"
     },
     {
       "path": "scripts/ledger-smoke.sh",
-      "bytes": 9432,
-      "sha256": "6f997cdb79ae5a5eaae8ec23491225635adfabada6af233dc1a680a77a7f7017"
+      "bytes": 22366,
+      "sha256": "d585366a4c911208d0b6e7ea4d946f4eedaaf0d723e717b555d4f9b044df6e35"
     },
     {
       "path": "test/extraction-boundaries.test.mjs",
