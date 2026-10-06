@@ -15,9 +15,29 @@
       "sha256": "ea30f779e77081240f82e821c21261abec5f4e2d5c759a55255919c3608ad99d"
     },
     {
+      "path": "History/2026-10-01-minimal-setup-join-reverify.md",
+      "bytes": 1062,
+      "sha256": "29ddfcc76cdd545812bdb9787912b096ee941c6af52bb03f9e6cfa70172bb7e5"
+    },
+    {
+      "path": "History/2026-10-01-minimal-vs-optional.md",
+      "bytes": 890,
+      "sha256": "3ebc927ea4b091037ff665932350c1fff68af2c952b83f437c509551ca9c48f3"
+    },
+    {
       "path": "History/2026-10-01-shell-git-smoke.md",
       "bytes": 1028,
       "sha256": "1b70d0732eb34535f9096570a939a0b3145302968548ad1670343986bf83b100"
+    },
+    {
+      "path": "History/2026-10-05-ledger-protocol-bytes.md",
+      "bytes": 970,
+      "sha256": "8d1e911802ba44a17f1e6a64b58696696c46be2b1c768e41f076f4055f9cbe24"
+    },
+    {
+      "path": "History/2026-10-05-setup-revision-and-protocol-link.md",
+      "bytes": 1140,
+      "sha256": "e53328990b95c3dee05ad77f91563dc6ebb65d39c88bd07175277173658707a1"
     },
     {
       "path": "LICENSE",
@@ -26,8 +46,8 @@
     },
     {
       "path": "ONBOARDING.md",
-      "bytes": 31771,
-      "sha256": "7c43a97c61061d0519839909c8eb59dedb9149e34966ad817a1f114681c94253"
+      "bytes": 33512,
+      "sha256": "de7d5fc688ec2f79665b606f513ef89f8cdc54206334bbb9cb9c659ea4556682"
     },
     {
       "path": "PROTOCOL.md",
@@ -41,13 +61,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 15898,
-      "sha256": "1596e74e4c27abc27505c15d23d4850fe87266324ca6c54d976470d72e89a00a"
+      "bytes": 13476,
+      "sha256": "00302f20f65e9a3033d6f301d71d0ab81820fc8b0e9d38d573b89c6be757c031"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 14885,
-      "sha256": "1b26b558674b56576ab1c39fb32ece81bed8d6c04ed6a1de7193610bb159b53e"
+      "bytes": 11990,
+      "sha256": "6fb5649a9a0311cf00284faa919c6247e107f6318d7ed42cbb93f3110c1ce566"
     },
     {
       "path": "RECEIPT-SCHEMA.md",
@@ -71,8 +91,8 @@
     },
     {
       "path": "TESTING.md",
-      "bytes": 16065,
-      "sha256": "5ec972dd0c145ce0ff5a09dc3572df3748dd2cedc511e45966a57ea45fb1df3e"
+      "bytes": 16917,
+      "sha256": "2ddcc1ca1b1c69fa4e6ee139eadac0ede3085546b453062b7304a00371fdc379"
     },
     {
       "path": "docs/NOTIFICATIONS.md",
@@ -113,6 +133,11 @@
       "path": "docs/assets/shared-memory.svg",
       "bytes": 2887,
       "sha256": "020782efa46979c490204529e567e31832409101ea8792bc2a76f6e053643824"
+    },
+    {
+      "path": "docs/design/realtime-bidirectional-channel-draft.md",
+      "bytes": 7180,
+      "sha256": "fc8f4cc0c65c03e6b154edc8d981b6017285906ea8c27d26541097c2e9c9affe"
     },
     {
       "path": "examples/init-project.mjs",
@@ -181,8 +206,8 @@
     },
     {
       "path": "r2/MANIFEST.json",
-      "bytes": 3397,
-      "sha256": "41cb1af7746df98fd47f65497ebdfdf6c0e40cd1cc7c6bc3b78f39079c79698b"
+      "bytes": 3398,
+      "sha256": "2e46781a06baecdce48502c9102be2498781472187ac7a2316ef6c55f6d91c19"
     },
     {
       "path": "r2/ONBOARDING.md",
@@ -211,8 +236,8 @@
     },
     {
       "path": "r2/bootstrap-toolkit.mjs",
-      "bytes": 5474,
-      "sha256": "843dd7e035aa3caf677b4712631a783fb6fc2a3e50e35dedf75a46847051a484"
+      "bytes": 5991,
+      "sha256": "225df70a171ace71dc8a7828e5918e17796767cd878a9d08113ff7fca4eed30b"
     },
     {
       "path": "r2/cli.mjs",
@@ -246,8 +271,8 @@
     },
     {
       "path": "r2/test/bootstrap.test.mjs",
-      "bytes": 4000,
-      "sha256": "5218318763b7aade15f8e1150c7d7bc261defac5706ce8039581e5ccfe537b85"
+      "bytes": 10821,
+      "sha256": "b46c1069f00e3bfe63a2423895015727f925f2ba1b88400bbc60b4ad8a74f5cc"
     },
     {
       "path": "r2/test/child.mjs",
@@ -291,13 +316,28 @@
     },
     {
       "path": "scripts/ledger-smoke.ps1",
-      "bytes": 27574,
-      "sha256": "bb4e5d53c943d739c945ba595203783dd883579b5a539f7ff61d926472777c9a"
+      "bytes": 28065,
+      "sha256": "72714f69965b1309d9830a9a2bf0c9dffa81d31ded339eb9cfea8555dc27a896"
     },
     {
       "path": "scripts/ledger-smoke.sh",
-      "bytes": 22366,
-      "sha256": "d585366a4c911208d0b6e7ea4d946f4eedaaf0d723e717b555d4f9b044df6e35"
+      "bytes": 22585,
+      "sha256": "ec290c15a91d1eb129d60424c869e80770d5e79d24d2b0fb84f14800718b7246"
+    },
+    {
+      "path": "scripts/prepare-new-ledger.sh",
+      "bytes": 4488,
+      "sha256": "d526fce54935f0fe0e2441eafca5e52a6c44926a678d745a35581647c68665d7"
+    },
+    {
+      "path": "templates/HOW_WE_COORDINATE.md",
+      "bytes": 1471,
+      "sha256": "14016f1eb0c5af5dc4c4363bf3e6c928f16d845974595519c631fdc01c8a2383"
+    },
+    {
+      "path": "templates/LEDGER-README.md",
+      "bytes": 508,
+      "sha256": "529647d2ac3bdc1d6e28424106ee9d24cd0057e8b9bf8a80624751b1f7b3fc82"
     },
     {
       "path": "test/extraction-boundaries.test.mjs",
@@ -313,6 +353,16 @@
       "path": "test/lock-retry.test.mjs",
       "bytes": 4851,
       "sha256": "eb716b48ced76663b1ecd2b1d84463a3103a518a3e6e26b40046d49fde4b1c94"
+    },
+    {
+      "path": "test/manifests.test.mjs",
+      "bytes": 1466,
+      "sha256": "18aebcb2f45a28b173327918c0df1926e2752a90d0d9f42879cb578c92aeff5a"
+    },
+    {
+      "path": "test/onboarding-safety.test.mjs",
+      "bytes": 7219,
+      "sha256": "c957fb8c9dbc08d90e40d26d4b1b2a6df8a4ef53842a5e2d6b443dda6c25686e"
     },
     {
       "path": "test/receipts-snapshot.test.mjs",

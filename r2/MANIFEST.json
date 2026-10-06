@@ -10,13 +10,13 @@
     },
     {
       "path": "r2/DISTRIBUTION.md",
-      "bytes": 6157,
-      "sha256": "c3db78883d543d3afb22c648c3b6ef542c26330e3b6c27f9257b660109201c63"
+      "bytes": 6633,
+      "sha256": "e16ca2c0adbb03bf405fd772d390a356f489b02ebd695ca1d16047b1a25842a3"
     },
     {
       "path": "r2/ONBOARDING.md",
-      "bytes": 12943,
-      "sha256": "3af8bdb4bb64dbdb4b7eece29a78c1b347f8ad2a0dbf937124ba888443192a6c"
+      "bytes": 13068,
+      "sha256": "8f8a76bd133c2e6e4e8f2f2be6d01cbdc21b48da60798ff9cf6efb49c8c76b7e"
     },
     {
       "path": "r2/README.md",
@@ -25,8 +25,8 @@
     },
     {
       "path": "r2/TWO-AGENT-PLAN.md",
-      "bytes": 9590,
-      "sha256": "dae84aba5c2361d75143943c55304e03edd283068a1282c859fae79b5bf77176"
+      "bytes": 9786,
+      "sha256": "f0878129a06b32a98b2bdb45c29cbfb062bce1a9ff5f4a86992c0c8aeee83b9d"
     },
     {
       "path": "r2/VALIDATION.json",
@@ -40,8 +40,8 @@
     },
     {
       "path": "r2/bootstrap-toolkit.mjs",
-      "bytes": 5474,
-      "sha256": "843dd7e035aa3caf677b4712631a783fb6fc2a3e50e35dedf75a46847051a484"
+      "bytes": 5991,
+      "sha256": "225df70a171ace71dc8a7828e5918e17796767cd878a9d08113ff7fca4eed30b"
     },
     {
       "path": "r2/cli.mjs",
@@ -75,8 +75,8 @@
     },
     {
       "path": "r2/test/bootstrap.test.mjs",
-      "bytes": 4000,
-      "sha256": "5218318763b7aade15f8e1150c7d7bc261defac5706ce8039581e5ccfe537b85"
+      "bytes": 10821,
+      "sha256": "b46c1069f00e3bfe63a2423895015727f925f2ba1b88400bbc60b4ad8a74f5cc"
     },
     {
       "path": "r2/test/child.mjs",
