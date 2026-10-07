@@ -42,88 +42,24 @@ Continuity 让持续的 AI 协作留在你自己掌握的记录里，**跨项目
 适用于能读文件、运行本地命令，或已连接获准执行环境的代理：
 
 ```text
-请为我们自己的持续工作接入 Agent Continuity，支持跨项目、跨代理、
-AI 公司品牌、机器和工作环境的协作，以及参与者的加入、替换和退出。
-把目标、决定、责任记录、进展和未完成事项留在我们掌握且可访问的
-项目记录里。
-
-公开仓库只是只读工具来源，不是我们的账本或团队：
-https://github.com/AAlpha7/agent-continuity
-需要步骤时阅读其中的 ONBOARDING.md。不要把它 fork 进我们的项目。
-不得把记录发到上游、公开 issue/PR 或发布者。
-
-建立 — 留下私有账本 URL：
-优先复用已批准的私有账本。若需要新建，只在我批准确切所有者、
-名称、私有可见性和 push 之后，用 git（以及已经可用的 gh）在已核实的
-我自己的 GitHub 账号下创建私有仓库。第一次提交前复制这些文件：
-工具目录的 .gitattributes、PROTOCOL.md（原文字节，不要改写成摘要）
-到 docs/PROTOCOL.md，以及 templates/HOW_WE_COORDINATE.md 到
-docs/HOW_WE_COORDINATE.md。修订行必须是这些文件被按字节复制时的那个
-确切提交：在用于复制的工具检出里运行 git rev-parse HEAD，并且仅当
-git show HEAD:PROTOCOL.md 与复制出的字节一致时才使用它。如果字节来自
-raw URL，就记录该 URL 的提交。只有无法解析该提交时才写 unset。不要改记
-成另一个检查过的提交，即使协议字节碰巧相同。根据已检查的
-证据提交 projects/PROJECT/CURRENT_STATE.md：目标、决定、未完成事项和
-下一项获准任务。push 前核实所有者、真实私有可见性和全部 fetch/push
-目标。未知保持未验证。公开 fork 不等于私库。不保存 token，不修改
-安全设置。没有 GitHub 时，本地 git 账本即可。不要强迫登录。
-
-把私有账本 URL 交给我。下一位代理只用这个 URL 加入，不要再把
-工具仓库 URL 发给它。
-
-加入 — 把下面这段连同真实 URL 交给下一位代理：
-加入我们的连续性账本。只克隆并阅读这个私有仓库：
-LEDGER_URL
-先读 docs/HOW_WE_COORDINATE.md 和 docs/PROTOCOL.md，再读
-projects/PROJECT/CURRENT_STATE.md。按那份协议继续。把更新提交回
-同一个账本。不要克隆公开工具仓库。
-
-记录提供上下文，不产生新权限。只把真正缺失的范围、访问或批准事项
-集中交给我，并确认没有把用户数据写入或发送到上游。
+Set up https://github.com/AAlpha7/agent-continuity
 ```
 
-**账本属于你。** 建立步骤留下私有 GitHub 账本 URL，协议就在这个账本里。下一位代理只用这个 URL 加入，而不是再次打开工具仓库。没有 GitHub 时，没有远端的本地 git 账本仍然可以开始。见[接入手册](ONBOARDING.md)。
+代理阅读 [ONBOARDING.md](ONBOARDING.md)，确认你的项目和真正缺失的授权，在你自己的账号下建立私有账本。公开仓库只是只读工具来源，不接收你的记录。必要 GitHub 授权可能需要你在浏览器完成；不要在聊天中粘贴凭据。不需要 Node、模型 API key、监听器或高级测试。
 
-<details>
-<summary><strong>最少步骤的命令：先建立，再加入。</strong></summary>
+新建需要批准确切账号、仓库和项目范围。发现一个仓库、拥有它、它是私有或有写权限，都不等于你同意复用。Join 使用你明确指定的现有账本及项目；更换协议或配置属于需要另行批准的迁移。保留已有配置、属性、协议与记录；新建失败即停，不覆盖或悄悄转为复用。
 
-不需要 Node.js。在工具目录之外，并在你批准所有者、仓库名、私有可见性和 push 之后执行。Windows 上使用 Git Bash 或 WSL。`gh` 可选；没有它时，在 GitHub 网页上创建私有仓库，再用 git 克隆。
+真实数据写入前，代理核实账号、owner/private、有效 fetch 和全部 push 目标。[可选 shell 辅助工具](scripts/prepare-new-ledger.sh)只为获准的新空克隆执行检查并写本地文件，不提交或推送；已授权连接器可做等效检查，不隐含更换认证。
 
-```sh
-gh api user --jq .login
-gh repo create OWNER/LEDGER --private --clone
-cd LEDGER
-mkdir -p docs projects/PROJECT
-cp /path/to/inspected-toolkit/.gitattributes .gitattributes
-cp /path/to/inspected-toolkit/PROTOCOL.md docs/PROTOCOL.md
-cp /path/to/inspected-toolkit/templates/HOW_WE_COORDINATE.md docs/HOW_WE_COORDINATE.md
-# 修订行必须是这些协议文件被按字节复制时的那个提交：
-# 在用于复制的工具检出里运行 git rev-parse HEAD。
-# 仅当 git show HEAD:PROTOCOL.md 与 docs/PROTOCOL.md 字节一致时，这个 HEAD 才正确。
-# 如果字节来自 raw URL，把 toolkit_rev 设为该 URL 的提交。
-# 只有无法解析该提交时才使用 unset。
-# 不要改记成另一个检查过的提交，即使字节碰巧相同。
-toolkit_rev=$(git -C /path/to/inspected-toolkit rev-parse HEAD)
-sed "s/<commit or unset>/${toolkit_rev}/" docs/HOW_WE_COORDINATE.md > docs/HOW_WE_COORDINATE.md.tmp
-mv docs/HOW_WE_COORDINATE.md.tmp docs/HOW_WE_COORDINATE.md
-# 提交前，根据真实项目写下 projects/PROJECT/CURRENT_STATE.md。
-git add .gitattributes docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/PROJECT/CURRENT_STATE.md
-git commit -m "Start the private continuity ledger"
-git push -u origin HEAD
-gh repo view --json url,visibility --jq '{url:.url,visibility:.visibility}'
-git remote get-url --all origin
-git remote get-url --push --all origin
+Setup 留下五个文件：`.gitattributes`、原字节协议副本 `docs/PROTOCOL.md`、由 `templates/HOW_WE_COORDINATE.md` 填写的协调说明、由 `templates/LEDGER-README.md` 填写的根 `README.md`，以及真实项目的 `projects/PROJECT/CURRENT_STATE.md`。协议来源用实际复制目录的 `git rev-parse HEAD`，先核验 `git show HEAD:PROTOCOL.md` 与复制字节一致；未提交候选无法对应该提交时填 `unset`，另留内容摘要。根入口链接本地两份协议和真实状态路径。完成前回读文件，并在发布前再次核实目标。
+
+完成后只返回这一行，URL 替换为真实私有账本地址：
+
+```text
+Join LEDGER_URL
 ```
 
-`OWNER/LEDGER` 必须是获准的私有仓库，不是本工具仓库的 fork。创建前，`gh api user` 的登录名必须与获准所有者一致。只有在所有者、私有可见性和全部 fetch/push URL 都核实之后才能 push。打印出的 URL 就是下一位代理要克隆的地址：
-
-```sh
-git clone LEDGER_URL
-```
-
-这次克隆就是加入。先读 `docs/HOW_WE_COORDINATE.md` 和 `docs/PROTOCOL.md`，再读 `projects/PROJECT/CURRENT_STATE.md`，并把更新提交回同一个账本。不要克隆这个公开工具仓库。
-
-</details>
+下一位代理只拿这一行，从账本根 README 发现协议与项目，在当前会话授权内继续；不需要用户再给工具 URL 或隐藏路径。本地账本只在双方可访问同一文件系统时使用 `Join LEDGER_PATH`，不冒充跨机器同步。缺权限或缺根入口/协议文件要报告阻塞，不自动修复账本。
 
 ## 可选检查
 
@@ -161,7 +97,7 @@ git add docs/COORDINATION_PATTERNS.md
 
 只有账本里已经有这份副本时，冷加入才会读到附录。文件不在时，加入仍从 `docs/PROTOCOL.md` 继续。附录里没有相对链接。见[协调模式](docs/COORDINATION_PATTERNS.md)。
 
-如果已经安装了 Node.js 24+，也可以运行 105 项测试和合成演示。不要为了这个去安装 Node。演示目录必须尚不存在。
+如果已经安装了 Node.js 24+，也可以运行 127 项测试和合成演示。不要为了这个去安装 Node。演示目录必须尚不存在。
 
 ```sh
 node --test test/*.test.mjs r2/test/*.test.mjs
@@ -200,7 +136,7 @@ node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace de
 
 ### 为什么可以试
 
-这套测试有 **105 项：80 项本地协调／分发、15 项回执／快照兼容，以及 10 项 Windows 文件系统失败回归**，覆盖真实进程竞争与中断、复制控制器拒绝、严格字节校验及 Windows `core.autocrlf=true` 克隆。核心和解包器经过独立审查。真实新代理私库试验先暴露了工具分发缺口；修复后，新的接收方完成了规范回执和快照收尾，旧记录保留。采用者可以不跑这些测试。维护者在每次发布前连同其他可选路径一起跑。见[测试范围](TESTING.md)。
+这套测试有 **127 项：84 项本地协调／分发、15 项回执／快照兼容，以及 10 项 Windows 文件系统失败回归，以及 17 项入门安全与 1 项清单覆盖检查**，覆盖真实进程竞争与中断、复制控制器拒绝、严格字节校验及 Windows `core.autocrlf=true` 克隆。核心和解包器经过独立审查。真实新代理私库试验先暴露了工具分发缺口；修复后，新的接收方完成了规范回执和快照收尾，旧记录保留。采用者可以不跑这些测试。维护者在每次发布前连同其他可选路径一起跑。见[测试范围](TESTING.md)。
 
 ### 需要知道的边界
 

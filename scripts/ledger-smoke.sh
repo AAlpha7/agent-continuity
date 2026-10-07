@@ -465,9 +465,10 @@ fi
 
 minimal=$work/minimal
 minimal_clone=$work/minimal-clone
-mkdir -m 700 -p "$minimal/docs" "$minimal/projects/PROJECT"
+mkdir -m 700 -p "$minimal/docs" "$minimal/projects/entry-demo"
 cp "$toolkit/.gitattributes" "$minimal/.gitattributes"
 cp "$toolkit/PROTOCOL.md" "$minimal/docs/PROTOCOL.md"
+sed 's/PROJECT/entry-demo/g' "$toolkit/templates/LEDGER-README.md" > "$minimal/README.md"
 # The revision is the commit in this checkout whose PROTOCOL.md blob was copied.
 source_commit=$(git -C "$toolkit" rev-parse HEAD)
 case $source_commit in
@@ -506,10 +507,11 @@ printf '%s\n' \
   'Open questions: none.' \
   'Next authorized task: none. Shape check only.' \
   'Unresolved ownership: none.' \
-  > "$minimal/projects/PROJECT/CURRENT_STATE.md"
+  > "$minimal/projects/entry-demo/CURRENT_STATE.md"
 for field in Goal Decisions 'Verified work' 'Reported but unverified' 'Open questions' 'Next authorized task' 'Unresolved ownership'; do
-  grep -F "$field" "$minimal/projects/PROJECT/CURRENT_STATE.md" >/dev/null || die "CURRENT_STATE missing $field"
+  grep -F "$field" "$minimal/projects/entry-demo/CURRENT_STATE.md" >/dev/null || die "CURRENT_STATE missing $field"
 done
+require_copied_links "$minimal" README.md
 if ! protocol_bytes_match "$minimal"; then
   die "minimal ledger lacks docs/PROTOCOL.md byte-matching the toolkit"
 fi
@@ -519,9 +521,10 @@ if ! gitc -C "$minimal" init --template= >"$work/git-out" 2>&1; then
 fi
 if ! gitc -C "$minimal" add -- \
   .gitattributes \
+  README.md \
   docs/PROTOCOL.md \
   docs/HOW_WE_COORDINATE.md \
-  projects/PROJECT/CURRENT_STATE.md \
+  projects/entry-demo/CURRENT_STATE.md \
   >"$work/git-out" 2>&1; then
   cat "$work/git-out" >&2
   die "minimal git add failed"
@@ -533,9 +536,10 @@ fi
 gitc -C "$minimal" ls-files > "$work/minimal-files"
 cat > "$work/expected-minimal" <<'EOF'
 .gitattributes
+README.md
 docs/HOW_WE_COORDINATE.md
 docs/PROTOCOL.md
-projects/PROJECT/CURRENT_STATE.md
+projects/entry-demo/CURRENT_STATE.md
 EOF
 while IFS= read -r rel; do
   [ -n "$rel" ] || continue
@@ -557,6 +561,7 @@ done < "$work/minimal-files"
 cmp -s "$toolkit/PROTOCOL.md" "$minimal_clone/docs/PROTOCOL.md" || die "cloned docs/PROTOCOL.md does not byte-match toolkit PROTOCOL.md"
 clone_recorded=$(sed -n 's/^Toolkit docs revision (optional): //p' "$minimal_clone/docs/HOW_WE_COORDINATE.md")
 [ "$clone_recorded" = "$source_commit" ] || die "cloned toolkit revision '$clone_recorded' != copy commit $source_commit"
+require_copied_links "$minimal_clone" README.md
 require_copied_links "$minimal_clone" docs/PROTOCOL.md
 require_copied_links "$minimal_clone" docs/HOW_WE_COORDINATE.md
 

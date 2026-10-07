@@ -515,7 +515,7 @@ try {
   $minimal = Join-Path $script:Work 'minimal'
   $minimalClone = Join-Path $script:Work 'minimal-clone'
   $minimalDocs = Join-Path $minimal 'docs'
-  $minimalProject = Join-Path (Join-Path $minimal 'projects') 'PROJECT'
+  $minimalProject = Join-Path (Join-Path $minimal 'projects') 'entry-demo'
   New-Item -ItemType Directory -Path $minimalDocs -Force | Out-Null
   New-Item -ItemType Directory -Path $minimalProject -Force | Out-Null
   [System.IO.File]::Copy($attributes, (Join-Path $minimal '.gitattributes'))
@@ -536,6 +536,8 @@ try {
     Fail "recorded toolkit revision != copy commit $sourceCommit"
   }
   Write-Utf8Text (Join-Path $minimalDocs 'HOW_WE_COORDINATE.md') $filled
+  $rootEntry = [System.IO.File]::ReadAllText((Join-Path $toolkit 'templates/LEDGER-README.md'), $script:Utf8).Replace('PROJECT', 'entry-demo')
+  Write-Utf8Text (Join-Path $minimal 'README.md') $rootEntry
   if (-not (Assert-CopiedLinksResolve $minimal '.gitattributes')) { Fail 'copied .gitattributes links do not resolve' }
   if (-not (Assert-CopiedLinksResolve $minimal 'docs/PROTOCOL.md')) { Fail 'copied PROTOCOL.md links do not resolve' }
   if (-not (Assert-CopiedLinksResolve $minimal 'docs/HOW_WE_COORDINATE.md')) { Fail 'copied HOW_WE_COORDINATE.md links do not resolve' }
@@ -565,8 +567,11 @@ try {
   if (-not (Test-ProtocolBytesMatch $minimal $toolkitProtocol)) {
     Fail 'minimal ledger lacks docs/PROTOCOL.md byte-matching the toolkit'
   }
+  foreach ($rel in @('docs/HOW_WE_COORDINATE.md', 'docs/PROTOCOL.md', 'projects/entry-demo/CURRENT_STATE.md')) {
+    if (-not $rootEntry.Contains("]($rel)") -or -not (Test-Path (Join-Path $minimal $rel))) { Fail "root entry target missing $rel" }
+  }
   Invoke-GitQuiet -C $minimal init '--template='
-  Invoke-Git -C $minimal add -- .gitattributes docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/PROJECT/CURRENT_STATE.md
+  Invoke-Git -C $minimal add -- .gitattributes README.md docs/PROTOCOL.md docs/HOW_WE_COORDINATE.md projects/entry-demo/CURRENT_STATE.md
   Invoke-GitQuiet -C $minimal commit -m 'Synthetic minimal ledger'
   $minimalListArgs = $script:GitPrefix + @('-C', $minimal, 'ls-files')
   $rawMinimal = & git @minimalListArgs
@@ -574,9 +579,10 @@ try {
   $minimalListed = @($rawMinimal | ForEach-Object { "$_".Trim() } | Where-Object { $_ -ne '' })
   $minimalExpected = @(
     '.gitattributes',
+    'README.md',
     'docs/HOW_WE_COORDINATE.md',
     'docs/PROTOCOL.md',
-    'projects/PROJECT/CURRENT_STATE.md'
+    'projects/entry-demo/CURRENT_STATE.md'
   )
   if ($minimalListed.Count -ne $minimalExpected.Count) {
     Fail "minimal committed file count $($minimalListed.Count) != $($minimalExpected.Count)"
