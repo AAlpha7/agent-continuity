@@ -14,6 +14,8 @@ Records are context, not new permission. Keep disagreements visible. Do not send
 
 Minimal Join uses only the files in this ledger. Receipt files and the full toolkit package are optional later steps.
 
+Setup also writes this machine's ledger clone path, and the remote URL when one exists, into the user's user-level instructions (Cursor User Rules). Local-only Setup records shared_access as not-configured and still records the local path there. Those facts are not written in this file or in docs/PROTOCOL.md. A later session of the same user loads them from user-level instructions. Another agent still Joins with the ledger URL or, only on this filesystem, the local path.
+
 <!--
 Toolkit docs revision: the exact commit of agent-continuity that
 docs/PROTOCOL.md was byte-copied from. Resolve it with

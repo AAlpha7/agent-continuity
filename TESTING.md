@@ -14,9 +14,23 @@ Before each release or deploy, maintainers run **all** paths, including the opti
 
 If the Setup/Join paste blocks changed, also re-verify Minimal Setup and Join with brand-new agents in brand-new environments. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record that result with the optional-path runs. A passing shell smoke does not satisfy that live trial.
 
+When that live trial covers the user-level instructions step, use the clean-environment check below. The shell smoke does not read Cursor User Rules and does not satisfy the check.
+
 Freeze the complete final candidate (commit or full-file digest inventory) before live acceptance. Each protocol change requires a new clean cloud Setup environment, a new private synthetic ledger, and a separately fresh Join agent given only `Join LEDGER_URL`. Do not reuse an earlier main trial, ledger or environment. Disclose preinstalled tools, authorization, transport and every human-assisted step. Any corrective edit invalidates that run for the new tree: freeze again and restart from Setup. Unit tests and synthetic shape checks are not this acceptance. Public push/merge comes only after that acceptance and a separate publication decision.
 
 Users do not run this checklist.
+
+### Clean-environment check: user-level instructions
+
+Use this when Minimal Setup's completion text changed. It is part of the live trial above, not an adopter gate and not the shell smoke.
+
+1. Start in a new Cursor session that has no project `AGENTS.md` and no User Rules that already name a ledger.
+2. Run Setup. After it finishes, Cursor User Rules (Customize → Rules → User Rules) contain one block that starts with `agent-continuity ledger (this user):` and ends with `end agent-continuity ledger`.
+3. That block contains the absolute local clone path. When Setup created a remote, it also contains that remote URL and `shared_access: configured`. When Setup is local-only, it contains `remote_url: none`, `shared_access: not-configured`, and the local path.
+4. The ledger's `docs/PROTOCOL.md` is still a byte copy of toolkit `PROTOCOL.md` and does not contain the path or URL. `docs/HOW_WE_COORDINATE.md` does not contain them either.
+5. The user still has the copyable `Join LEDGER_URL` line, or `Join LEDGER_PATH` for local-only Setup.
+6. Open a subsequent cold session in a folder that is not the ledger and that has no project `AGENTS.md`. The session already has both facts in user-level instructions. The agent opens the ledger from that text and does not glob, search, or read_file to discover it.
+7. A different agent given only `Join LEDGER_URL` (or `Join LEDGER_PATH` on the same filesystem) still joins without those user-level instructions.
 
 ### Recorded run: 2026-10-01 Minimal Setup→Join re-verify
 

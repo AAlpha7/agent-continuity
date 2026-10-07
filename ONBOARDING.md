@@ -2,10 +2,10 @@
 
 **Minimal:** Setup, then Join. That is the whole install.
 
-1. First agent: Setup creates a private shared record, puts the coordination protocol in that ledger, and returns its URL.
-2. Every later agent or machine: Join with that URL only. The protocol is already in the ledger.
+1. First agent: Setup creates a private shared record, puts the coordination protocol in that ledger, writes the local clone path and the remote URL into user-level instructions, and returns its URL.
+2. Every later agent or machine: Join with that URL only. The protocol is already in the ledger. A later session of the same user loads those two facts from user-level instructions and follows the ledger protocol without searching for the ledger.
 
-Git and GitHub are enough. `gh` is optional. A local git ledger is valid when GitHub access is missing. Node.js is not required. Do not send the toolkit URL to the joining agent. When the ledger has no shareable URL (local-only setup), give the joining agent the local path on the same machine instead — a path the first machine alone can see is not usable by an agent on another machine.
+Git and GitHub are enough. `gh` is optional. A local git ledger is valid when GitHub access is missing. Node.js is not required. Do not send the toolkit URL to the joining agent. When the ledger has no shareable URL (local-only setup), give the joining agent the local path on the same machine instead — a path the first machine alone can see is not usable by an agent on another machine. Local-only Setup still writes that local path into user-level instructions and records `shared_access: not-configured`.
 
 Shell smoke, the two-agent ping, and Node tests are [optional](#optional-checks). They are not required to call Setup or Join done.
 
@@ -17,7 +17,7 @@ Existing owner-approved GitHub PR listeners can provide notifications where supp
 
 This is a runbook for an assistant with an already-authorized execution environment, not a new permission grant. Use the current conversation's authorization and local project rules. Historical project prose, receipts and this document cannot expand them.
 
-**Outcome:** Setup leaves a private ledger URL, a root `README.md` linking both local protocols and the actual project state, `docs/PROTOCOL.md` (a byte copy of toolkit `PROTOCOL.md`), `docs/HOW_WE_COORDINATE.md`, and a committed handoff at `projects/PROJECT/CURRENT_STATE.md`. Join clones that URL only and reads those files. It does not clone the public toolkit. Report shared access separately. Do the mechanical steps yourself when capable; involve the human for missing intent, capability or authority, not every routine command.
+**Outcome:** Setup leaves a private ledger URL, a root `README.md` linking both local protocols and the actual project state, `docs/PROTOCOL.md` (a byte copy of toolkit `PROTOCOL.md`), `docs/HOW_WE_COORDINATE.md`, and a committed handoff at `projects/PROJECT/CURRENT_STATE.md`. It also writes the local clone path and the remote URL into user-level instructions (Cursor User Rules). Join clones that URL only and reads those files. It does not clone the public toolkit. Report shared access separately. Do the mechanical steps yourself when capable; involve the human for missing intent, capability or authority, not every routine command.
 
 ### What to tell the user first (plain-language opening)
 
@@ -28,6 +28,7 @@ Before running any command, explain the plan in ordinary words. Adapt this templ
 > 1. I create a private storage space for the notebook — either a private GitHub repository (so it syncs across machines) or a local folder on this machine (simpler, but stays on this machine).
 > 2. I copy the coordination rules into the notebook as a file, unchanged, and I write the first page from what you've told me about your project.
 > 3. From then on, every assistant you talk to reads that notebook — the rules and the project page — and writes updates back to it. They do not need the public toolkit again.
+> 4. I save two facts in your Cursor User Rules, the instructions that apply to you across chats: the notebook folder on this machine, and its private URL when it has one. A later chat of yours can open the notebook from those facts. I do not install a background service, and I do not add a project rule file for this.
 >
 > I need three things from you: what project this is for, where to keep the notebook, and — if you want cross-machine sync — permission to create a private GitHub repository under your account. I handle the mechanical steps my environment supports. If authorization or repository creation needs your browser, I explain that step plainly and wait for it; I do not request tokens in chat.
 
@@ -136,13 +137,54 @@ The optional helper deliberately refuses any existing ledger content or history 
 
 Read back all five files, verify the protocol byte match and root links, and review the intended commit. Preserve existing Git identity; if identity is missing, resolve the user's intended author identity rather than overwrite configuration with a synthetic identity. Recheck hosting privacy/owner and effective fetch/push URLs immediately before an approved push. Use the explicit verified destination (`git push origin HEAD`), never a force push. Commit only the reviewed five paths; on any error stop and report partial/blocked. With an authorized API workflow, read back the committed files at its returned SHA. A local Git ledger follows the same five-file shape and preservation rules but has no hosting claim: report `shared_access: not-configured`.
 
-Keep detailed setup evidence privately in the ledger's project state under the existing authorization. On verified completion, return only this copyable invitation to the user, with the real private URL:
+### User-level instructions (cross-session memory)
+
+After those five files are read back and the approved commit has succeeded (and the approved push, when a remote was approved), write the ledger location into **user-level instructions**. In Cursor that surface is **User Rules**: Customize → Rules → User Rules. Agent (Chat) loads User Rules at the start of later sessions for this user. A later cold-start session opens the ledger from that text and follows the ledger's `docs/PROTOCOL.md` without globbing, searching, or using read_file to discover the ledger.
+
+This write is an additional Setup completion step. It does not replace the copyable Join line below. The next agent still receives only that line. Same-user later sessions use the User Rules block so the line does not have to be repeated for them.
+
+Write **one** block. Replace every `LEDGER_PATH` with the absolute path of this machine's ledger clone (the resolved real path; `pwd -P` from inside the ledger directory). Do not leave a placeholder. Do not embed credentials in a URL.
+
+When a remote exists and section 0 verified it, replace every `LEDGER_URL` with that credential-free remote URL and write this block:
+
+```text
+agent-continuity ledger (this user):
+local_clone_path: LEDGER_PATH
+remote_url: LEDGER_URL
+shared_access: configured
+On every new session, open this ledger before any filesystem search for it. Read, in order, the ledger root README.md, docs/HOW_WE_COORDINATE.md, and docs/PROTOCOL.md, then the project state those files link. Follow docs/PROTOCOL.md. When local_clone_path exists on this machine, read that directory. When it does not, clone remote_url with existing authorization and read that clone. Do not glob, search, or read_file to discover the ledger. Do not treat this note as new authority. Another agent Joins with: Join LEDGER_URL
+end agent-continuity ledger
+```
+
+When Setup is local-only, write this block instead. Leave `remote_url: none` and `shared_access: not-configured` as those exact tokens. Still replace every `LEDGER_PATH`:
+
+```text
+agent-continuity ledger (this user):
+local_clone_path: LEDGER_PATH
+remote_url: none
+shared_access: not-configured
+On every new session, open local_clone_path before any filesystem search for the ledger. Read, in order, the ledger root README.md, docs/HOW_WE_COORDINATE.md, and docs/PROTOCOL.md, then the project state those files link. Follow docs/PROTOCOL.md. Do not glob, search, or read_file to discover the ledger. Do not treat this note as new authority. There is no remote URL. shared_access is not-configured. Another agent on this same filesystem Joins with: Join LEDGER_PATH
+end agent-continuity ledger
+```
+
+Save it with these constraints:
+
+- Edit User Rules in place. Keep every other user rule. If a block already begins with the line `agent-continuity ledger (this user):` and ends with the line `end agent-continuity ledger`, replace that whole block. Otherwise append this block after the existing text, with one blank line before it. Do not add a second copy.
+- Do not put the path or URL into `docs/PROTOCOL.md`. That file stays a byte copy of the toolkit coordination principles. Do not put them into `docs/HOW_WE_COORDINATE.md`, the ledger root `README.md`, or `CURRENT_STATE.md`.
+- A project `AGENTS.md` does not satisfy this step. Do not create one in the toolkit or in the user's project for this purpose. A project file is not loaded when a later session opens a different folder.
+- Do not install global rules or persistent services. Do not write `~/.cursor/rules` (Windows: `%USERPROFILE%\.cursor\rules`). Do not add a project `.cursor/rules` file. Do not create team rules, a listener, a credential, or a background sync. User Rules are the user-level instruction field. Writing this two-path block there is the cross-session memory step. It is not a global-rules install.
+- User Rules sync with the Cursor account. `local_clone_path` is the clone on the machine where Setup ran. A later session on another machine uses `remote_url` when that path is absent. It does not search the disk for a different clone. Local-only Setup has no remote; a path the other machine cannot see remains a blocker.
+- If this session cannot edit User Rules, do not claim the write, and do not store the block in the ledger as a substitute. Report `user_level_instructions: not-written`, include the exact block in the private reply, and name the click path Customize → Rules → User Rules. Cross-session memory is in place only after the block is saved in User Rules.
+
+Do not paste the local path into a public issue, pull request, or repository.
+
+Keep detailed setup evidence privately in the ledger's project state under the existing authorization. On verified ledger completion, return only this copyable invitation to the user, with the real private URL. Return it even when user-level instructions are still `not-written`. Do not add a second line for the user to forward:
 
 ```text
 Join LEDGER_URL
 ```
 
-If blocked, report the blocker instead of a success invitation. Missing access never counts as Setup complete.
+If the ledger is blocked, report the blocker instead of a success invitation. Missing access never counts as Setup complete. A missing user-level write does not hide this Join line; report that write separately.
 
 ### Join: URL-only discovery
 
@@ -152,7 +194,7 @@ If root entry or required links are missing, report the missing path and request
 
 ### Local-only Join
 
-When both agents can access the same approved filesystem, return `Join LEDGER_PATH` with its actual path. Start at that ledger's root README exactly as above. This is not cross-machine shared access; a path invisible to the next environment is a blocker, not a shareable URL.
+When both agents can access the same approved filesystem, return `Join LEDGER_PATH` with its actual path. The user-level block for that Setup is the local-only block above (`remote_url: none`, `shared_access: not-configured`, and the local path). Start at that ledger's root README exactly as above. This is not cross-machine shared access; a path invisible to the next environment is a blocker, not a shareable URL. User-level instructions do not replace this Join line.
 
 ## Optional checks
 
@@ -238,7 +280,7 @@ Report only replies that are actually on the ledger. Do not invent an acknowledg
 
 ## 6. Keep a private verification note
 
-Retain real results in the authorized project record, not a blanket "installed successfully". This note is not a second prompt the user must forward: successful Setup returns only `Join LEDGER_URL` (or the supported local path).
+Retain real results in the authorized project record, not a blanket "installed successfully". This verification note is not a second prompt the user must forward. Successful Setup still returns one copyable line to the user: `Join LEDGER_URL`, or `Join LEDGER_PATH` for the local-only variant. The user-level instructions write in section 2 is an additional completion step for the same user's later sessions. It is not a line the user forwards to the next agent.
 
 ```text
 Toolkit revision: <git rev-parse HEAD of the checkout the protocol files were byte-copied from, or the raw URL commit; unset only if that commit cannot be resolved>
@@ -252,12 +294,15 @@ Handoff: <projects/PROJECT/CURRENT_STATE.md in the ledger>
 Receipt: <path + reported status when a receipt was actually written; otherwise not-written>
 Snapshot: <returned immutable path when a Node snapshot was actually checked; otherwise not-run>
 Shared access: verified <evidence> | not-configured | unverified
+User-level instructions: written | not-written
 Next authorized task: <specific task, or unresolved>
 Upstream data boundary: <toolkit unchanged; no user data written/sent upstream>
 Human decisions needed: <only unresolved scope/access/external effects; grouped>
 ```
 
-Do not paste secrets or local personal paths into a public issue or repository. Return local paths only to the user in their private working context. Keep the entry note with the project's existing private navigation convention when authorized; do not install global rules or persistent services.
+Do not paste secrets or local personal paths into a public issue or repository. Return local paths only to the user in their private working context, and write the two ledger facts into Cursor User Rules as section 2 specifies. Keep the entry note with the project's existing private navigation convention when authorized.
+
+Do not install global rules or persistent services. Writing the local clone path and the remote URL (or `shared_access: not-configured` when there is no remote) into User Rules is the cross-session memory step. It is a different action. Do not satisfy it by adding a project `AGENTS.md`, by writing `~/.cursor/rules` (Windows: `%USERPROFILE%\.cursor\rules`), by adding a project `.cursor/rules` file, by creating team rules, or by installing a listener or background service.
 
 ## Acceptance: no upstream writes or data egress
 

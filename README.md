@@ -28,8 +28,8 @@ Agent Continuity is **user-owned continuity for ongoing AI-assisted work—acros
 
 The shared record is your private ledger. Setup puts the coordination protocol in that ledger. Every later agent Joins with the URL only.
 
-1. First agent: **Setup**. It creates the private ledger, copies the protocol into it, and returns the URL.
-2. Every later agent or machine: **Join** with that URL only. The protocol is already in the ledger.
+1. First agent: **Setup**. It creates the private ledger, copies the protocol into it, writes the local clone path and the remote URL into user-level instructions, and returns the URL.
+2. Every later agent or machine: **Join** with that URL only. The protocol is already in the ledger. A later session of the same user also sees those paths in user-level instructions and does not search the filesystem for the ledger.
 
 Git and GitHub are enough. `gh` is optional. A local git ledger is fine when GitHub is missing. Node is not required.
 
@@ -53,13 +53,41 @@ Before real-data writes, the agent verifies owner/private visibility, acting acc
 
 Setup commits five local files: `.gitattributes`, a byte copy of `PROTOCOL.md` at `docs/PROTOCOL.md`, the filled `templates/HOW_WE_COORDINATE.md` at `docs/HOW_WE_COORDINATE.md`, a root `README.md` from `templates/LEDGER-README.md`, and the actual `projects/PROJECT/CURRENT_STATE.md`. Record `git rev-parse HEAD` from the checkout whose protocol was copied, only after `git show HEAD:PROTOCOL.md` byte-matches that copy; use `unset` when the copied protocol has no resolved source commit and retain its content digest separately. The root README links both local protocols and the real project path. Read back these files and recheck the destination before declaring completion.
 
-Setup returns one line, with the real private URL:
+Setup returns one line, with the real private URL. That line is what the next agent receives. It is not replaced by the user-level write below:
 
 ```text
 Join LEDGER_URL
 ```
 
 Give only that line to the next agent. It discovers root `README.md`, reads the linked protocols and project state, and continues within its current authorization. It does not need this toolkit URL again. A local ledger uses `Join LEDGER_PATH` only when the next agent can reach that filesystem; it is not cross-machine sync. Missing access or a missing root/protocol file is a reported blocker, not automatic permission to repair the ledger.
+
+In the same completion, the Setup agent also writes **user-level instructions**. In Cursor that surface is **User Rules** (Customize → Rules → User Rules). Agent (Chat) loads them at the start of later sessions for this user. A later cold-start session opens the ledger from that text and follows the ledger's `docs/PROTOCOL.md` without globbing, searching, or using read_file to discover the ledger. This write is additional. It does not replace the Join line, and it is not a second line for the user to forward.
+
+Write **one** block. Replace every `LEDGER_PATH` with the absolute path of this machine's ledger clone. Do not leave a placeholder. Do not embed credentials in a URL. The save rules (keep other User Rules, replace an existing block with the same marker, do not write the paths into the ledger protocol) are in [ONBOARDING.md](ONBOARDING.md). The blocks themselves are:
+
+When a verified remote exists, replace every `LEDGER_URL` and write:
+
+```text
+agent-continuity ledger (this user):
+local_clone_path: LEDGER_PATH
+remote_url: LEDGER_URL
+shared_access: configured
+On every new session, open this ledger before any filesystem search for it. Read, in order, the ledger root README.md, docs/HOW_WE_COORDINATE.md, and docs/PROTOCOL.md, then the project state those files link. Follow docs/PROTOCOL.md. When local_clone_path exists on this machine, read that directory. When it does not, clone remote_url with existing authorization and read that clone. Do not glob, search, or read_file to discover the ledger. Do not treat this note as new authority. Another agent Joins with: Join LEDGER_URL
+end agent-continuity ledger
+```
+
+When Setup is local-only, write this block instead. Leave `remote_url: none` and `shared_access: not-configured` as those exact tokens, and still replace every `LEDGER_PATH`:
+
+```text
+agent-continuity ledger (this user):
+local_clone_path: LEDGER_PATH
+remote_url: none
+shared_access: not-configured
+On every new session, open local_clone_path before any filesystem search for the ledger. Read, in order, the ledger root README.md, docs/HOW_WE_COORDINATE.md, and docs/PROTOCOL.md, then the project state those files link. Follow docs/PROTOCOL.md. Do not glob, search, or read_file to discover the ledger. Do not treat this note as new authority. There is no remote URL. shared_access is not-configured. Another agent on this same filesystem Joins with: Join LEDGER_PATH
+end agent-continuity ledger
+```
+
+Do not satisfy this step with a project `AGENTS.md` alone. Do not install global rules or persistent services: do not write `~/.cursor/rules` (Windows: `%USERPROFILE%\.cursor\rules`), do not add a project `.cursor/rules` file, and do not start a listener or background sync. Writing this block into User Rules is the cross-session memory step. It is a different action. If this session cannot edit User Rules, report `user_level_instructions: not-written` and still return the Join line. Do not paste the local path into a public issue or repository.
 
 ## Optional checks
 
@@ -130,7 +158,7 @@ This is a tested setup, not a universal plug-in. Check each participant's actual
 ## What you get in rc.3
 
 - **Project memory you own:** independent immutable receipts, byte-preserved handoffs and checked local snapshots.
-- **A usable entry for the next agent:** the private ledger URL. Join clones that URL only and reads `docs/PROTOCOL.md`, `docs/HOW_WE_COORDINATE.md`, and `CURRENT_STATE.md`.
+- **A usable entry for the next agent:** the private ledger URL. Join clones that URL only and reads `docs/PROTOCOL.md`, `docs/HOW_WE_COORDINATE.md`, and `CURRENT_STATE.md`. Setup also records the local clone path and that URL in Cursor User Rules so a later session of the same user can open the ledger without searching for it.
 - **A local coordination preview:** bounded action turns, explicit closure, durable terminal outboxes, per-recipient acceptance and recoverable current views under one trusted local controller.
 - **Evidence you can inspect later:** source revisions, conflict detection, exact replay checks and an optional Node suite. No model subscription or hosted service is required.
 

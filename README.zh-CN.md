@@ -28,8 +28,8 @@ Continuity 让持续的 AI 协作留在你自己掌握的记录里，**跨项目
 
 共同记录就是你的私有账本。建立时把协调协议放进这个账本。之后的每个代理只用这个 URL 加入。
 
-1. 第一个代理：**建立（Setup）**。它创建私有账本，把协议按原文字节复制进去，并返回 URL。
-2. 之后的每个代理或每台机器：只用这个 URL **加入（Join）**。协议已经在账本里。
+1. 第一个代理：**建立（Setup）**。它创建私有账本，把协议按原文字节复制进去，把本机克隆路径和远程 URL 写入用户级指令，并返回 URL。
+2. 之后的每个代理或每台机器：只用这个 URL **加入（Join）**。协议已经在账本里。同一用户之后的新会话还会从用户级指令里看到这两项路径，不必在文件系统里搜索账本。
 
 有 git 和 GitHub 就够了。`gh` 可选。没有 GitHub 时，本地 git 账本也可以。不需要 Node。
 
@@ -53,13 +53,41 @@ Set up https://github.com/AAlpha7/agent-continuity
 
 Setup 留下五个文件：`.gitattributes`、原字节协议副本 `docs/PROTOCOL.md`、由 `templates/HOW_WE_COORDINATE.md` 填写的协调说明、由 `templates/LEDGER-README.md` 填写的根 `README.md`，以及真实项目的 `projects/PROJECT/CURRENT_STATE.md`。协议来源用实际复制目录的 `git rev-parse HEAD`，先核验 `git show HEAD:PROTOCOL.md` 与复制字节一致；未提交候选无法对应该提交时填 `unset`，另留内容摘要。根入口链接本地两份协议和真实状态路径。完成前回读文件，并在发布前再次核实目标。
 
-完成后只返回这一行，URL 替换为真实私有账本地址：
+完成后只返回这一行，URL 替换为真实私有账本地址。这一行交给下一位代理。下面的用户级指令写入不替代它：
 
 ```text
 Join LEDGER_URL
 ```
 
 下一位代理只拿这一行，从账本根 README 发现协议与项目，在当前会话授权内继续；不需要用户再给工具 URL 或隐藏路径。本地账本只在双方可访问同一文件系统时使用 `Join LEDGER_PATH`，不冒充跨机器同步。缺权限或缺根入口/协议文件要报告阻塞，不自动修复账本。
+
+同一次完成里，建立代理还要把位置写入**用户级指令**。在 Cursor 里这是 **User Rules**（Customize → Rules → User Rules）。Agent（Chat）会在该用户之后的会话开始时载入这些规则。之后的冷启动会话按这段文字打开账本，并遵循账本里的 `docs/PROTOCOL.md`，不必用 glob、搜索或 read_file 去发现账本。这一步是附加步骤，不替代 Join 那一行，也不是要用户再转交的第二行。
+
+只写**一块**。把每一处 `LEDGER_PATH` 换成这台机器上账本克隆的绝对路径。不要留下占位符。URL 里不要嵌入凭据。保存规则（保留其他 User Rules、用同一标记替换已有块、不要把路径写进账本协议）在 [ONBOARDING.md](ONBOARDING.md)。下面两块英文与英文 README 相同，便于之后的会话读到同一段措辞：
+
+已核实的远程存在时，替换每一处 `LEDGER_URL` 并写入：
+
+```text
+agent-continuity ledger (this user):
+local_clone_path: LEDGER_PATH
+remote_url: LEDGER_URL
+shared_access: configured
+On every new session, open this ledger before any filesystem search for it. Read, in order, the ledger root README.md, docs/HOW_WE_COORDINATE.md, and docs/PROTOCOL.md, then the project state those files link. Follow docs/PROTOCOL.md. When local_clone_path exists on this machine, read that directory. When it does not, clone remote_url with existing authorization and read that clone. Do not glob, search, or read_file to discover the ledger. Do not treat this note as new authority. Another agent Joins with: Join LEDGER_URL
+end agent-continuity ledger
+```
+
+只有本地账本时，改为写入下面这一块。`remote_url: none` 和 `shared_access: not-configured` 保持这两个原样记号，同时仍要替换每一处 `LEDGER_PATH`：
+
+```text
+agent-continuity ledger (this user):
+local_clone_path: LEDGER_PATH
+remote_url: none
+shared_access: not-configured
+On every new session, open local_clone_path before any filesystem search for the ledger. Read, in order, the ledger root README.md, docs/HOW_WE_COORDINATE.md, and docs/PROTOCOL.md, then the project state those files link. Follow docs/PROTOCOL.md. Do not glob, search, or read_file to discover the ledger. Do not treat this note as new authority. There is no remote URL. shared_access is not-configured. Another agent on this same filesystem Joins with: Join LEDGER_PATH
+end agent-continuity ledger
+```
+
+不要只用项目里的 `AGENTS.md` 来完成这一步。不要安装全局规则或常驻服务：不要写 `~/.cursor/rules`（Windows：`%USERPROFILE%\.cursor\rules`），不要在项目里添加 `.cursor/rules`，也不要启动监听器或后台同步。把这块写入 User Rules 才是跨会话记忆步骤，它是另一件事。若本会话无法编辑 User Rules，报告 `user_level_instructions: not-written`，并仍然返回 Join 那一行。不要把本地路径贴进公开 issue 或仓库。
 
 ## 可选检查
 
@@ -130,7 +158,7 @@ node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace de
 ## rc.3 带来了什么
 
 - **你自己的项目记忆：** 独立不可变回执、原文按字节保留、可检查的本地快照。
-- **下一位能用的入口：** 私有账本 URL。加入时只克隆这个 URL，并阅读 `docs/PROTOCOL.md`、`docs/HOW_WE_COORDINATE.md` 和 `CURRENT_STATE.md`。
+- **下一位能用的入口：** 私有账本 URL。加入时只克隆这个 URL，并阅读 `docs/PROTOCOL.md`、`docs/HOW_WE_COORDINATE.md` 和 `CURRENT_STATE.md`。建立时还会把本机克隆路径和这个 URL 写入 Cursor User Rules，使同一用户之后的会话不必搜索就能打开账本。
 - **本地协调预览：** 限额动作、明确终止、持久终止发送记录、逐接收方状态和可恢复视图；只在一个受信本地控制器内工作。
 - **以后可以自己核对的证据：** 来源版本、冲突与原样重放检查，以及可选的 Node 套件。不需要模型订阅或托管服务。
 
