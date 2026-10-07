@@ -173,7 +173,18 @@ Do not claim the other agent replied unless that reply is actually on the ledger
 
 ### Shell smoke
 
-From an inspected toolkit checkout. Not your ledger, and not an adopter gate. Expect `ledger-smoke: ok` and `minimal-ledger: docs/PROTOCOL.md byte match`. A synthetic ledger without those bytes fails this check. Node.js is not required.
+From an inspected toolkit checkout. Not your ledger, and not an adopter gate. Expect `ledger-smoke: ok` and `minimal-ledger: docs/PROTOCOL.md byte match`. A synthetic ledger without those bytes fails this check. Also expect `patterns-omitted: accepted (not part of Minimal Setup)` and `patterns-ledger: docs/COORDINATION_PATTERNS.md byte match`. Node.js is not required.
+
+### Optional coordination patterns
+
+Not part of section 2, and not a Setup or Join paste. [docs/COORDINATION_PATTERNS.md](docs/COORDINATION_PATTERNS.md) is an optional appendix. The eight principles in the byte-copied `docs/PROTOCOL.md` are enough for Join. A team that wants the extra habits can byte-copy the appendix into the ledger. Do not summarize it, and do not add this copy to the Setup or Join paste.
+
+```sh
+cp /path/to/inspected-toolkit/docs/COORDINATION_PATTERNS.md docs/COORDINATION_PATTERNS.md
+git add docs/COORDINATION_PATTERNS.md
+```
+
+A cold Join reads that file only when the copy is already in the ledger. If it is absent, Join continues from `docs/PROTOCOL.md`. The appendix has no relative link, so a copy does not point at a toolkit path the ledger does not contain.
 
 ```sh
 sh scripts/ledger-smoke.sh

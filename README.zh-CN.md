@@ -84,7 +84,18 @@ Join LEDGER_URL
 sh scripts/ledger-smoke.sh
 ```
 
-Windows 上用 Git Bash 或 WSL 运行同一脚本。本机对照脚本仍然可选：`powershell.exe -File scripts/ledger-smoke.ps1`。它用的是临时合成账本，不是你的项目。维护者：同一命令会拒绝缺少 `PROTOCOL.md` 原文字节的最少账本，并接受带有该字节副本的账本。采用者可以跳过。不需要 Node.js。
+Windows 上用 Git Bash 或 WSL 运行同一脚本。本机对照脚本仍然可选：`powershell.exe -File scripts/ledger-smoke.ps1`。它用的是临时合成账本，不是你的项目。维护者：同一命令会拒绝缺少 `PROTOCOL.md` 原文字节的最少账本，并接受带有该字节副本的账本。它也接受省略可选协调模式附录的最少账本；在要求字节副本时，拒绝缺失或改写过的 `docs/COORDINATION_PATTERNS.md`；并接受与工具目录字节一致的副本，包括 `core.autocrlf=true` 克隆之后。采用者可以跳过。不需要 Node.js。
+
+### 可选的协调模式附录
+
+不属于建立或加入，也不是上面的粘贴块。八条原则已经随账本里的 `docs/PROTOCOL.md` 一起走。需要这些额外习惯的团队，可以把附录按原文字节复制进账本。不要改写成摘要，也不要把它加进建立或加入的粘贴块。
+
+```sh
+cp /path/to/inspected-toolkit/docs/COORDINATION_PATTERNS.md docs/COORDINATION_PATTERNS.md
+git add docs/COORDINATION_PATTERNS.md
+```
+
+只有账本里已经有这份副本时，冷加入才会读到附录。文件不在时，加入仍从 `docs/PROTOCOL.md` 继续。附录里没有相对链接。见[协调模式](docs/COORDINATION_PATTERNS.md)。
 
 如果已经安装了 Node.js 24+，也可以运行 127 项测试和合成演示。不要为了这个去安装 Node。演示目录必须尚不存在。
 
@@ -135,7 +146,7 @@ node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace de
 
 ## 用到时再展开
 
-[接入与权限](ONBOARDING.md) · [可选检查](TESTING.md) · [回执格式](RECEIPT-SCHEMA.md) · [协议](PROTOCOL.md) · [可选的 Node 初始化](GUIDE.md) · [本地协调预览](r2/README.md) · [文件校验清单](MANIFEST.json)
+[接入与权限](ONBOARDING.md) · [可选检查](TESTING.md) · [回执格式](RECEIPT-SCHEMA.md) · [协议](PROTOCOL.md) · [可选协调模式](docs/COORDINATION_PATTERNS.md) · [可选的 Node 初始化](GUIDE.md) · [本地协调预览](r2/README.md) · [文件校验清单](MANIFEST.json)
 
 ## 许可与作者
 

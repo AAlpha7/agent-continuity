@@ -40,19 +40,24 @@
       "sha256": "e53328990b95c3dee05ad77f91563dc6ebb65d39c88bd07175277173658707a1"
     },
     {
+      "path": "History/2026-10-06-coordination-patterns-appendix.md",
+      "bytes": 1652,
+      "sha256": "b19c7378965207dd60441ae6cbe1ed89bfa62705be62b3892478a25e0cddbb5a"
+    },
+    {
       "path": "LICENSE",
       "bytes": 1064,
       "sha256": "3b4610d5492d945cc02cc0f54633af833718600717e6cd6a7e6da4ac275f0ca4"
     },
     {
       "path": "ONBOARDING.md",
-      "bytes": 33512,
-      "sha256": "de7d5fc688ec2f79665b606f513ef89f8cdc54206334bbb9cb9c659ea4556682"
+      "bytes": 34435,
+      "sha256": "1030e24addbc20b3960ead0931d927c70aafb10ddaae896b87ca5ed7e75add62"
     },
     {
       "path": "PROTOCOL.md",
-      "bytes": 2354,
-      "sha256": "a4949df8316ce62360a456b8a25a98260f75de7ebc9b09eadd8448fef2e88d3b"
+      "bytes": 2541,
+      "sha256": "67aa9918d654742b252c45ec362e744cc345ac94e85e150d49b7077a06dc55c8"
     },
     {
       "path": "PROVENANCE.json",
@@ -61,13 +66,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 13476,
-      "sha256": "00302f20f65e9a3033d6f301d71d0ab81820fc8b0e9d38d573b89c6be757c031"
+      "bytes": 14580,
+      "sha256": "ce5f4daf5dabfd1cbce3e380980ba32ba97a6dcacef20fc766403fb241c33e6f"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 11990,
-      "sha256": "6fb5649a9a0311cf00284faa919c6247e107f6318d7ed42cbb93f3110c1ce566"
+      "bytes": 12954,
+      "sha256": "19a3d1f9d022cce1e8fb981d0f7ca7c353d4bf65c0710f8994bbee041c92750e"
     },
     {
       "path": "RECEIPT-SCHEMA.md",
@@ -91,8 +96,13 @@
     },
     {
       "path": "TESTING.md",
-      "bytes": 16917,
-      "sha256": "2ddcc1ca1b1c69fa4e6ee139eadac0ede3085546b453062b7304a00371fdc379"
+      "bytes": 18453,
+      "sha256": "5aeaefdbc6925ea8abb47f37ed9917a6378ffe8620992e7ac1541bead8108afc"
+    },
+    {
+      "path": "docs/COORDINATION_PATTERNS.md",
+      "bytes": 8585,
+      "sha256": "20d68ca4c2a0c6738f12f7fffe0848cb02edbceb0cac41ff136dc5cf70e9e35e"
     },
     {
       "path": "docs/NOTIFICATIONS.md",
@@ -101,8 +111,8 @@
     },
     {
       "path": "docs/STATUS.md",
-      "bytes": 1559,
-      "sha256": "97feb6aa44e69064df46f78bf8a5c5cab2a232ae50dedd88d796aa48a696e3f2"
+      "bytes": 1750,
+      "sha256": "112d54c56f4947c56f83972140ee952b071be7855c43cbc0cecc64d61cc21466"
     },
     {
       "path": "docs/assets/ATTRIBUTION.md",
@@ -316,13 +326,13 @@
     },
     {
       "path": "scripts/ledger-smoke.ps1",
-      "bytes": 28065,
-      "sha256": "72714f69965b1309d9830a9a2bf0c9dffa81d31ded339eb9cfea8555dc27a896"
+      "bytes": 34298,
+      "sha256": "273aa0321e159c1ee39c4f832bd2b871ceb613b154b77d5b05f6ed6937c24106"
     },
     {
       "path": "scripts/ledger-smoke.sh",
-      "bytes": 22585,
-      "sha256": "ec290c15a91d1eb129d60424c869e80770d5e79d24d2b0fb84f14800718b7246"
+      "bytes": 28064,
+      "sha256": "98b0b511d0ea466ac10cbcb2ee493a0dfa665ec856734621e7401468add1e670"
     },
     {
       "path": "scripts/prepare-new-ledger.sh",

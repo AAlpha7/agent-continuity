@@ -11,3 +11,5 @@
 
 
 The ordinary receipt workflow remains compatible. The optional R2 local preview adds a bounded single-controller journal; it does not turn Git clones into a distributed lock or remote identity service.
+
+An optional appendix, docs/COORDINATION_PATTERNS.md, may sit beside this file. It is not one of these principles, it is not required for Minimal Setup or Join, and a ledger may omit it.

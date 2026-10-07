@@ -9,7 +9,7 @@ Adopters finish at Minimal Setup, then Join ([ONBOARDING.md](ONBOARDING.md)). No
 Before each release or deploy, maintainers run **all** paths, including the optional ones:
 
 1. Two-agent ping, using the prompt below: A writes for B and B replies; then B writes for A and A replies.
-2. Shell smoke: `sh scripts/ledger-smoke.sh`. On Windows, Git Bash or WSL. `scripts/ledger-smoke.ps1` is the native twin. The smoke must reject a synthetic Minimal ledger that lacks `docs/PROTOCOL.md` byte-matching toolkit `PROTOCOL.md`, and accept one that has that byte copy. It must record the toolkit revision as `git rev-parse HEAD` of the checkout whose `PROTOCOL.md` blob was copied. Node.js is not required. This smoke is not a brand-new independent agent Setup then cold Join.
+2. Shell smoke: `sh scripts/ledger-smoke.sh`. On Windows, Git Bash or WSL. `scripts/ledger-smoke.ps1` is the native twin. The smoke must reject a synthetic Minimal ledger that lacks `docs/PROTOCOL.md` byte-matching toolkit `PROTOCOL.md`, and accept one that has that byte copy. It must record the toolkit revision as `git rev-parse HEAD` of the checkout whose `PROTOCOL.md` blob was copied. The optional coordination-patterns appendix is not part of that Minimal ledger. The smoke must accept a Minimal ledger that omits `docs/COORDINATION_PATTERNS.md`, reject a missing file and a paraphrase when the byte copy is required, and accept a byte copy of toolkit `docs/COORDINATION_PATTERNS.md`, including after a `core.autocrlf=true` clone. Node.js is not required. This smoke is not a brand-new independent agent Setup then cold Join.
 3. Node suite, when Node.js 24+ is available: the command under [Optional Node suite](#optional-node-suite).
 
 If the Setup/Join paste blocks changed, also re-verify Minimal Setup and Join with brand-new agents in brand-new environments. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record that result with the optional-path runs. A passing shell smoke does not satisfy that live trial.
@@ -73,6 +73,10 @@ minimal-ledger: docs/PROTOCOL.md byte match
 
 What this run did not prove: a brand-new independent agent doing Setup, then a different agent doing cold Join with only the private ledger URL. The shell smoke builds synthetic ledgers on this machine. It is not that live trial. `scripts/ledger-smoke.ps1` was updated to the same checks and was not executed here (no PowerShell on this machine). Recording this paragraph does not change the smoke script.
 
+### Note: 2026-10-06 optional coordination patterns
+
+The optional coordination-patterns appendix was added outside the Setup and Join paste blocks. No fresh Setup then cold Join literacy re-verify was run for the appendix. Merging `main` after PR #12 kept that pull request's shorter paste blocks and did not fold the appendix into them. A cold Join with only the ledger URL still reads the ledger's own protocol files and does not receive `docs/COORDINATION_PATTERNS.md` unless someone committed the optional byte copy. The shell smoke covers that copy on a synthetic ledger. It is not a brand-new independent agent trial.
+
 ## Optional quick protocol check
 
 Two directions, one round each. Paste this to agents that already share the ledger:
@@ -105,9 +109,10 @@ Expect `ledger-smoke: ok`. The script:
 - records `history_sha256` and `source_revision` as the SHA-256 of those bytes, and checks both after a `core.autocrlf=true` clone
 - commits `.gitattributes`, the handoff, `snapshot-input.json`, the receipt, and the v2 `.gitattributes` / `.gitignore`
 - rejects a synthetic Minimal ledger that has no `docs/PROTOCOL.md`, and rejects one whose `docs/PROTOCOL.md` is a paraphrase rather than a byte copy of toolkit `PROTOCOL.md`
-- accepts a synthetic Minimal ledger that commits `.gitattributes`, `docs/PROTOCOL.md` (those same bytes), `docs/HOW_WE_COORDINATE.md`, and `projects/PROJECT/CURRENT_STATE.md`, including after a `core.autocrlf=true` clone
+- accepts a synthetic Minimal ledger that commits `.gitattributes`, `README.md` (from `templates/LEDGER-README.md` with the project name filled), `docs/PROTOCOL.md` (those same bytes), `docs/HOW_WE_COORDINATE.md`, and `projects/entry-demo/CURRENT_STATE.md`, including after a `core.autocrlf=true` clone. That Minimal ledger omits `docs/COORDINATION_PATTERNS.md`
 - records `Toolkit docs revision` as `git rev-parse HEAD` in that toolkit checkout, and checks the copied `docs/PROTOCOL.md` against `git show HEAD:PROTOCOL.md` from the same commit. It does not pin a SHA-256 or byte size for `PROTOCOL.md`
 - rejects a relative markdown link in those copied files when the target is not a file inside the synthetic ledger
+- treats `docs/COORDINATION_PATTERNS.md` as optional for Minimal Setup. A helper that requires the copy rejects a missing file and a paraphrase. A separate synthetic ledger that byte-copies toolkit `docs/COORDINATION_PATTERNS.md` is accepted, including after a `core.autocrlf=true` clone, and a relative link in that copy that does not resolve inside the ledger is rejected. The toolkit appendix itself has no markdown link
 - checks each size and SHA-256 in `MANIFEST.json` against the blob at `HEAD` (`git cat-file`), including `PROTOCOL.md`
 - checks the single-writer lock documented in [r2/WIRE.md](r2/WIRE.md) and [r2/ONBOARDING.md](r2/ONBOARDING.md): an empty exclusive-create sentinel at `projects/<project>/coordination-v2/writer.lock`, with no PID or age payload; the POSIX script also requires mode `0600` and link count 1; a second create must fail; `.gitignore` is exactly `writer.lock` and `.pending-*`; the lock is not in the commit or the clone
 

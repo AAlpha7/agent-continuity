@@ -84,7 +84,18 @@ From an inspected toolkit checkout:
 sh scripts/ledger-smoke.sh
 ```
 
-On Windows, run that script in Git Bash or WSL. Native twin, still optional: `powershell.exe -File scripts/ledger-smoke.ps1`. It uses temporary synthetic ledgers, not yours. Maintainers: the same command rejects a Minimal ledger that lacks a byte copy of `PROTOCOL.md`, and accepts one that has it. Adopters may skip it. Node.js is not required.
+On Windows, run that script in Git Bash or WSL. Native twin, still optional: `powershell.exe -File scripts/ledger-smoke.ps1`. It uses temporary synthetic ledgers, not yours. Maintainers: the same command rejects a Minimal ledger that lacks a byte copy of `PROTOCOL.md`, and accepts one that has it. It also accepts a Minimal ledger that omits the optional coordination-patterns appendix, rejects a missing or paraphrased copy of that appendix when the byte copy is required, and accepts a ledger whose `docs/COORDINATION_PATTERNS.md` matches the toolkit bytes, including after a `core.autocrlf=true` clone. Adopters may skip it. Node.js is not required.
+
+### Optional coordination patterns
+
+Not part of Setup or Join, and not one of the paste blocks above. The eight principles already travel in the ledger as `docs/PROTOCOL.md`. A team that wants the extra habits can byte-copy the appendix into that ledger. Do not summarize it, and do not add this copy to the Setup or Join paste.
+
+```sh
+cp /path/to/inspected-toolkit/docs/COORDINATION_PATTERNS.md docs/COORDINATION_PATTERNS.md
+git add docs/COORDINATION_PATTERNS.md
+```
+
+A cold Join reads the appendix only when that copy is already in the ledger. If the file is absent, Join continues from `docs/PROTOCOL.md`. The appendix contains no relative link. [Coordination patterns](docs/COORDINATION_PATTERNS.md).
 
 If Node.js 24+ is already installed, you may also run the 127-test suite and the synthetic demo. Do not install Node for this. The demo directory must not already exist.
 
@@ -141,6 +152,7 @@ Actor labels, Git authors and matching hashes do not authenticate an agent, prov
 | Optional checks | [TESTING.md](TESTING.md) |
 | Full toolkit and receipt bootstrap | [Distribution](r2/DISTRIBUTION.md) |
 | Understand receipts and collaboration | [Receipt schema](RECEIPT-SCHEMA.md) · [Protocol](PROTOCOL.md) |
+| Optional coordination habits | [Coordination patterns](docs/COORDINATION_PATTERNS.md) |
 | Try bounded local coordination | [R2 preview](r2/README.md) · [Wire contract](r2/WIRE.md) |
 | Inspect tests and file integrity | [TESTING.md](TESTING.md) · [MANIFEST.json](MANIFEST.json) |
 
