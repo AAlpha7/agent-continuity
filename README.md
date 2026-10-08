@@ -61,9 +61,9 @@ Join LEDGER_URL
 
 Give only that line to the next agent. It discovers root `README.md`, reads the linked protocols and project state, and continues within its current authorization. It does not need this toolkit URL again. A local ledger uses `Join LEDGER_PATH` only when the next agent can reach that filesystem; it is not cross-machine sync. Missing access or a missing root/protocol file is a reported blocker, not automatic permission to repair the ledger.
 
-In the same completion, the Setup agent also writes **user-level instructions**. In Cursor that surface is **User Rules** (Customize → Rules → User Rules). Agent (Chat) loads them at the start of later sessions for this user. A later cold-start session opens the ledger from that text and follows the ledger's `docs/PROTOCOL.md` without globbing, searching, or using read_file to discover the ledger. This write is additional. It does not replace the Join line, and it is not a second line for the user to forward.
+In the same completion, the Setup agent also writes **user-level instructions**: the instruction text that the agent product loads at the start of every later session for this user. In Grok Build (`grok` CLI) that is the file `~/.grok/AGENTS.md` (verified 2026-10-07). In Cursor it is **User Rules** (Customize → Rules → User Rules). A Cursor cloud agent cannot edit User Rules, so a human pastes the block there; Cursor cold-start verification is not done. A later cold-start session opens the ledger from that text and follows the ledger's `docs/PROTOCOL.md` without globbing, searching, or using read_file to discover the ledger. This write is additional. It does not replace the Join line, and it is not a second line for the user to forward.
 
-Write **one** block. Replace every `LEDGER_PATH` with the absolute path of this machine's ledger clone. Do not leave a placeholder. Do not embed credentials in a URL. The save rules (keep other User Rules, replace an existing block with the same marker, do not write the paths into the ledger protocol) are in [ONBOARDING.md](ONBOARDING.md). The blocks themselves are:
+Write **one** block. Replace every `LEDGER_PATH` with the absolute path of this machine's ledger clone. Do not leave a placeholder. Do not embed credentials in a URL. The save rules (keep the other instructions, replace an existing block with the same marker, do not write the paths into the ledger protocol) are in [ONBOARDING.md](ONBOARDING.md). The blocks themselves are:
 
 When a verified remote exists, replace every `LEDGER_URL` and write:
 
@@ -87,7 +87,7 @@ On every new session, open local_clone_path before any filesystem search for the
 end agent-continuity ledger
 ```
 
-Do not satisfy this step with a project `AGENTS.md` alone. Do not install global rules or persistent services: do not write `~/.cursor/rules` (Windows: `%USERPROFILE%\.cursor\rules`), do not add a project `.cursor/rules` file, and do not start a listener or background sync. Writing this block into User Rules is the cross-session memory step. It is a different action. If this session cannot edit User Rules, report `user_level_instructions: not-written` and still return the Join line. Do not paste the local path into a public issue or repository.
+Do not satisfy this step with a project `AGENTS.md` alone. Do not install global rules or persistent services: do not write `~/.cursor/rules` (Windows: `%USERPROFILE%\.cursor\rules`), do not add a project `.cursor/rules` file, and do not start a listener or background sync. Writing this block into User Rules or `~/.grok/AGENTS.md` is the cross-session memory step. It is a different action. If this session cannot edit the user-level instructions, report `user_level_instructions: not-written` and still return the Join line. Do not paste the local path into a public issue or repository.
 
 ## Optional checks
 
@@ -158,7 +158,7 @@ This is a tested setup, not a universal plug-in. Check each participant's actual
 ## What you get in rc.3
 
 - **Project memory you own:** independent immutable receipts, byte-preserved handoffs and checked local snapshots.
-- **A usable entry for the next agent:** the private ledger URL. Join clones that URL only and reads `docs/PROTOCOL.md`, `docs/HOW_WE_COORDINATE.md`, and `CURRENT_STATE.md`. Setup also records the local clone path and that URL in Cursor User Rules so a later session of the same user can open the ledger without searching for it.
+- **A usable entry for the next agent:** the private ledger URL. Join clones that URL only and reads `docs/PROTOCOL.md`, `docs/HOW_WE_COORDINATE.md`, and `CURRENT_STATE.md`. Setup also records the local clone path and that URL in user-level instructions (Cursor User Rules, or `~/.grok/AGENTS.md` in Grok Build) so a later session of the same user can open the ledger without searching for it.
 - **A local coordination preview:** bounded action turns, explicit closure, durable terminal outboxes, per-recipient acceptance and recoverable current views under one trusted local controller.
 - **Evidence you can inspect later:** source revisions, conflict detection, exact replay checks and an optional Node suite. No model subscription or hosted service is required.
 
