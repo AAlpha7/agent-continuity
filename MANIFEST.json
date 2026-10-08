@@ -11,8 +11,8 @@
     },
     {
       "path": "GUIDE.md",
-      "bytes": 7227,
-      "sha256": "a27254da5b37483ac72e7b4e8d25c802f85c0a757790c45fee8d17ff49bd3bcb"
+      "bytes": 7265,
+      "sha256": "18922e0769625ab92a0577525d09b69c24016850317072a0faacf1e38c8378b4"
     },
     {
       "path": "History/2026-10-01-minimal-setup-join-reverify.md",
@@ -46,8 +46,8 @@
     },
     {
       "path": "History/2026-10-07-user-level-ledger-paths.md",
-      "bytes": 796,
-      "sha256": "085f3f998b4638bbcc0640c5a5dde356e18efbbb7ea70d9b18f5ea5ba8e7f999"
+      "bytes": 1111,
+      "sha256": "6e751a1c8996288cce63b5e516ce89ff6128092882246b60bfd44bd0c6ef8cbe"
     },
     {
       "path": "LICENSE",
@@ -56,8 +56,8 @@
     },
     {
       "path": "ONBOARDING.md",
-      "bytes": 41025,
-      "sha256": "f37e80d066b71d1a8ab1dc9a6763b82be8a6da584aad6607555b733dab65deb5"
+      "bytes": 42807,
+      "sha256": "f0f2397800c2c4330482579e3cfe26296d12091b6f38f8f1397ecdd019f96d07"
     },
     {
       "path": "PROTOCOL.md",
@@ -71,13 +71,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 18035,
-      "sha256": "4eb534f6a6f4bfd6862aa6bd1b647f6e83ab43448aed28a141856e36b406496f"
+      "bytes": 18377,
+      "sha256": "1575f44d54f733bb1f4f681aed20a0e529098d31b336fb9b6f470c96dbbeaef6"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 16294,
-      "sha256": "9d39605332f6cabaddd96172ef8376500a67199916528e7d6f4606ed44bef6f5"
+      "bytes": 16587,
+      "sha256": "cb5344da1a0f735890cdfdf4b1af69ba73504330e933802edabd4db8ebaf99d6"
     },
     {
       "path": "RECEIPT-SCHEMA.md",
@@ -101,8 +101,8 @@
     },
     {
       "path": "TESTING.md",
-      "bytes": 20100,
-      "sha256": "c356c618f258f20d4db196ba4d678544bf8a593ebae5d2a0c83c2a3aa5fd54a7"
+      "bytes": 25564,
+      "sha256": "762e7ec0446e13189cdabc84af60888c6eaf1eaea6592a52a4c10dc077adf962"
     },
     {
       "path": "docs/COORDINATION_PATTERNS.md",
@@ -116,8 +116,8 @@
     },
     {
       "path": "docs/STATUS.md",
-      "bytes": 2218,
-      "sha256": "1988c887222ceaec1a1d4d982a28b4bffdd79e035173ede7f603b57eb8a15f5b"
+      "bytes": 2256,
+      "sha256": "d11e2a8a62abd6f98ee237438e75624ee39797b1d903ad76b6ec9325f9f7fc5b"
     },
     {
       "path": "docs/assets/ATTRIBUTION.md",
@@ -346,8 +346,8 @@
     },
     {
       "path": "templates/HOW_WE_COORDINATE.md",
-      "bytes": 1948,
-      "sha256": "f00b437da6656c1093a02ab878b6f59903d38c9328bf865cb5c15661c0f0fd7a"
+      "bytes": 2275,
+      "sha256": "b46e3a93fd3e7372271a484d77bfe17076beb4c668c48159dce992436281a1b8"
     },
     {
       "path": "templates/LEDGER-README.md",

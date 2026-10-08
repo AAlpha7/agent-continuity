@@ -61,9 +61,9 @@ Join LEDGER_URL
 
 下一位代理只拿这一行，从账本根 README 发现协议与项目，在当前会话授权内继续；不需要用户再给工具 URL 或隐藏路径。本地账本只在双方可访问同一文件系统时使用 `Join LEDGER_PATH`，不冒充跨机器同步。缺权限或缺根入口/协议文件要报告阻塞，不自动修复账本。
 
-同一次完成里，建立代理还要把位置写入**用户级指令**。在 Cursor 里这是 **User Rules**（Customize → Rules → User Rules）。Agent（Chat）会在该用户之后的会话开始时载入这些规则。之后的冷启动会话按这段文字打开账本，并遵循账本里的 `docs/PROTOCOL.md`，不必用 glob、搜索或 read_file 去发现账本。这一步是附加步骤，不替代 Join 那一行，也不是要用户再转交的第二行。
+同一次完成里，建立代理还要把位置写入**用户级指令**：代理产品在该用户之后每个会话开始时载入的指令文字。在 Grok Build（`grok` CLI）里这是文件 `~/.grok/AGENTS.md`（2026-10-07 已验证）。在 Cursor 里这是 **User Rules**（Customize → Rules → User Rules）。Cursor 云端代理无法编辑 User Rules，需要人手动粘贴这块；Cursor 的冷启动验证尚未完成。之后的冷启动会话按这段文字打开账本，并遵循账本里的 `docs/PROTOCOL.md`，不必用 glob、搜索或 read_file 去发现账本。这一步是附加步骤，不替代 Join 那一行，也不是要用户再转交的第二行。
 
-只写**一块**。把每一处 `LEDGER_PATH` 换成这台机器上账本克隆的绝对路径。不要留下占位符。URL 里不要嵌入凭据。保存规则（保留其他 User Rules、用同一标记替换已有块、不要把路径写进账本协议）在 [ONBOARDING.md](ONBOARDING.md)。下面两块英文与英文 README 相同，便于之后的会话读到同一段措辞：
+只写**一块**。把每一处 `LEDGER_PATH` 换成这台机器上账本克隆的绝对路径。不要留下占位符。URL 里不要嵌入凭据。保存规则（保留其他指令、用同一标记替换已有块、不要把路径写进账本协议）在 [ONBOARDING.md](ONBOARDING.md)。下面两块英文与英文 README 相同，便于之后的会话读到同一段措辞：
 
 已核实的远程存在时，替换每一处 `LEDGER_URL` 并写入：
 
@@ -87,7 +87,7 @@ On every new session, open local_clone_path before any filesystem search for the
 end agent-continuity ledger
 ```
 
-不要只用项目里的 `AGENTS.md` 来完成这一步。不要安装全局规则或常驻服务：不要写 `~/.cursor/rules`（Windows：`%USERPROFILE%\.cursor\rules`），不要在项目里添加 `.cursor/rules`，也不要启动监听器或后台同步。把这块写入 User Rules 才是跨会话记忆步骤，它是另一件事。若本会话无法编辑 User Rules，报告 `user_level_instructions: not-written`，并仍然返回 Join 那一行。不要把本地路径贴进公开 issue 或仓库。
+不要只用项目里的 `AGENTS.md` 来完成这一步。不要安装全局规则或常驻服务：不要写 `~/.cursor/rules`（Windows：`%USERPROFILE%\.cursor\rules`），不要在项目里添加 `.cursor/rules`，也不要启动监听器或后台同步。把这块写入 User Rules 或 `~/.grok/AGENTS.md` 才是跨会话记忆步骤，它是另一件事。若本会话无法编辑用户级指令，报告 `user_level_instructions: not-written`，并仍然返回 Join 那一行。不要把本地路径贴进公开 issue 或仓库。
 
 ## 可选检查
 
@@ -158,7 +158,7 @@ node scripts/build-continuity-snapshot.mjs ../agent-continuity-demo/workspace de
 ## rc.3 带来了什么
 
 - **你自己的项目记忆：** 独立不可变回执、原文按字节保留、可检查的本地快照。
-- **下一位能用的入口：** 私有账本 URL。加入时只克隆这个 URL，并阅读 `docs/PROTOCOL.md`、`docs/HOW_WE_COORDINATE.md` 和 `CURRENT_STATE.md`。建立时还会把本机克隆路径和这个 URL 写入 Cursor User Rules，使同一用户之后的会话不必搜索就能打开账本。
+- **下一位能用的入口：** 私有账本 URL。加入时只克隆这个 URL，并阅读 `docs/PROTOCOL.md`、`docs/HOW_WE_COORDINATE.md` 和 `CURRENT_STATE.md`。建立时还会把本机克隆路径和这个 URL 写入用户级指令（Cursor User Rules，或 Grok Build 的 `~/.grok/AGENTS.md`），使同一用户之后的会话不必搜索就能打开账本。
 - **本地协调预览：** 限额动作、明确终止、持久终止发送记录、逐接收方状态和可恢复视图；只在一个受信本地控制器内工作。
 - **以后可以自己核对的证据：** 来源版本、冲突与原样重放检查，以及可选的 Node 套件。不需要模型订阅或托管服务。
 
