@@ -11,8 +11,8 @@
     },
     {
       "path": "GUIDE.md",
-      "bytes": 6841,
-      "sha256": "ea30f779e77081240f82e821c21261abec5f4e2d5c759a55255919c3608ad99d"
+      "bytes": 7327,
+      "sha256": "27c1bdc423a5b4530896cdd3e5d1fbdfd5b3cf624f9b41953f8c279762a57316"
     },
     {
       "path": "History/2026-10-01-minimal-setup-join-reverify.md",
@@ -45,14 +45,19 @@
       "sha256": "b19c7378965207dd60441ae6cbe1ed89bfa62705be62b3892478a25e0cddbb5a"
     },
     {
+      "path": "History/2026-10-07-user-level-ledger-paths.md",
+      "bytes": 1461,
+      "sha256": "b82967190c4a1567b6dced4f322e9d9586f404f2ed88854e20b6464d82f695e0"
+    },
+    {
       "path": "LICENSE",
       "bytes": 1064,
       "sha256": "3b4610d5492d945cc02cc0f54633af833718600717e6cd6a7e6da4ac275f0ca4"
     },
     {
       "path": "ONBOARDING.md",
-      "bytes": 34435,
-      "sha256": "1030e24addbc20b3960ead0931d927c70aafb10ddaae896b87ca5ed7e75add62"
+      "bytes": 42413,
+      "sha256": "c056286c18a2155050d851cc27a15927e6fb59cfdfbc1846bf924958ff010900"
     },
     {
       "path": "PROTOCOL.md",
@@ -66,13 +71,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 14580,
-      "sha256": "ce5f4daf5dabfd1cbce3e380980ba32ba97a6dcacef20fc766403fb241c33e6f"
+      "bytes": 18306,
+      "sha256": "8c447aaa69d651bf0996efa5ef8ebd2ae6fd8413659053d68554a13fb045cbd9"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 12954,
-      "sha256": "19a3d1f9d022cce1e8fb981d0f7ca7c353d4bf65c0710f8994bbee041c92750e"
+      "bytes": 16512,
+      "sha256": "0c3c7e49dc17b471a9d9385112136413e66058b4a2e09ec77d8449d7d7a0697c"
     },
     {
       "path": "RECEIPT-SCHEMA.md",
@@ -96,8 +101,8 @@
     },
     {
       "path": "TESTING.md",
-      "bytes": 18453,
-      "sha256": "5aeaefdbc6925ea8abb47f37ed9917a6378ffe8620992e7ac1541bead8108afc"
+      "bytes": 25731,
+      "sha256": "6f6db00250e8bcd17fa4fa525dc45abe5cef62948395c086c3da0dbf978e361a"
     },
     {
       "path": "docs/COORDINATION_PATTERNS.md",
@@ -111,8 +116,8 @@
     },
     {
       "path": "docs/STATUS.md",
-      "bytes": 1750,
-      "sha256": "112d54c56f4947c56f83972140ee952b071be7855c43cbc0cecc64d61cc21466"
+      "bytes": 2617,
+      "sha256": "996d2c3121dd6a7faa175608dd248282a4abb5023f2cfef9fc18549e52ae3307"
     },
     {
       "path": "docs/assets/ATTRIBUTION.md",
@@ -341,8 +346,8 @@
     },
     {
       "path": "templates/HOW_WE_COORDINATE.md",
-      "bytes": 1471,
-      "sha256": "14016f1eb0c5af5dc4c4363bf3e6c928f16d845974595519c631fdc01c8a2383"
+      "bytes": 2343,
+      "sha256": "f764a369f078d34a36c5498134c4e2c53eae0662398cf10d91528f5961aec0e3"
     },
     {
       "path": "templates/LEDGER-README.md",

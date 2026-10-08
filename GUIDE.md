@@ -2,7 +2,7 @@
 
 [Back to README](README.md)
 
-The adopter path does not use this page. Minimal Setup, then Join, is in [ONBOARDING.md](ONBOARDING.md). The steps below are optional and need Node.js 24+ already installed. Shell smoke is also optional; see [TESTING.md](TESTING.md).
+The adopter path does not use this page. Minimal Setup, then Join, is in [ONBOARDING.md](ONBOARDING.md). When that Setup finishes the private ledger, it also writes the local clone path and the remote URL into user-level instructions: the text the agent product loads at the start of every session for this user (for example `~/.grok/AGENTS.md` in Grok Build). Local-only Setup records `shared_access: not-configured` and still writes the local path. That write is not a project `AGENTS.md`, and it is not another rule file or a persistent service. The steps below are optional and need Node.js 24+ already installed. Shell smoke is also optional; see [TESTING.md](TESTING.md). They do not perform the user-level write.
 
 ## Initialize your own local project
 
