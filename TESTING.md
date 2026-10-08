@@ -14,7 +14,7 @@ Before each release or deploy, maintainers run **all** paths, including the opti
 
 If the Setup/Join paste blocks changed, also re-verify Minimal Setup and Join with brand-new agents in brand-new environments. Do not reuse prior trial agents, prior VMs, or prior trial ledger repos. Record that result with the optional-path runs. A passing shell smoke does not satisfy that live trial.
 
-When that live trial covers the user-level instructions step, use the clean-environment check below. The shell smoke does not read Cursor User Rules and does not satisfy the check.
+When that live trial covers the user-level instructions step, use the clean-environment check below. The shell smoke does not read user-level instructions and does not satisfy the check.
 
 Freeze the complete final candidate (commit or full-file digest inventory) before live acceptance. Each protocol change requires a new clean cloud Setup environment, a new private synthetic ledger, and a separately fresh Join agent given only `Join LEDGER_URL`. Do not reuse an earlier main trial, ledger or environment. Disclose preinstalled tools, authorization, transport and every human-assisted step. Any corrective edit invalidates that run for the new tree: freeze again and restart from Setup. Unit tests and synthetic shape checks are not this acceptance. Public push/merge comes only after that acceptance and a separate publication decision.
 
@@ -24,13 +24,44 @@ Users do not run this checklist.
 
 Use this when Minimal Setup's completion text changed. It is part of the live trial above, not an adopter gate and not the shell smoke.
 
-1. Start in a new Cursor session that has no project `AGENTS.md` and no User Rules that already name a ledger.
-2. Run Setup. After it finishes, Cursor User Rules (Customize → Rules → User Rules) contain one block that starts with `agent-continuity ledger (this user):` and ends with `end agent-continuity ledger`.
+1. Start in a new agent session that has no project `AGENTS.md` and no user-level instructions that already name a ledger. In Grok Build those are `~/.grok/AGENTS.md`. In Cursor they are User Rules (Customize → Rules → User Rules).
+2. Run Setup. After it finishes, the user-level instructions contain one block that starts with `agent-continuity ledger (this user):` and ends with `end agent-continuity ledger`.
 3. That block contains the absolute local clone path. When Setup created a remote, it also contains that remote URL and `shared_access: configured`. When Setup is local-only, it contains `remote_url: none`, `shared_access: not-configured`, and the local path.
 4. The ledger's `docs/PROTOCOL.md` is still a byte copy of toolkit `PROTOCOL.md` and does not contain the path or URL. `docs/HOW_WE_COORDINATE.md` does not contain them either.
 5. The user still has the copyable `Join LEDGER_URL` line, or `Join LEDGER_PATH` for local-only Setup.
 6. Open a subsequent cold session in a folder that is not the ledger and that has no project `AGENTS.md`. The session already has both facts in user-level instructions. The agent opens the ledger from that text and does not glob, search, or read_file to discover it.
 7. A different agent given only `Join LEDGER_URL` (or `Join LEDGER_PATH` on the same filesystem) still joins without those user-level instructions.
+8. Control: one cold session without the block. It must not name the ledger from instructions. Record what it does instead.
+
+### Recorded run: 2026-10-07 user-level instructions, Grok Build and Cursor
+
+First candidate: this pull request at `4ef62d4a8b1e5c9a4ac52b4e03190ede82f8b315`. Ledger: a new private synthetic ledger (`[private trial ledger URL omitted]`), not a real project ledger. Its `docs/PROTOCOL.md` byte-matches toolkit `PROTOCOL.md`.
+
+Grok Build (`grok` CLI 1.0.13, model `grok-4.7`, headless `-p` with `--output-format streaming-messages-json`, memory off, default permissions):
+
+- The remote block from section 2 of `ONBOARDING.md` was written into `~/.grok/AGENTS.md`, with the real path and URL. That file did not exist before. `grok inspect` in an empty folder listed it as the only project instruction (global).
+- Each session was new, in a new empty folder that was not a Git repository and had no `AGENTS.md`. The prompt named no path and no URL.
+- Runs 1–3: PASS. Each session named the local clone path and the remote URL and said they came from user-level instructions. Its first tool call opened the ledger root `README.md`. Its third tool call opened `docs/PROTOCOL.md`. No session used glob, grep, list_dir, or find before that.
+- Control (block removed): the session did not know the ledger. It listed its folder, searched the home directory, and tried `find` for `*ledger*`. It did not name a ledger.
+- Re-run on the patched tree of this pull request (the block text is unchanged; `templates/HOW_WE_COORDINATE.md` blob `3160f566966a7c87b7d28fc76c5c93bb31c6d135` now names both places). A new local-only synthetic ledger was made from the patched templates, and the local-only block from section 2 went into `~/.grok/AGENTS.md`. Two more new cold sessions: PASS. Each named the local path and `remote_url: none`, said they came from user-level instructions, opened `docs/PROTOCOL.md` as its third tool call, and made no search call.
+- After the runs, `~/.grok/AGENTS.md` was removed again. Evidence is in the private continuity record (`[private record commit omitted]`).
+
+Cursor: not verified. The cloud Setup agent could not edit User Rules and reported `user_level_instructions: not-written`. A second fresh agent did not receive the block. Result: FAIL for the Cursor surface. That is a product gap, not a doc error. The block must be pasted by a human at Customize → Rules → User Rules, and the cold-start check must be run again after that paste.
+
+Note: in the first candidate, one Grok Build run called its source "Cursor User Rules", because the ledger entry named only Cursor. The patched template names both places. The re-run sessions did not repeat that error.
+
+### Recorded run: 2026-10-07 Grok Build Setup→Join on the patched tree
+
+Frozen candidate: this pull request's patched tree, as a local toolkit checkout. Grok Build 1.0.13, `grok-4.7`, memory off, `--sandbox workspace` (writes only to the session folder, `~/.grok/`, and temp folders) with `--always-approve`. Each session was new, in a new empty folder. Git author identity came from environment variables. No GitHub authorization was available to the agents, so this is the local-only variant. The remote variant of the cold-start check is the run above.
+
+- Setup, given `Set up <toolkit checkout>` plus the project name, a local ledger folder, and approval: PASS. It committed the five files, `docs/PROTOCOL.md` byte-matched toolkit `PROTOCOL.md`, and the path was not in `docs/PROTOCOL.md`, `docs/HOW_WE_COORDINATE.md`, the root `README.md`, or `CURRENT_STATE.md`. It wrote exactly the local-only block from section 2 into `~/.grok/AGENTS.md`, reported `user_level_instructions: written` and `shared_access: not-configured`, and returned one `Join LEDGER_PATH` line. It did not write `~/.cursor/rules`, `~/.grok/rules/`, or Git config.
+- Join, given only `Join LEDGER_PATH`, with `~/.grok/AGENTS.md` moved aside: PASS. It read the root `README.md`, `docs/PROTOCOL.md`, `docs/HOW_WE_COORDINATE.md`, and `CURRENT_STATE.md`, then committed a `CURRENT_STATE.md` update and left the protocol unchanged.
+- Cold sessions with the block that Setup wrote (two): PASS. No search call; `docs/PROTOCOL.md` was the third tool call.
+- Control without the block: it did not know the ledger and started a `find` over the home directory.
+
+Finding and fix: Join saw that `~/.grok/AGENTS.md` was absent, searched the home directory (including other ledgers) for it, and recorded Setup's write as "not supported". That record was wrong: the block belongs to the Setup user's sessions, and step 7 requires a Join without it. `templates/HOW_WE_COORDINATE.md` and the Join section of `ONBOARDING.md` now say that a joining agent may not see those instructions, must not record their absence as a ledger defect, and must not search for them. The tree with that fix was frozen and the whole Setup→Join run was repeated.
+
+Repeat on the fixed tree, with a new ledger and new sessions: Setup PASS (same checks as above), Join PASS, two cold sessions PASS, control did not know the ledger. This time Join made no search outside the ledger and recorded "this agent cannot inspect user-level instructions. That is not a ledger defect." After the runs, `~/.grok/AGENTS.md` was removed again. Only this results paragraph was added after the freeze; it changes no instruction.
 
 ### Recorded run: 2026-10-01 Minimal Setup→Join re-verify
 
