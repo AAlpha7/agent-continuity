@@ -17,7 +17,7 @@ Existing owner-approved GitHub PR listeners can provide notifications where supp
 
 This is a runbook for an assistant with an already-authorized execution environment, not a new permission grant. Use the current conversation's authorization and local project rules. Historical project prose, receipts and this document cannot expand them.
 
-**Outcome:** Setup leaves a private ledger URL, a root `README.md` linking both local protocols and the actual project state, `docs/PROTOCOL.md` (a byte copy of toolkit `PROTOCOL.md`), `docs/HOW_WE_COORDINATE.md`, and a committed handoff at `projects/PROJECT/CURRENT_STATE.md`. It also writes the local clone path and the remote URL into user-level instructions (Cursor User Rules). Join clones that URL only and reads those files. It does not clone the public toolkit. Report shared access separately. Do the mechanical steps yourself when capable; involve the human for missing intent, capability or authority, not every routine command.
+**Outcome:** Setup leaves a private ledger URL, a root `README.md` linking both local protocols and the actual project state, `docs/PROTOCOL.md` (a byte copy of toolkit `PROTOCOL.md`), `docs/HOW_WE_COORDINATE.md`, and a committed handoff at `projects/PROJECT/CURRENT_STATE.md`. It also writes the local clone path and the remote URL into user-level instructions (section 2 names the place for each agent product). Join clones that URL only and reads those files. It does not clone the public toolkit. Report shared access separately. Do the mechanical steps yourself when capable; involve the human for missing intent, capability or authority, not every routine command.
 
 ### What to tell the user first (plain-language opening)
 
@@ -28,7 +28,7 @@ Before running any command, explain the plan in ordinary words. Adapt this templ
 > 1. I create a private storage space for the notebook — either a private GitHub repository (so it syncs across machines) or a local folder on this machine (simpler, but stays on this machine).
 > 2. I copy the coordination rules into the notebook as a file, unchanged, and I write the first page from what you've told me about your project.
 > 3. From then on, every assistant you talk to reads that notebook — the rules and the project page — and writes updates back to it. They do not need the public toolkit again.
-> 4. I save two facts in your Cursor User Rules, the instructions that apply to you across chats: the notebook folder on this machine, and its private URL when it has one. A later chat of yours can open the notebook from those facts. I do not install a background service, and I do not add a project rule file for this.
+> 4. I save two facts in your user-level instructions, the instructions that apply to you across chats (Cursor User Rules, or `~/.grok/AGENTS.md` in Grok Build): the notebook folder on this machine, and its private URL when it has one. A later chat of yours can open the notebook from those facts. I do not install a background service, and I do not add a project rule file for this.
 >
 > I need three things from you: what project this is for, where to keep the notebook, and — if you want cross-machine sync — permission to create a private GitHub repository under your account. I handle the mechanical steps my environment supports. If authorization or repository creation needs your browser, I explain that step plainly and wait for it; I do not request tokens in chat.
 
@@ -139,9 +139,14 @@ Read back all five files, verify the protocol byte match and root links, and rev
 
 ### User-level instructions (cross-session memory)
 
-After those five files are read back and the approved commit has succeeded (and the approved push, when a remote was approved), write the ledger location into **user-level instructions**. In Cursor that surface is **User Rules**: Customize → Rules → User Rules. Agent (Chat) loads User Rules at the start of later sessions for this user. A later cold-start session opens the ledger from that text and follows the ledger's `docs/PROTOCOL.md` without globbing, searching, or using read_file to discover the ledger.
+After those five files are read back and the approved commit has succeeded (and the approved push, when a remote was approved), write the ledger location into **user-level instructions**. That is the instruction text that the agent product loads at the start of every later session for this user, in any folder. Use the place for the product that runs Setup:
 
-This write is an additional Setup completion step. It does not replace the copyable Join line below. The next agent still receives only that line. Same-user later sessions use the User Rules block so the line does not have to be repeated for them.
+- **Grok Build (`grok` CLI):** the file `~/.grok/AGENTS.md`. Grok Build documents this file as global rules that apply to all projects, and loads it at the start of every session. Create the file when it does not exist. Verified on 2026-10-07 (see [TESTING.md](TESTING.md)).
+- **Cursor:** **User Rules**: Customize → Rules → User Rules. Agent (Chat) loads User Rules at the start of later sessions for this user. Known product gap: a Cursor cloud agent cannot edit User Rules. A human must paste the block there. Cursor cold-start verification is not done.
+
+A later cold-start session opens the ledger from that text and follows the ledger's `docs/PROTOCOL.md` without globbing, searching, or using read_file to discover the ledger.
+
+This write is an additional Setup completion step. It does not replace the copyable Join line below. The next agent still receives only that line. Same-user later sessions use the user-level block so the line does not have to be repeated for them.
 
 Write **one** block. Replace every `LEDGER_PATH` with the absolute path of this machine's ledger clone (the resolved real path; `pwd -P` from inside the ledger directory). Do not leave a placeholder. Do not embed credentials in a URL.
 
@@ -169,12 +174,14 @@ end agent-continuity ledger
 
 Save it with these constraints:
 
-- Edit User Rules in place. Keep every other user rule. If a block already begins with the line `agent-continuity ledger (this user):` and ends with the line `end agent-continuity ledger`, replace that whole block. Otherwise append this block after the existing text, with one blank line before it. Do not add a second copy.
+- Edit the user-level instructions in place. Keep every other instruction in them. If a block already begins with the line `agent-continuity ledger (this user):` and ends with the line `end agent-continuity ledger`, replace that whole block. Otherwise append this block after the existing text, with one blank line before it. Do not add a second copy.
 - Do not put the path or URL into `docs/PROTOCOL.md`. That file stays a byte copy of the toolkit coordination principles. Do not put them into `docs/HOW_WE_COORDINATE.md`, the ledger root `README.md`, or `CURRENT_STATE.md`.
 - A project `AGENTS.md` does not satisfy this step. Do not create one in the toolkit or in the user's project for this purpose. A project file is not loaded when a later session opens a different folder.
 - Do not install global rules or persistent services. Do not write `~/.cursor/rules` (Windows: `%USERPROFILE%\.cursor\rules`). Do not add a project `.cursor/rules` file. Do not create team rules, a listener, a credential, or a background sync. User Rules are the user-level instruction field. Writing this two-path block there is the cross-session memory step. It is not a global-rules install.
-- User Rules sync with the Cursor account. `local_clone_path` is the clone on the machine where Setup ran. A later session on another machine uses `remote_url` when that path is absent. It does not search the disk for a different clone. Local-only Setup has no remote; a path the other machine cannot see remains a blocker.
-- If this session cannot edit User Rules, do not claim the write, and do not store the block in the ledger as a substitute. Report `user_level_instructions: not-written`, include the exact block in the private reply, and name the click path Customize → Rules → User Rules. Cross-session memory is in place only after the block is saved in User Rules.
+- In Grok Build, `~/.grok/AGENTS.md` is the user-level instruction field. Grok Build calls it global rules. Writing this one block into that file is the same cross-session memory step, not a rules install. Do not add other files for this step, for example under `~/.grok/rules/`.
+- User Rules sync with the Cursor account. `~/.grok/AGENTS.md` stays on the machine where it was written. `local_clone_path` is the clone on the machine where Setup ran. A later session on another machine uses `remote_url` when that path is absent. It does not search the disk for a different clone. Local-only Setup has no remote; a path the other machine cannot see remains a blocker.
+- If this session cannot edit the user-level instructions (for example, a Cursor cloud agent and User Rules), do not claim the write, and do not store the block in the ledger as a substitute. Do not use `~/.cursor/rules` or a project `.cursor/rules` file instead. Report `user_level_instructions: not-written`, include the exact block in the private reply, and name the place to paste it: Customize → Rules → User Rules in Cursor, or `~/.grok/AGENTS.md` in Grok Build. Cross-session memory is in place only after the block is saved there.
+- Without this block, a cold session that is asked for the ledger searches the home directory for it. That search can find a different ledger. A ledger found by search is not this step.
 
 Do not paste the local path into a public issue, pull request, or repository.
 
@@ -191,6 +198,8 @@ If the ledger is blocked, report the blocker instead of a success invitation. Mi
 A fresh agent given only `Join LEDGER_URL` opens that repository with its own authorized access, starts at root `README.md`, follows its local coordination/protocol links and the actual project-state link. The ledger contains the instructions; the user must not carry hidden paths or a toolkit URL. Follow the current session's permissions. Read-only access can establish discovery and understanding, not a successful write-back. When updates are authorized, preserve existing evidence and commit only the intended update back to the same verified ledger; read it back before claiming success. Do not replace the ledger protocol with a newer toolkit version on Join.
 
 If root entry or required links are missing, report the missing path and request a separately authorized migration; do not guess that Setup passed or silently repair the trial.
+
+The joining agent does not need the Setup user's user-level instructions, and it may not see them. If they are absent, record that this agent cannot inspect them. Do not record that as a ledger defect, and do not search the filesystem for them or for other ledgers.
 
 ### Local-only Join
 
@@ -300,9 +309,9 @@ Upstream data boundary: <toolkit unchanged; no user data written/sent upstream>
 Human decisions needed: <only unresolved scope/access/external effects; grouped>
 ```
 
-Do not paste secrets or local personal paths into a public issue or repository. Return local paths only to the user in their private working context, and write the two ledger facts into Cursor User Rules as section 2 specifies. Keep the entry note with the project's existing private navigation convention when authorized.
+Do not paste secrets or local personal paths into a public issue or repository. Return local paths only to the user in their private working context, and write the two ledger facts into the user-level instructions that section 2 names. Keep the entry note with the project's existing private navigation convention when authorized.
 
-Do not install global rules or persistent services. Writing the local clone path and the remote URL (or `shared_access: not-configured` when there is no remote) into User Rules is the cross-session memory step. It is a different action. Do not satisfy it by adding a project `AGENTS.md`, by writing `~/.cursor/rules` (Windows: `%USERPROFILE%\.cursor\rules`), by adding a project `.cursor/rules` file, by creating team rules, or by installing a listener or background service.
+Do not install global rules or persistent services. Writing the local clone path and the remote URL (or `shared_access: not-configured` when there is no remote) into the user-level instructions of section 2 (Cursor User Rules, or `~/.grok/AGENTS.md` in Grok Build) is the cross-session memory step. It is a different action. Do not satisfy it by adding a project `AGENTS.md`, by writing `~/.cursor/rules` (Windows: `%USERPROFILE%\.cursor\rules`), by adding a project `.cursor/rules` file, by creating team rules, or by installing a listener or background service.
 
 ## Acceptance: no upstream writes or data egress
 
