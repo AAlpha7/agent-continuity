@@ -13,6 +13,7 @@ Entry point for Claude Code (CLI, desktop, or the GitHub Action) in this repo.
 - Gates that always need Lance's yes: email, posting to X, purchases, destructive deletes, making anything public.
 - `PROTOCOL.md` is copied byte-for-byte into users' ledgers — change it only when the task says so, and call it out in the PR.
 - Never commit secrets or tokens.
+- Acceptance bar for every agent PR (L1–L5 gates, review packet, /correct loop): [`docs/acceptance-standard.md`](docs/acceptance-standard.md).
 
 ## After you finish
 - In the PR description: what changed, how you verified it, what's left.
