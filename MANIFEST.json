@@ -90,6 +90,11 @@
       "sha256": "7abcba0d2823d90c5d473d8005ecd7cec470e97d5819f0a4bc6db3c263dd4f39"
     },
     {
+      "path": "REVIEW.md",
+      "bytes": 5185,
+      "sha256": "849177d02e717eeebf82d5f2a0a25855cc445ac0bfa2f071988afd5fa024a9a7"
+    },
+    {
       "path": "RIGHTS-AND-DEPENDENCIES.md",
       "bytes": 2446,
       "sha256": "6ae7762e07f921fb0a5a03973c40b2ae45e7ef36bcce7cf4e5a919be4222dbcb"
@@ -153,6 +158,11 @@
       "path": "docs/design/realtime-bidirectional-channel-draft.md",
       "bytes": 7180,
       "sha256": "fc8f4cc0c65c03e6b154edc8d981b6017285906ea8c27d26541097c2e9c9affe"
+    },
+    {
+      "path": "docs/review/REGRESSION_CASES.md",
+      "bytes": 4321,
+      "sha256": "427255ce759fac9bc6cc9eb75ac3d04115322fba2c8b4b59183efcc80b7c6bad"
     },
     {
       "path": "examples/init-project.mjs",
